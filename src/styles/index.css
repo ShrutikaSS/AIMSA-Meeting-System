@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+@theme {
+  --color-warm: #FAFAF9;
+  --color-warm-alt: #F5F5F0;
+  --color-warm-card: #FFFFFF;
+  --color-warm-hover: #F3F2EF;
+  --color-warm-border: #E8E7E3;
+
+  --color-dark-title: #1a1a1a;
+  --color-dark-body: #3a3a3a;
+  --color-dark-muted: #6b6b6b;
+  --color-dark-subtle: #8a8a8a;
+
+  --color-amber-500: #f0883e;
+  --color-amber-400: #f59e4c;
+  --color-amber-300: #f7b267;
+
+  --color-orange-accent: #f0883e;
+  --color-blue-accent: #00b4d8;
+  --color-blue-glow: #48cae4;
+
+  --color-glass-bg: rgba(255, 255, 255, 0.7);
+  --color-glass-border: rgba(0, 0, 0, 0.08);
+  --color-glass-hover: rgba(0, 0, 0, 0.04);
+
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--color-warm);
+  color: var(--color-dark-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer utilities {
+  .glass {
+    background: var(--color-glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--color-glass-border);
+    border-radius: var(--radius-2xl);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  }
+
+  .glass-hover:hover {
+    background: var(--color-glass-hover);
+    border-color: rgba(0, 0, 0, 0.12);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, #f0883e, #00b4d8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-gradient-accent {
+    background: linear-gradient(135deg, #f0883e, #00b4d8);
+  }
+
+  .shadow-soft {
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  .card-3d {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .card-3d:hover {
+    transform: translateY(-4px) scale(1.01) rotateX(2deg);
+    border-color: rgba(0, 180, 216, 0.25);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-3d {
+    transform: none !important;
+    transition: opacity 0.5s ease !important;
+  }
+}
