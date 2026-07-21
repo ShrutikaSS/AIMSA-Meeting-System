@@ -1,0 +1,11 @@
+# Ignore uploads and environment configs
+uploads/profile/*
+uploads/punchInSelf/*
+uploads/generalDocs/*
+!uploads/profile/.gitkeep
+!uploads/punchInSelf/.gitkeep
+!uploads/generalDocs/.gitkeep
+
+.vscode/
+.gemini/
+*.log
