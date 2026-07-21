@@ -762,7 +762,7 @@ footer{ background:var(--ink); color:var(--muted); padding:56px 0 26px;}
         <label style="display:flex; align-items:center; gap:6px; font-weight:500;"><input type="checkbox" style="width:auto;"> Keep me signed in</label>
         <a href="#" id="forgotLink">Forgot password?</a>
       </div>
-      <button class="btn btn-primary" style="width:100%; margin-top:6px; padding:13px;">Secure Login →</button>
+      <button class="btn btn-primary" style="width:100%; margin-top:6px; padding:13px;" id="loginSubmitBtn">Secure Login →</button>
       <div class="secure-note"><svg viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-4z"/></svg> Encrypted login · role-based access · auto session timeout</div>
     </div>
   </div>
@@ -810,6 +810,21 @@ document.querySelectorAll('.role-card').forEach(card=>{
 document.getElementById('backToRoles').addEventListener('click', ()=>{
   formStep.classList.remove('show');
   roleStep.style.display='block';
+});
+
+// Role → dashboard page mapping
+const roleDashboards = {
+  'HOD': 'hod_dashboard.html',
+  'Faculty Coordinator': 'faculty_dashboard.html',
+  'Association President': 'president_dashboard.html',
+  'Committee Member': 'committee_dashboard.html',
+  'Student Member': 'student_dashboard.html'
+};
+
+document.getElementById('loginSubmitBtn').addEventListener('click', ()=>{
+  const selectedRole = roleChip.textContent.trim();
+  const target = roleDashboards[selectedRole];
+  if(target){ window.location.href = target; }
 });
 document.getElementById('forgotLink').addEventListener('click', (e)=>{
   e.preventDefault();

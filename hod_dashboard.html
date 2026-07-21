@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HOD Dashboard — AIMSA Portal</title>
+<meta name="description" content="Head of Department portal dashboard for AIMSA — AI & ML Student Association at Zeal Education Society.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#050d1a;
+  --navy-950:#081733;
+  --navy-900:#0c2148;
+  --navy-800:#123163;
+  --navy-700:#1a4180;
+  --accent:#3E8BFF;
+  --accent-soft:#7fb0ff;
+  --accent-glow:rgba(62,139,255,.45);
+  --white:#ffffff;
+  --paper:#f4f7fc;
+  --paper-dim:#e7edf7;
+  --muted:#93a7c9;
+  --muted-dark:#5b6d8c;
+  --line:rgba(255,255,255,.12);
+  --line-dark:rgba(8,23,51,.1);
+  --radius:18px;
+  --shadow-lg:0 30px 60px -25px rgba(6,16,35,.55);
+  --sidebar-w:260px;
+  --ff-display:'Sora',sans-serif;
+  --ff-body:'Inter',sans-serif;
+  --ff-mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--ff-body);background:var(--paper);color:var(--navy-950);overflow-x:hidden;-webkit-font-smoothing:antialiased;display:flex;min-height:100vh;}
+a{color:inherit;text-decoration:none;}
+ul{list-style:none;}
+button{font-family:inherit;cursor:pointer;}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar-w);flex-shrink:0;
+  background:var(--navy-950);
+  min-height:100vh;position:fixed;left:0;top:0;bottom:0;
+  display:flex;flex-direction:column;
+  border-right:1px solid var(--line);
+  z-index:100;transition:transform .3s ease;
+}
+.sidebar-brand{
+  padding:24px 22px 20px;
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:12px;
+}
+.brand-logo{
+  width:42px;height:42px;border-radius:50%;background:var(--white);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  border:2px solid rgba(255,255,255,.3);flex-shrink:0;
+}
+.brand-logo svg{width:22px;height:22px;stroke:var(--navy-950);fill:none;stroke-width:1.8;}
+.brand-info b{font-family:var(--ff-display);color:var(--white);font-size:.95rem;display:block;}
+.brand-info span{font-family:var(--ff-mono);font-size:.58rem;letter-spacing:.14em;color:var(--accent-soft);text-transform:uppercase;}
+
+.sidebar-role{
+  padding:16px 22px;
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:12px;
+}
+.role-avatar{
+  width:40px;height:40px;border-radius:50%;
+  background:conic-gradient(from 180deg,var(--accent),var(--navy-700),var(--accent));
+  padding:2.5px;flex-shrink:0;
+}
+.role-avatar .in{
+  width:100%;height:100%;border-radius:50%;background:var(--navy-800);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--ff-display);font-weight:700;color:var(--white);font-size:.9rem;
+}
+.role-info{overflow:hidden;}
+.role-info b{color:var(--white);font-size:.85rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.role-info span{font-family:var(--ff-mono);font-size:.6rem;letter-spacing:.1em;color:var(--accent-soft);text-transform:uppercase;}
+
+.sidebar-nav{flex:1;padding:14px 12px;overflow-y:auto;}
+.nav-section-label{
+  font-family:var(--ff-mono);font-size:.58rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--muted);padding:10px 10px 6px;
+}
+.nav-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 12px;border-radius:10px;
+  color:var(--muted);font-size:.87rem;font-weight:500;
+  transition:all .2s ease;cursor:pointer;position:relative;
+  border:1px solid transparent;
+}
+.nav-item:hover{background:rgba(255,255,255,.06);color:var(--white);border-color:var(--line);}
+.nav-item.active{
+  background:linear-gradient(135deg,rgba(62,139,255,.18),rgba(62,139,255,.06));
+  color:var(--white);border-color:rgba(62,139,255,.3);
+}
+.nav-item.active::before{
+  content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:3px;height:60%;background:var(--accent);border-radius:999px;
+}
+.nav-icon{width:18px;height:18px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.8;}
+.nav-badge{
+  margin-left:auto;font-family:var(--ff-mono);font-size:.6rem;
+  background:var(--accent);color:var(--white);padding:2px 7px;border-radius:999px;
+}
+
+.sidebar-footer{
+  padding:16px 12px;border-top:1px solid var(--line);
+}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+
+/* ── TOP BAR ── */
+.topbar{
+  background:rgba(255,255,255,.9);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line-dark);
+  padding:0 32px;height:64px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:50;
+}
+.topbar-left{display:flex;align-items:center;gap:14px;}
+.page-title{font-family:var(--ff-display);font-size:1.15rem;font-weight:700;color:var(--navy-950);}
+.breadcrumb{font-family:var(--ff-mono);font-size:.68rem;letter-spacing:.08em;color:var(--muted-dark);text-transform:uppercase;}
+.topbar-right{display:flex;align-items:center;gap:14px;}
+.topbar-icon-btn{
+  width:36px;height:36px;border-radius:10px;border:1px solid var(--line-dark);
+  background:transparent;display:flex;align-items:center;justify-content:center;
+  transition:.2s ease;position:relative;
+}
+.topbar-icon-btn:hover{background:var(--navy-950);border-color:var(--navy-950);}
+.topbar-icon-btn:hover svg{stroke:var(--white);}
+.topbar-icon-btn svg{width:18px;height:18px;stroke:var(--navy-800);fill:none;stroke-width:1.8;}
+.notif-dot{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:var(--accent);border:2px solid var(--white);}
+.hamburger-btn{display:none;width:36px;height:36px;border-radius:10px;border:1px solid var(--line-dark);background:transparent;align-items:center;justify-content:center;flex-direction:column;gap:4px;}
+.hamburger-btn span{width:18px;height:2px;background:var(--navy-800);border-radius:2px;display:block;}
+
+/* ── CONTENT ── */
+.content{padding:32px;flex:1;}
+.section-eyebrow{
+  font-family:var(--ff-mono);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--accent);display:flex;align-items:center;gap:10px;margin-bottom:8px;
+}
+.section-eyebrow::before{content:'';width:22px;height:1px;background:var(--accent);}
+.content-title{font-family:var(--ff-display);font-size:1.6rem;font-weight:700;color:var(--navy-950);margin-bottom:4px;}
+.content-sub{color:var(--muted-dark);font-size:.9rem;margin-bottom:32px;}
+
+/* ── STAT CARDS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:32px;}
+.stat-card{
+  background:var(--white);border-radius:16px;padding:22px 24px;
+  border:1px solid var(--line-dark);
+  transition:transform .2s ease,box-shadow .3s ease;
+  position:relative;overflow:hidden;
+}
+.stat-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+.stat-card::after{
+  content:'';position:absolute;right:-30px;top:-30px;
+  width:100px;height:100px;border-radius:50%;
+  background:radial-gradient(circle,var(--accent-glow),transparent 70%);
+  opacity:.4;
+}
+.stat-icon{
+  width:44px;height:44px;border-radius:12px;
+  background:linear-gradient(135deg,var(--navy-950),var(--navy-800));
+  display:flex;align-items:center;justify-content:center;margin-bottom:16px;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+}
+.stat-card:hover .stat-icon{transform:scale(1.12) rotate(-6deg);background:linear-gradient(135deg,var(--accent),#2563eb);}
+.stat-icon svg{width:20px;height:20px;stroke:var(--white);fill:none;stroke-width:1.8;}
+.stat-val{font-family:var(--ff-display);font-size:2rem;font-weight:700;color:var(--navy-950);display:block;}
+.stat-label{font-size:.8rem;color:var(--muted-dark);margin-top:2px;}
+.stat-delta{
+  font-family:var(--ff-mono);font-size:.65rem;letter-spacing:.06em;
+  margin-top:8px;display:inline-flex;align-items:center;gap:4px;
+  padding:3px 8px;border-radius:999px;
+}
+.stat-delta.up{background:rgba(34,197,94,.1);color:#16a34a;}
+.stat-delta.dn{background:rgba(239,68,68,.1);color:#dc2626;}
+
+/* ── GRID LAYOUT ── */
+.dash-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:24px;margin-bottom:24px;}
+.dash-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:24px;}
+
+/* ── CARDS ── */
+.card{
+  background:var(--white);border-radius:var(--radius);
+  border:1px solid var(--line-dark);padding:24px;
+}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.card-title{font-family:var(--ff-display);font-size:1rem;font-weight:700;}
+.card-action{
+  font-family:var(--ff-mono);font-size:.65rem;letter-spacing:.08em;
+  color:var(--accent);text-transform:uppercase;cursor:pointer;
+  padding:5px 10px;border-radius:999px;border:1px solid rgba(62,139,255,.3);
+  transition:.2s ease;
+}
+.card-action:hover{background:var(--accent);color:var(--white);}
+
+/* ── TABLE ── */
+.data-table{width:100%;border-collapse:collapse;}
+.data-table th{
+  font-family:var(--ff-mono);font-size:.6rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted-dark);
+  padding:8px 12px;text-align:left;border-bottom:1px solid var(--line-dark);
+}
+.data-table td{padding:11px 12px;font-size:.85rem;border-bottom:1px solid rgba(8,23,51,.05);}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:hover td{background:var(--paper);}
+.badge{
+  font-family:var(--ff-mono);font-size:.6rem;letter-spacing:.06em;
+  padding:4px 10px;border-radius:999px;text-transform:uppercase;display:inline-block;
+}
+.badge-green{background:rgba(34,197,94,.1);color:#16a34a;border:1px solid rgba(34,197,94,.2);}
+.badge-blue{background:rgba(62,139,255,.1);color:var(--accent);border:1px solid rgba(62,139,255,.2);}
+.badge-orange{background:rgba(249,115,22,.1);color:#ea580c;border:1px solid rgba(249,115,22,.2);}
+.badge-gray{background:var(--paper-dim);color:var(--muted-dark);border:1px solid var(--line-dark);}
+
+/* ── LIST ITEMS ── */
+.list-item{
+  display:flex;align-items:center;gap:14px;
+  padding:12px 0;border-bottom:1px solid rgba(8,23,51,.05);
+}
+.list-item:last-child{border-bottom:none;}
+.list-dot{width:9px;height:9px;border-radius:50%;background:var(--accent);flex-shrink:0;box-shadow:0 0 0 3px rgba(62,139,255,.18);}
+.list-text{flex:1;}
+.list-text b{font-size:.88rem;display:block;margin-bottom:2px;}
+.list-text span{font-size:.76rem;color:var(--muted-dark);font-family:var(--ff-mono);}
+
+/* ── PROGRESS ── */
+.progress-item{margin-bottom:16px;}
+.progress-label{display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:6px;}
+.progress-label span:last-child{font-family:var(--ff-mono);color:var(--accent);}
+.progress-bar{height:6px;background:var(--paper-dim);border-radius:999px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-soft));}
+
+/* ── QUICK ACTIONS ── */
+.quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.quick-btn{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:16px 12px;border-radius:12px;border:1.5px solid var(--line-dark);
+  background:var(--paper);transition:.2s ease;cursor:pointer;text-align:center;
+}
+.quick-btn:hover{border-color:var(--accent);background:var(--white);transform:translateY(-2px);box-shadow:0 8px 20px -10px var(--accent-glow);}
+.quick-btn svg{width:22px;height:22px;stroke:var(--navy-800);fill:none;stroke-width:1.7;}
+.quick-btn:hover svg{stroke:var(--accent);}
+.quick-btn span{font-size:.78rem;font-weight:600;color:var(--navy-900);}
+
+/* ── SIDEBAR OVERLAY ── */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(5,13,26,.5);z-index:99;}
+
+/* ── BTN ── */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;justify-content:center;
+  padding:10px 20px;border-radius:999px;font-weight:600;font-size:.84rem;
+  border:1px solid transparent;transition:all .25s ease;cursor:pointer;
+}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#2563eb);color:var(--white);box-shadow:0 8px 20px -8px var(--accent-glow);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 28px -8px var(--accent-glow);}
+.btn-ghost{background:transparent;border-color:var(--line-dark);color:var(--navy-800);}
+.btn-ghost:hover{background:var(--paper-dim);}
+
+@media(max-width:1100px){.stats-grid{grid-template-columns:repeat(2,1fr);}.dash-grid{grid-template-columns:1fr;}.dash-grid-3{grid-template-columns:1fr 1fr;}}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .sidebar-overlay.open{display:block;}
+  .main{margin-left:0;}
+  .hamburger-btn{display:flex;}
+  .content{padding:20px;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .dash-grid-3{grid-template-columns:1fr;}
+  .quick-grid{grid-template-columns:repeat(4,1fr);}
+}
+@media(max-width:480px){.stats-grid{grid-template-columns:1fr;}.quick-grid{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+
+<!-- ══ SIDEBAR OVERLAY ══ -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">
+      <svg viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-4z"/></svg>
+    </div>
+    <div class="brand-info">
+      <b>AIMSA Portal</b>
+      <span>HOD Access</span>
+    </div>
+  </div>
+
+  <div class="sidebar-role">
+    <div class="role-avatar"><div class="in">HD</div></div>
+    <div class="role-info">
+      <b>Dr. Anjali Sharma</b>
+      <span>Head of Department</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Main</div>
+
+    <a class="nav-item active" href="#" id="navDashboard">
+      <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </a>
+
+    <a class="nav-item" href="#" id="navUserMgmt">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2M10 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+      User Management
+      <span class="nav-badge">12</span>
+    </a>
+
+    <div class="nav-section-label">Management</div>
+
+    <a class="nav-item" href="#" id="navAssociation">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Association Management
+    </a>
+
+    <a class="nav-item" href="#" id="navEvents">
+      <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Event Management
+    </a>
+
+    <a class="nav-item" href="#" id="navCommittee">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+      Committee Management
+    </a>
+
+    <a class="nav-item" href="#" id="navMembership">
+      <svg class="nav-icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+      Membership Management
+    </a>
+
+    <div class="nav-section-label">Analytics</div>
+
+    <a class="nav-item" href="#" id="navReports">
+      <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Reports
+    </a>
+
+    <a class="nav-item" href="#" id="navNotifications">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+      Notifications
+      <span class="nav-badge">4</span>
+    </a>
+
+    <div class="nav-section-label">Account</div>
+
+    <a class="nav-item" href="#" id="navSettings">
+      <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      Settings
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <a class="nav-item" href="aimsa_landing.html" id="navLogout">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      Logout
+    </a>
+  </div>
+</aside>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="hamburger-btn" id="hamburgerBtn">
+        <span></span><span></span><span></span>
+      </button>
+      <div>
+        <div class="page-title">Dashboard</div>
+        <div class="breadcrumb">HOD / Overview</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-icon-btn" title="Search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <button class="topbar-icon-btn" title="Notifications">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <span class="notif-dot"></span>
+      </button>
+      <button class="btn btn-ghost" style="font-size:.78rem;padding:7px 14px;" onclick="window.location='aimsa_landing.html'">← Landing Page</button>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <div class="section-eyebrow">HOD Overview</div>
+    <div class="content-title">Good Morning, Dr. Sharma 👋</div>
+    <div class="content-sub">Here's what's happening in AIMSA today — July 21, 2026</div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2M10 11a4 4 0 100-8 4 4 0 000 8z"/></svg></div>
+        <span class="stat-val">247</span>
+        <div class="stat-label">Total Members</div>
+        <span class="stat-delta up">↑ 12 this month</span>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <span class="stat-val">8</span>
+        <div class="stat-label">Active Events</div>
+        <span class="stat-delta up">↑ 3 upcoming</span>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+        <span class="stat-val">5</span>
+        <div class="stat-label">Committees</div>
+        <span class="stat-delta up">↑ All active</span>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <span class="stat-val">91%</span>
+        <div class="stat-label">Avg. Attendance</div>
+        <span class="stat-delta up">↑ +4% vs last sem</span>
+      </div>
+    </div>
+
+    <!-- MAIN GRID -->
+    <div class="dash-grid">
+      <!-- Recent Activity -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Recent Activity</div>
+          <span class="card-action">View All</span>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr><th>Member</th><th>Action</th><th>Date</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><b>Riya Desai</b></td><td>Event Registration</td><td>Jul 20</td><td><span class="badge badge-green">Approved</span></td></tr>
+            <tr><td><b>Aman Kulkarni</b></td><td>Membership Renewal</td><td>Jul 19</td><td><span class="badge badge-blue">Pending</span></td></tr>
+            <tr><td><b>Priya Joshi</b></td><td>Committee Join</td><td>Jul 18</td><td><span class="badge badge-green">Approved</span></td></tr>
+            <tr><td><b>Dev Patil</b></td><td>Certificate Request</td><td>Jul 17</td><td><span class="badge badge-orange">Review</span></td></tr>
+            <tr><td><b>Sneha Rao</b></td><td>Event Creation</td><td>Jul 16</td><td><span class="badge badge-green">Approved</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Quick Actions + Notifications -->
+      <div style="display:flex;flex-direction:column;gap:24px;">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Quick Actions</div>
+          </div>
+          <div class="quick-grid">
+            <button class="quick-btn">
+              <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8zM19 8v6M22 11h-6"/></svg>
+              <span>Add User</span>
+            </button>
+            <button class="quick-btn">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span>New Event</span>
+            </button>
+            <button class="quick-btn">
+              <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              <span>Reports</span>
+            </button>
+            <button class="quick-btn">
+              <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+              <span>Notify All</span>
+            </button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Recent Notifications</div>
+            <span class="card-action">Mark Read</span>
+          </div>
+          <div class="list-item">
+            <div class="list-dot"></div>
+            <div class="list-text">
+              <b>New membership applications</b>
+              <span>4 pending approval · 2 mins ago</span>
+            </div>
+          </div>
+          <div class="list-item">
+            <div class="list-dot" style="background:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.18);"></div>
+            <div class="list-text">
+              <b>Tech Symposium 2026 approved</b>
+              <span>Event goes live · 1 hour ago</span>
+            </div>
+          </div>
+          <div class="list-item">
+            <div class="list-dot" style="background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18);"></div>
+            <div class="list-text">
+              <b>Monthly report generated</b>
+              <span>June 2026 analytics ready · Yesterday</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM GRID -->
+    <div class="dash-grid-3">
+      <!-- Membership Progress -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Membership Growth</div>
+          <span class="card-action">Full Report</span>
+        </div>
+        <div class="progress-item">
+          <div class="progress-label"><span>AIML Batch 2024</span><span>87%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:87%"></div></div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-label"><span>AIML Batch 2025</span><span>72%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:72%"></div></div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-label"><span>CS Batch 2024</span><span>54%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:54%"></div></div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-label"><span>DS Batch 2025</span><span>61%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:61%"></div></div>
+        </div>
+      </div>
+
+      <!-- Upcoming Events -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Upcoming Events</div>
+          <span class="card-action">All Events</span>
+        </div>
+        <div class="list-item">
+          <div class="list-dot"></div>
+          <div class="list-text">
+            <b>Tech Symposium 2026</b>
+            <span>Jul 28 · Main Auditorium</span>
+          </div>
+        </div>
+        <div class="list-item">
+          <div class="list-dot"></div>
+          <div class="list-text">
+            <b>AI Workshop Series</b>
+            <span>Aug 3 · Lab 402</span>
+          </div>
+        </div>
+        <div class="list-item">
+          <div class="list-dot"></div>
+          <div class="list-text">
+            <b>Hackathon 2026</b>
+            <span>Aug 15 · Online + Campus</span>
+          </div>
+        </div>
+        <div class="list-item">
+          <div class="list-dot"></div>
+          <div class="list-text">
+            <b>Guest Lecture: ML in Healthcare</b>
+            <span>Aug 22 · Seminar Hall</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Committee Status -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Committee Status</div>
+          <span class="card-action">Manage</span>
+        </div>
+        <div class="list-item">
+          <div class="list-text"><b>Technical Committee</b><span>12 members · Active</span></div>
+          <span class="badge badge-green">Active</span>
+        </div>
+        <div class="list-item">
+          <div class="list-text"><b>Cultural Committee</b><span>8 members · Active</span></div>
+          <span class="badge badge-green">Active</span>
+        </div>
+        <div class="list-item">
+          <div class="list-text"><b>Media & PR</b><span>6 members · Active</span></div>
+          <span class="badge badge-blue">Active</span>
+        </div>
+        <div class="list-item">
+          <div class="list-text"><b>Finance Committee</b><span>4 members · Forming</span></div>
+          <span class="badge badge-orange">Forming</span>
+        </div>
+        <div class="list-item">
+          <div class="list-text"><b>Outreach Committee</b><span>5 members · Active</span></div>
+          <span class="badge badge-green">Active</span>
+        </div>
+      </div>
+    </div>
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+// Sidebar toggle
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebarOverlay');
+const hamburger = document.getElementById('hamburgerBtn');
+hamburger.addEventListener('click', ()=>{ sidebar.classList.toggle('open'); overlay.classList.toggle('open'); });
+overlay.addEventListener('click', ()=>{ sidebar.classList.remove('open'); overlay.classList.remove('open'); });
+
+// Nav active state
+document.querySelectorAll('.nav-item').forEach(item=>{
+  item.addEventListener('click', (e)=>{
+    if(item.id === 'navLogout') return;
+    e.preventDefault();
+    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
+
+// Animate stats on load
+document.querySelectorAll('.stat-val').forEach(el=>{
+  const target = parseInt(el.textContent.replace(/\D/g,''));
+  if(isNaN(target)) return;
+  const suffix = el.textContent.replace(/[0-9]/g,'');
+  let current = 0;
+  const step = Math.ceil(target/40);
+  const timer = setInterval(()=>{
+    current = Math.min(current+step, target);
+    el.textContent = current + suffix;
+    if(current >= target) clearInterval(timer);
+  }, 30);
+});
+</script>
+</body>
+</html>
