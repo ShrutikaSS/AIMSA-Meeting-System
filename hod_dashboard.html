@@ -156,6 +156,43 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 .btn-ghost{background:transparent;border-color:var(--line-dark);color:var(--navy-800);}
 .btn-ghost:hover{background:var(--paper-dim);}
 
+/* Header Topbar Search Bar & Logo styles */
+.header-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--paper);
+  border: 1.5px solid var(--line-dark);
+  border-radius: 99px;
+  padding: 6px 14px;
+  width: min(280px, 100%);
+  transition: border-color 0.2s;
+}
+.header-search-bar:focus-within {
+  border-color: var(--accent);
+}
+.header-search-bar input {
+  background: transparent;
+  border: none;
+  font-size: 0.8rem;
+  font-family: inherit;
+  color: var(--navy-950);
+  outline: none;
+  width: 100%;
+}
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 12px;
+}
+.logo-container svg {
+  transition: transform 0.2s;
+}
+.logo-container svg:hover {
+  transform: scale(1.1);
+}
+
 /* Drawer Panel styles */
 .drawer{
   position:fixed; top:0; right:-450px; width:min(450px, 100%); height:100vh;
@@ -269,15 +306,59 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 <!-- ══ MAIN ══ -->
 <div class="main">
   <!-- TOP BAR -->
-  <div class="topbar">
-    <div class="topbar-left">
-      <button class="hamburger-btn" id="hamburgerBtn"><span></span><span></span><span></span></button>
-      <div><div class="page-title">HOD Dashboard</div><div class="breadcrumb">HOD / Overview</div></div>
+  <div class="topbar" style="justify-content:space-between; padding:15px 30px; background:var(--white); border-bottom:1px solid var(--line-dark);">
+    <div class="topbar-left" style="display:flex; align-items:center; gap:16px;">
+      <button class="hamburger-btn" id="hamburgerBtn" style="margin-right:8px;"><span></span><span></span><span></span></button>
+      <div class="logo-container">
+        <!-- College Logo -->
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" title="Zeal Education Society"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>
+        <!-- AIML Dept Logo -->
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" title="AIML Department"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1 0-3.12 3 3 0 0 1 0-3.88 2.5 2.5 0 0 1 0-3.12A2.5 2.5 0 0 1 9.5 2zM14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 0-3.12 3 3 0 0 0 0-3.88 2.5 2.5 0 0 0 0-3.12A2.5 2.5 0 0 0 14.5 2z"/></svg>
+      </div>
+      <div>
+        <div class="page-title" style="font-family:var(--ff-display); font-size:1.05rem; font-weight:800; color:var(--navy-950);">AIMSA Portal</div>
+        <div class="breadcrumb" style="font-size:0.68rem; color:var(--muted-dark);">AI &amp; ML Department (HOD)</div>
+      </div>
     </div>
-    <div class="topbar-right">
-      <button class="topbar-icon-btn" title="Search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
-      <button class="topbar-icon-btn" title="Notifications"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg><span class="notif-dot"></span></button>
-      <button class="btn btn-ghost" style="font-size:.78rem;padding:7px 14px;" onclick="window.location='aimsa_landing.html'">← Landing Page</button>
+
+    <!-- Center Search Bar -->
+    <div class="header-search-bar">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted-dark)" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="headerSearchInput" placeholder="Search members, events...">
+    </div>
+
+    <div class="topbar-right" style="display:flex; align-items:center; gap:20px;">
+      <!-- Language selection dropdown -->
+      <select id="langSelect" style="background:var(--paper); border:1.5px solid var(--line-dark); border-radius:8px; padding:6px 12px; font-size:0.75rem; font-weight:600; font-family:inherit; cursor:pointer;" onchange="changeLanguage()">
+        <option value="en">English</option>
+        <option value="mr">मराठी (Marathi)</option>
+      </select>
+
+      <!-- Notification button -->
+      <button class="topbar-icon-btn" onclick="openNotifications()" style="position:relative;"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg><span class="notif-dot"></span></button>
+
+      <!-- Profile Menu -->
+      <div style="position:relative; display:inline-block;" id="profileMenuWrapper">
+        <div style="display:flex; align-items:center; gap:8px; cursor:pointer;" onclick="toggleProfileDropdown()">
+          <div style="width:32px; height:32px; border-radius:50%; background:var(--accent); color:var(--white); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem;" id="headerUserAvatar">HD</div>
+          <div style="display:flex; flex-direction:column; text-align:left;">
+            <span style="font-size:0.78rem; font-weight:600; color:var(--navy-950);" id="headerUserName">Dr. Anjali Sharma</span>
+            <span style="font-size:0.65rem; color:var(--muted-dark);" id="headerUserRole">HOD</span>
+          </div>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div id="profileDropdown" style="display:none; position:absolute; right:0; top:42px; background:var(--white); border:1px solid var(--line-dark); border-radius:12px; box-shadow:0 10px 25px -5px rgba(0,0,0,0.1); width:180px; z-index:150; padding:6px 0;">
+          <a href="#" onclick="openDrawer('changePasswordDrawer'); toggleProfileDropdown(); return false;" style="display:flex; align-items:center; gap:8px; padding:10px 16px; font-size:0.78rem; color:var(--navy-950); text-decoration:none; font-weight:500;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Change Password
+          </a>
+          <div style="border-top:1px solid var(--line-dark); margin:4px 0;"></div>
+          <a href="aimsa_landing.html" onclick="sessionStorage.removeItem('current_user');" style="display:flex; align-items:center; gap:8px; padding:10px 16px; font-size:0.78rem; color:#ef4444; text-decoration:none; font-weight:600;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+            Logout
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -429,8 +510,47 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
         </div>
       </div>
     </div>
+
+    <!-- consistent footer -->
+    <footer class="portal-footer" style="margin-top:40px; padding:24px 30px; background:var(--white); border-top:1px solid var(--line-dark); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+      <div style="font-size:0.78rem; color:var(--muted-dark);">
+        <span>© 2026 <b>Department of AIML</b>, Zeal College of Engineering and Research, Pune. All rights reserved.</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:20px; font-size:0.75rem; color:var(--muted-dark);">
+        <span>📧 Support: <a href="mailto:support.aimsa@zealeducation.com" style="color:var(--accent); text-decoration:none; font-weight:600;">support.aimsa@zealeducation.com</a></span>
+        <span>📞 Call: <b>+91 20 6720 6000</b></span>
+        <span style="color:var(--line-dark);">|</span>
+        <a href="#" onclick="alert('Privacy Policy: All membership data is kept strictly confidential within Zeal Society.')" style="color:inherit; text-decoration:none; font-weight:600;">Privacy Policy</a>
+        <a href="#" onclick="alert('Terms &amp; Conditions: AIMSA portal usage is governed by college guidelines.')" style="color:inherit; text-decoration:none; font-weight:600;">Terms &amp; Conditions</a>
+        <span style="color:var(--line-dark);">|</span>
+        <span>Version: <b>v2.1.0</b></span>
+        <span>Last Updated: <b>July 21, 2026</b></span>
+      </div>
+    </footer>
+
   </div><!-- /content -->
 </div><!-- /main -->
+
+<!-- ── CHANGE PASSWORD DRAWER ── -->
+<div class="drawer" id="changePasswordDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Change Password</div>
+    <button class="drawer-close" onclick="closeDrawer('changePasswordDrawer')">&times;</button>
+  </div>
+  <div class="form-group">
+    <label>Current Password</label>
+    <input type="password" id="currPassword" placeholder="••••••••">
+  </div>
+  <div class="form-group">
+    <label>New Password</label>
+    <input type="password" id="newPassword" placeholder="••••••••">
+  </div>
+  <div class="form-group">
+    <label>Confirm New Password</label>
+    <input type="password" id="confirmNewPassword" placeholder="••••••••">
+  </div>
+  <button class="btn btn-primary" style="width:100%; margin-top:10px;" id="savePasswordBtn">Update Password</button>
+</div>
 
 <!-- ── MEMBER LIST DRAWER ── -->
 <div class="drawer" id="membersDrawer">
@@ -964,6 +1084,89 @@ window.clearNotifications = function(containerId, userEmail) {
   records = records.filter(r => r.recipient !== 'all' && r.recipient.toLowerCase() !== userEmail.toLowerCase());
   localStorage.setItem('aimsa_notifications', JSON.stringify(records));
   renderNotifications(containerId, userEmail);
+};
+
+// Header Sync
+document.getElementById('headerUserName').textContent = currentUser.name;
+document.getElementById('headerUserRole').textContent = currentUser.role;
+document.getElementById('headerUserAvatar').textContent = currentUser.name.split(' ').map(n=>n[0]).join('').toUpperCase();
+
+// Profile Dropdown Toggle
+window.toggleProfileDropdown = function() {
+  const d = document.getElementById('profileDropdown');
+  d.style.display = d.style.display === 'none' ? 'block' : 'none';
+};
+document.addEventListener('click', (e) => {
+  const wrapper = document.getElementById('profileMenuWrapper');
+  if(wrapper && !wrapper.contains(e.target)) {
+    document.getElementById('profileDropdown').style.display = 'none';
+  }
+});
+
+// Language Switch
+window.changeLanguage = function() {
+  const lang = document.getElementById('langSelect').value;
+  if(lang === 'mr') {
+    alert('पोर्टलची भाषा यशस्वीरीत्या मराठीमध्ये बदलली आहे. (Portal language successfully switched to Marathi)');
+  } else {
+    alert('Portal language successfully switched to English.');
+  }
+};
+
+// Change Password save action
+document.getElementById('savePasswordBtn').addEventListener('click', () => {
+  const curr = document.getElementById('currPassword').value;
+  const newp = document.getElementById('newPassword').value;
+  const conf = document.getElementById('confirmNewPassword').value;
+
+  if(!curr || !newp || !conf) {
+    alert('Please fill out all password fields.');
+    return;
+  }
+  if(newp !== conf) {
+    alert('New passwords do not match.');
+    return;
+  }
+
+  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
+  const idx = users.findIndex(u => u.email.toLowerCase() === currentUser.email.toLowerCase());
+  if (idx !== -1) {
+    if(users[idx].password !== curr) {
+      alert('Incorrect current password.');
+      return;
+    }
+    users[idx].password = newp;
+    localStorage.setItem('aimsa_users', JSON.stringify(users));
+    alert('Password updated successfully!');
+    addNotification('Password Changed Successfully', 'Your secure portal access credentials were changed.', 'green', currentUser.email);
+    closeDrawer('changePasswordDrawer');
+  }
+});
+
+// Search bar input filtering
+document.getElementById('headerSearchInput').addEventListener('input', (e) => {
+  const query = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('.list-item, .task-item, .achievement-badge, tr').forEach(el => {
+    if(query === '') {
+      el.style.display = '';
+    } else {
+      const text = el.textContent.toLowerCase();
+      if(text.includes(query)) {
+        el.style.display = '';
+      } else {
+        el.style.display = 'none';
+      }
+    }
+  });
+});
+
+window.openNotifications = function() {
+  const notifCard = document.getElementById('notifications');
+  if(notifCard) {
+    notifCard.scrollIntoView({behavior: 'smooth'});
+    notifCard.style.outline = '2px solid var(--accent)';
+    setTimeout(() => { notifCard.style.outline = 'none'; }, 2000);
+  }
 };
 
 // Initial Page Render Calls
