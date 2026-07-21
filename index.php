@@ -121,12 +121,6 @@ include_once __DIR__ . '/navbar.php';
         <h4>Treasurer</h4>
         <p>Manages the association's budget, sponsorships and event funding.</p>
       </div>
-      <div class="pop-card">
-        <div class="avatar-ring"><div class="in">TR</div></div>
-        <span class="role">Treasurer</span>
-        <h4>Treasurer</h4>
-        <p>Manages the association's budget, sponsorships and event funding.</p>
-      </div>
     </div>
   </div>
 </section>
