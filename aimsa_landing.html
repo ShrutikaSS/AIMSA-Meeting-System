@@ -994,6 +994,22 @@ if(!localStorage.getItem('aimsa_users')) {
   ]));
 }
 
+// Initial simulated notifications database
+if(!localStorage.getItem('aimsa_notifications')) {
+  localStorage.setItem('aimsa_notifications', JSON.stringify([
+    {title: 'Membership Approved', text: 'Dr. Anjali Sharma verified your credentials.', indicator: 'green', recipient: 'student@zealeducation.com', time: '1 hr ago', email: true},
+    {title: 'New Event Published', text: 'Prof. Meera Nair proposed: Tech Symposium 2026.', indicator: 'green', recipient: 'all', time: '2 hrs ago', email: true},
+    {title: 'Registration Successful', text: 'Successfully registered for Hackathon 2026.', indicator: 'green', recipient: 'student@zealeducation.com', time: '4 hrs ago', email: true},
+    {title: 'Event Reminder', text: 'Reminder: AI Workshop Series starts on Aug 3.', indicator: 'yellow', recipient: 'all', time: 'Yesterday', email: true},
+    {title: 'Attendance Confirmation', text: 'Marked Present for Tech Symposium 2025.', indicator: 'green', recipient: 'student@zealeducation.com', time: '2 days ago', email: true},
+    {title: 'Certificate Available', text: 'Volunteer Certificate for Hackathon 2025 generated.', indicator: 'green', recipient: 'student@zealeducation.com', time: '3 days ago', email: true},
+    {title: 'Achievement Approved', text: 'Research Paper submission approved by Faculty.', indicator: 'green', recipient: 'student@zealeducation.com', time: '1 week ago', email: true},
+    {title: 'New Announcement', text: 'Executive Committee applications are now open.', indicator: 'green', recipient: 'all', time: '1 week ago', email: true},
+    {title: 'Profile Updated', text: 'Successfully updated profile photograph & branch.', indicator: 'green', recipient: 'student@zealeducation.com', time: '2 weeks ago', email: true},
+    {title: 'Password Changed Successfully', text: 'Portal login password updated.', indicator: 'green', recipient: 'student@zealeducation.com', time: '2 weeks ago', email: true}
+  ]));
+}
+
 // Login verification with session storage
 document.getElementById('loginSubmitBtn').addEventListener('click', ()=>{
   const selectedRole = roleChip.textContent.trim();
@@ -1074,6 +1090,19 @@ document.getElementById('forgotSubmitBtn').addEventListener('click', () => {
     alert('Please enter your college email ID.');
     return;
   }
+  
+  // Push a password changed successfully notification
+  const records = JSON.parse(localStorage.getItem('aimsa_notifications')) || [];
+  records.push({
+    title: 'Password Changed Successfully',
+    text: 'Your secure portal access credentials were changed.',
+    indicator: 'green',
+    recipient: emailVal,
+    time: 'Just now',
+    email: true
+  });
+  localStorage.setItem('aimsa_notifications', JSON.stringify(records));
+
   alert(`A secure password reset link has been successfully generated and sent to: ${emailVal}`);
   forgotStep.style.display = 'none';
   formStep.classList.add('show');

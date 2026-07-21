@@ -456,6 +456,8 @@ document.getElementById('saveEventBtn').addEventListener('click', () => {
   events.push({name, cat, date, time, venue, desc, max, dl, coordinator});
   localStorage.setItem('aimsa_published_events', JSON.stringify(events));
 
+  addNotification('New Event Published', `${currentUser.name} proposed: ${name}.`, 'green', 'all');
+
   // Update stats counters
   const approvedStat = document.querySelector('#upcomingEvents .stat-val');
   if (approvedStat) {
@@ -518,7 +520,78 @@ document.getElementById('saveResponsibilityBtn').addEventListener('click', () =>
 document.querySelectorAll('.approve-btn').forEach(btn=>btn.addEventListener('click',()=>alert('Event request approved! Notification sent.')));
 document.querySelectorAll('.reject-btn').forEach(btn=>btn.addEventListener('click',()=>alert('Event request rejected. Notification sent.')));
 
-// Animation stats counter
+// Notification Helpers
+function addNotification(title, text, indicator, recipient, email = true) {
+  const records = JSON.parse(localStorage.getItem('aimsa_notifications')) || [];
+  records.push({
+    title,
+    text,
+    indicator, // 'green', 'yellow', 'red'
+    recipient, // email or 'all'
+    time: 'Just now',
+    email
+  });
+  localStorage.setItem('aimsa_notifications', JSON.stringify(records));
+  renderNotifications('notifications', currentUser.email);
+}
+
+function renderNotifications(containerId, userEmail) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const records = JSON.parse(localStorage.getItem('aimsa_notifications')) || [];
+  const filtered = records.filter(r => r.recipient === 'all' || r.recipient.toLowerCase() === userEmail.toLowerCase());
+
+  // Clear container but keep head
+  container.innerHTML = `
+    <div class="card-head">
+      <div class="card-title">Notifications</div>
+      <span class="card-action" style="cursor:pointer;" onclick="clearNotifications('${containerId}', '${userEmail}')">Mark Read</span>
+    </div>`;
+
+  if (filtered.length === 0) {
+    container.innerHTML += `<p style="font-size:0.8rem; color:var(--muted-dark); padding:20px 10px;">No new alerts.</p>`;
+    return;
+  }
+
+  filtered.slice(-5).reverse().forEach(n => {
+    let dotColor = '#22c55e';
+    let dotShadow = 'rgba(34,197,94,.18)';
+    let indicatorEmoji = '🟢';
+    if (n.indicator === 'yellow') {
+      dotColor = '#fbbf24';
+      dotShadow = 'rgba(251,191,36,.18)';
+      indicatorEmoji = '🟡';
+    } else if (n.indicator === 'red') {
+      dotColor = '#ef4444';
+      dotShadow = 'rgba(239,68,68,.18)';
+      indicatorEmoji = '🔴';
+    }
+
+    const emailTag = n.email ? `<span style="display:inline-flex; align-items:center; gap:2px; background:rgba(62,139,255,0.1); color:var(--accent); font-size:0.62rem; padding:1px 6px; border-radius:4px; font-weight:600; margin-left:8px;">✉️ Email Sent</span>` : '';
+    const smsTag = `<span style="display:inline-flex; align-items:center; gap:2px; background:rgba(8,23,51,0.05); color:var(--muted-dark); font-size:0.62rem; padding:1px 6px; border-radius:4px; font-weight:500; margin-left:8px;">📱 SMS (Enhancement)</span>`;
+
+    container.innerHTML += `
+      <div class="list-item">
+        <div class="list-dot" style="background:${dotColor}; box-shadow:0 0 0 3px ${dotShadow};"></div>
+        <div class="list-text">
+          <b>${n.title} ${emailTag}${smsTag}</b>
+          <span>${n.text} · ${n.time}</span>
+        </div>
+      </div>`;
+  });
+}
+
+window.clearNotifications = function(containerId, userEmail) {
+  let records = JSON.parse(localStorage.getItem('aimsa_notifications')) || [];
+  records = records.filter(r => r.recipient !== 'all' && r.recipient.toLowerCase() !== userEmail.toLowerCase());
+  localStorage.setItem('aimsa_notifications', JSON.stringify(records));
+  renderNotifications(containerId, userEmail);
+};
+
+// Animation stats counter and initial notifications render
+renderNotifications('notifications', currentUser.email);
+
 document.querySelectorAll('.stat-val').forEach(el=>{
   const raw=el.textContent.replace(/,/g,'');
   const target=parseInt(raw.replace(/\D/g,''));

@@ -645,6 +645,7 @@ window.approveMember = function(email) {
   if (idx !== -1) {
     users[idx].membershipStatus = 'Active';
     localStorage.setItem('aimsa_users', JSON.stringify(users));
+    addNotification('Membership Approved', `Your student membership application has been approved.`, 'green', email);
     alert('Membership request approved!');
     renderMembershipRequests();
     renderAllMembers();
@@ -659,6 +660,7 @@ window.rejectMember = function(email) {
     if (idx !== -1) {
       users[idx].membershipStatus = 'Rejected';
       localStorage.setItem('aimsa_users', JSON.stringify(users));
+      addNotification('Membership Rejected', `Your student membership application was rejected.`, 'red', email);
       renderMembershipRequests();
       renderAllMembers();
     }
@@ -811,6 +813,13 @@ document.getElementById('generateCertBtn').addEventListener('click', () => {
   certsList.push({type, event, studentName, date: new Date().toLocaleDateString()});
   localStorage.setItem('aimsa_issued_certs', JSON.stringify(certsList));
 
+  // Find target email from aimsa_users
+  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
+  const targetUser = users.find(u => u.name === studentName) || {email: 'student@zealeducation.com'};
+
+  // Generate Notification
+  addNotification('Certificate Available', `Your ${type} certificate for ${event} is ready.`, 'green', targetUser.email);
+
   // Update HOD certificates card counters
   const counterVal = document.querySelector('.cert-counter-val');
   counterVal.textContent = parseInt(counterVal.textContent) + 1;
@@ -888,10 +897,80 @@ window.deleteGalleryItem = function(idx) {
   }
 };
 
+// Notification Helpers
+function addNotification(title, text, indicator, recipient, email = true) {
+  const records = JSON.parse(localStorage.getItem('aimsa_notifications')) || [];
+  records.push({
+    title,
+    text,
+    indicator, // 'green', 'yellow', 'red'
+    recipient, // email or 'all'
+    time: 'Just now',
+    email
+  });
+  localStorage.setItem('aimsa_notifications', JSON.stringify(records));
+  renderNotifications('notifications', currentUser.email);
+}
+
+function renderNotifications(containerId, userEmail) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const records = JSON.parse(localStorage.getItem('aimsa_notifications')) || [];
+  const filtered = records.filter(r => r.recipient === 'all' || r.recipient.toLowerCase() === userEmail.toLowerCase());
+
+  // Clear container but keep head
+  container.innerHTML = `
+    <div class="card-head">
+      <div class="card-title">Notifications</div>
+      <span class="card-action" style="cursor:pointer;" onclick="clearNotifications('${containerId}', '${userEmail}')">Mark Read</span>
+    </div>`;
+
+  if (filtered.length === 0) {
+    container.innerHTML += `<p style="font-size:0.8rem; color:var(--muted-dark); padding:20px 10px;">No new alerts.</p>`;
+    return;
+  }
+
+  filtered.slice(-5).reverse().forEach(n => {
+    let dotColor = '#22c55e';
+    let dotShadow = 'rgba(34,197,94,.18)';
+    let indicatorEmoji = '🟢';
+    if (n.indicator === 'yellow') {
+      dotColor = '#fbbf24';
+      dotShadow = 'rgba(251,191,36,.18)';
+      indicatorEmoji = '🟡';
+    } else if (n.indicator === 'red') {
+      dotColor = '#ef4444';
+      dotShadow = 'rgba(239,68,68,.18)';
+      indicatorEmoji = '🔴';
+    }
+
+    const emailTag = n.email ? `<span style="display:inline-flex; align-items:center; gap:2px; background:rgba(62,139,255,0.1); color:var(--accent); font-size:0.62rem; padding:1px 6px; border-radius:4px; font-weight:600; margin-left:8px;">✉️ Email Sent</span>` : '';
+    const smsTag = `<span style="display:inline-flex; align-items:center; gap:2px; background:rgba(8,23,51,0.05); color:var(--muted-dark); font-size:0.62rem; padding:1px 6px; border-radius:4px; font-weight:500; margin-left:8px;">📱 SMS (Enhancement)</span>`;
+
+    container.innerHTML += `
+      <div class="list-item">
+        <div class="list-dot" style="background:${dotColor}; box-shadow:0 0 0 3px ${dotShadow};"></div>
+        <div class="list-text">
+          <b>${n.title} ${emailTag}${smsTag}</b>
+          <span>${n.text} · ${n.time}</span>
+        </div>
+      </div>`;
+  });
+}
+
+window.clearNotifications = function(containerId, userEmail) {
+  let records = JSON.parse(localStorage.getItem('aimsa_notifications')) || [];
+  records = records.filter(r => r.recipient !== 'all' && r.recipient.toLowerCase() !== userEmail.toLowerCase());
+  localStorage.setItem('aimsa_notifications', JSON.stringify(records));
+  renderNotifications(containerId, userEmail);
+};
+
 // Initial Page Render Calls
 renderMembershipRequests();
 renderCommittee();
 renderAllMembers();
+renderNotifications('notifications', currentUser.email);
 
 // default event links in navigation settings
 document.querySelectorAll('.nav-item').forEach(item=>{
