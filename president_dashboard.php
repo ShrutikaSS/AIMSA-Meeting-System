@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Committee Member Dashboard — AIMSA Portal</title>
-<meta name="description" content="Committee Member portal dashboard for AIMSA — AI & ML Student Association.">
+<title>Association President Dashboard — AIMSA Portal</title>
+<meta name="description" content="Association President portal dashboard for AIMSA — AI & ML Student Association.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
@@ -29,7 +29,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 .sidebar-role{padding:16px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;}
 .role-avatar{width:40px;height:40px;border-radius:50%;background:conic-gradient(from 180deg,var(--accent),var(--navy-700),var(--accent));padding:2.5px;flex-shrink:0;}
 .role-avatar .in{width:100%;height:100%;border-radius:50%;background:var(--navy-800);display:flex;align-items:center;justify-content:center;font-family:var(--ff-display);font-weight:700;color:var(--white);font-size:.9rem;}
-.role-info b{color:var(--white);font-size:.85rem;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.role-info b{color:var(--white);font-size:.85rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .role-info span{font-family:var(--ff-mono);font-size:.6rem;letter-spacing:.1em;color:var(--accent-soft);text-transform:uppercase;}
 .sidebar-nav{flex:1;padding:14px 12px;overflow-y:auto;}
 .nav-section-label{font-family:var(--ff-mono);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding:10px 10px 6px;}
@@ -86,38 +86,39 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 .badge-green{background:rgba(34,197,94,.1);color:#16a34a;border:1px solid rgba(34,197,94,.2);}
 .badge-blue{background:rgba(62,139,255,.1);color:var(--accent);border:1px solid rgba(62,139,255,.2);}
 .badge-orange{background:rgba(249,115,22,.1);color:#ea580c;border:1px solid rgba(249,115,22,.2);}
-.badge-gray{background:var(--paper-dim);color:var(--muted-dark);border:1px solid var(--line-dark);}
 .list-item{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(8,23,51,.05);}
 .list-item:last-child{border-bottom:none;}
 .list-dot{width:9px;height:9px;border-radius:50%;background:var(--accent);flex-shrink:0;box-shadow:0 0 0 3px rgba(62,139,255,.18);}
 .list-text{flex:1;}
 .list-text b{font-size:.88rem;display:block;margin-bottom:2px;}
 .list-text span{font-size:.76rem;color:var(--muted-dark);font-family:var(--ff-mono);}
-/* Attendance grid */
-.attend-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:12px;}
-.attend-day{height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--ff-mono);font-size:.62rem;font-weight:600;}
-.attend-present{background:rgba(62,139,255,.15);color:var(--accent);border:1px solid rgba(62,139,255,.25);}
-.attend-absent{background:rgba(239,68,68,.08);color:#dc2626;border:1px solid rgba(239,68,68,.15);}
-.attend-upcoming{background:var(--paper-dim);color:var(--muted-dark);border:1px solid var(--line-dark);}
-/* Certificate cards */
-.cert-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
-.cert-card{background:linear-gradient(135deg,var(--navy-950),var(--navy-800));border-radius:14px;padding:20px;color:var(--white);border:1px solid var(--line);position:relative;overflow:hidden;transition:transform .2s ease,box-shadow .3s ease;}
-.cert-card:hover{transform:translateY(-4px);box-shadow:0 20px 40px -14px var(--accent-glow);}
-.cert-card::after{content:'';position:absolute;right:-40px;top:-40px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,var(--accent-glow),transparent 70%);}
-.cert-card .cert-icon{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;margin-bottom:14px;position:relative;z-index:1;}
-.cert-card .cert-icon svg{width:20px;height:20px;stroke:var(--accent-soft);fill:none;stroke-width:1.8;}
-.cert-card h4{font-size:.9rem;margin-bottom:4px;font-family:var(--ff-display);position:relative;z-index:1;}
-.cert-card span{font-family:var(--ff-mono);font-size:.65rem;color:var(--muted);position:relative;z-index:1;}
-.cert-download{margin-top:14px;font-family:var(--ff-mono);font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-soft);cursor:pointer;display:inline-flex;align-items:center;gap:6px;position:relative;z-index:1;}
-.cert-download:hover{color:var(--white);}
-/* Task item */
-.task-item{display:flex;align-items:flex-start;gap:12px;padding:12px;border-radius:10px;border:1px solid var(--line-dark);background:var(--paper);transition:.2s ease;margin-bottom:8px;}
-.task-item:hover{border-color:var(--accent);background:var(--white);}
-.task-check{width:18px;height:18px;border-radius:4px;border:2px solid var(--line-dark);flex-shrink:0;margin-top:2px;cursor:pointer;transition:.2s;}
-.task-check.done{background:var(--accent);border-color:var(--accent);display:flex;align-items:center;justify-content:center;}
-.task-check.done::after{content:'✓';color:var(--white);font-size:.65rem;font-weight:700;}
-.task-info b{font-size:.85rem;display:block;margin-bottom:2px;}
-.task-info span{font-size:.73rem;color:var(--muted-dark);font-family:var(--ff-mono);}
+/* Announcement card */
+.ann-card{padding:16px;border-radius:12px;border:1px solid var(--line-dark);background:var(--paper);margin-bottom:10px;transition:.2s ease;position:relative;overflow:hidden;}
+.ann-card:hover{border-color:var(--accent);background:var(--white);transform:translateX(4px);}
+.ann-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);border-radius:999px;}
+.ann-card.urgent::before{background:#f97316;}
+.ann-card.important::before{background:#22c55e;}
+.ann-title{font-size:.88rem;font-weight:600;margin-bottom:4px;}
+.ann-meta{font-family:var(--ff-mono);font-size:.68rem;color:var(--muted-dark);}
+/* Approval item */
+.approval-item{display:flex;align-items:center;gap:14px;padding:14px;border-radius:12px;border:1px solid var(--line-dark);background:var(--paper);transition:.2s ease;margin-bottom:10px;}
+.approval-item:hover{border-color:var(--accent);background:var(--white);}
+.approval-info{flex:1;}
+.approval-info b{font-size:.88rem;display:block;margin-bottom:2px;}
+.approval-info span{font-size:.75rem;color:var(--muted-dark);font-family:var(--ff-mono);}
+.approval-actions{display:flex;gap:8px;}
+.approve-btn{background:rgba(34,197,94,.1);color:#16a34a;border:1px solid rgba(34,197,94,.2);border-radius:6px;padding:5px 12px;font-size:.72rem;cursor:pointer;font-family:inherit;transition:.2s;}
+.approve-btn:hover{background:#16a34a;color:var(--white);}
+.reject-btn{background:rgba(239,68,68,.08);color:#dc2626;border:1px solid rgba(239,68,68,.15);border-radius:6px;padding:5px 12px;font-size:.72rem;cursor:pointer;font-family:inherit;transition:.2s;}
+.reject-btn:hover{background:#dc2626;color:var(--white);}
+/* Member card */
+.member-card{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;border:1px solid var(--line-dark);background:var(--paper);transition:.2s;margin-bottom:8px;}
+.member-card:hover{border-color:var(--accent);background:var(--white);}
+.member-avatar{width:36px;height:36px;border-radius:50%;background:conic-gradient(from 180deg,var(--accent),var(--navy-700),var(--accent));padding:2px;flex-shrink:0;}
+.member-avatar .in{width:100%;height:100%;border-radius:50%;background:var(--navy-800);display:flex;align-items:center;justify-content:center;font-family:var(--ff-display);font-weight:700;color:var(--white);font-size:.72rem;}
+.member-info{flex:1;}
+.member-info b{font-size:.85rem;display:block;}
+.member-info span{font-size:.72rem;color:var(--muted-dark);font-family:var(--ff-mono);}
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(5,13,26,.5);z-index:99;}
 .btn{display:inline-flex;align-items:center;gap:8px;justify-content:center;padding:10px 20px;border-radius:999px;font-weight:600;font-size:.84rem;border:1px solid transparent;transition:all .25s ease;cursor:pointer;}
 .btn-primary{background:linear-gradient(135deg,var(--accent),#2563eb);color:var(--white);box-shadow:0 8px 20px -8px var(--accent-glow);}
@@ -184,7 +185,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 }
 
 @media(max-width:1100px){.stats-grid{grid-template-columns:repeat(2,1fr);}.dash-grid{grid-template-columns:1fr;}.dash-grid-3{grid-template-columns:1fr 1fr;}}
-@media(max-width:768px){.sidebar{transform:translateX(-100%);}.sidebar.open{transform:translateX(0);}.sidebar-overlay.open{display:block;}.main{margin-left:0;}.hamburger-btn{display:flex;}.content{padding:20px;}.stats-grid{grid-template-columns:1fr 1fr;}.dash-grid-3{grid-template-columns:1fr;}.cert-grid{grid-template-columns:1fr;}}
+@media(max-width:768px){.sidebar{transform:translateX(-100%);}.sidebar.open{transform:translateX(0);}.sidebar-overlay.open{display:block;}.main{margin-left:0;}.hamburger-btn{display:flex;}.content{padding:20px;}.stats-grid{grid-template-columns:1fr 1fr;}.dash-grid-3{grid-template-columns:1fr;}}
 @media(max-width:480px){.stats-grid{grid-template-columns:1fr;}}
 </style>
 </head>
@@ -194,39 +195,46 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-brand">
     <div class="brand-logo" style="width:42px; height:42px; border-radius:50%; background:var(--white); display:flex; align-items:center; justify-content:center; overflow:hidden; border:2px solid rgba(255,255,255,.3); flex-shrink:0;">
-      <img src="./aimsa_logo.jpg" alt="AIMSA Logo" style="width:100%; height:100%; object-fit:cover;">
+      <img src="images/aimsa_logo.jpg" alt="AIMSA Logo" style="width:100%; height:100%; object-fit:cover;">
     </div>
-    <div class="brand-info"><b>AIMSA Portal</b><span>Committee Access</span></div>
+    <div class="brand-info"><b>AIMSA Portal</b><span>President Access</span></div>
   </div>
   <div class="sidebar-role">
-    <div class="role-avatar"><div class="in">CM</div></div>
-    <div class="role-info"><b>Riya Desai</b><span>Committee Member</span></div>
+    <div class="role-avatar"><div class="in">AP</div></div>
+    <div class="role-info"><b>Karan Mehta</b><span>Association President</span></div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-section-label">Main</div>
-    <a class="nav-item active" href="committee_dashboard.html">
+    <a class="nav-item active" href="president_dashboard.html">
       <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard
     </a>
-    <div class="nav-section-label">Events</div>
-    <a class="nav-item" href="#assigned">
-      <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Assigned Events
+    <div class="nav-section-label">Management</div>
+    <a class="nav-item" href="#committee">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Committee Members
     </a>
-    <a class="nav-item" href="#attendance">
-      <svg class="nav-icon" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Attendance Records
+    <a class="nav-item" href="#registrations">
+      <svg class="nav-icon" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Event Registrations
     </a>
-    <a class="nav-item" href="#reports">
-      <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Event Reports
+    <a class="nav-item" href="#approvals">
+      <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Pending Approvals
+      <span class="nav-badge">5</span>
+    </a>
+    <a class="nav-item" href="#upcoming">
+      <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Upcoming Events
     </a>
     <div class="nav-section-label">Communication</div>
+    <a class="nav-item" href="#announcements">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M22 4s-3.5 3-10 3S2 4 2 4v6c0 5.52 4.48 10 10 10s10-4.48 10-10V4z"/></svg>Announcements
+    </a>
     <a class="nav-item" href="#notifications">
       <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>Notifications
-      <span class="nav-badge">2</span>
+      <span class="nav-badge">6</span>
     </a>
     <div class="nav-section-label">Account</div>
     <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/></svg>Profile</a>
   </nav>
   <div class="sidebar-footer">
-    <a class="nav-item" href="aimsa_landing.html"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>Logout</a>
+    <a class="nav-item" href="index.php"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>Logout</a>
   </div>
 </aside>
 
@@ -236,20 +244,20 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
       <button class="hamburger-btn" id="hamburgerBtn" style="margin-right:8px;"><span></span><span></span><span></span></button>
       <div class="logo-container" style="display:flex; align-items:center; gap:8px;">
         <!-- College Logo -->
-        <img src="./college_logo.png" alt="Zeal Logo" style="height:32px; width:32px; border-radius:50%; object-fit:cover;" title="Zeal Education Society">
+        <img src="images/icons/college_logo.png" alt="Zeal Logo" style="height:32px; width:32px; border-radius:50%; object-fit:cover;" title="Zeal Education Society">
         <!-- AIML Dept Logo -->
-        <img src="./aimsa_logo.jpg" alt="AIMSA Logo" style="height:32px; width:auto; border-radius:50%; object-fit:contain;" title="AIMSA Association">
+        <img src="images/aimsa_logo.jpg" alt="AIMSA Logo" style="height:32px; width:auto; border-radius:50%; object-fit:contain;" title="AIMSA Association">
       </div>
       <div>
         <div class="page-title" style="font-family:var(--ff-display); font-size:1.05rem; font-weight:800; color:var(--navy-950);">AIMSA Portal</div>
-        <div class="breadcrumb" style="font-size:0.68rem; color:var(--muted-dark);">AI &amp; ML Department (Committee)</div>
+        <div class="breadcrumb" style="font-size:0.68rem; color:var(--muted-dark);">AI &amp; ML Department (President)</div>
       </div>
     </div>
 
     <!-- Center Search Bar -->
     <div class="header-search-bar">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted-dark)" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="headerSearchInput" placeholder="Search events, attendance...">
+      <input type="text" id="headerSearchInput" placeholder="Search committee, announcements...">
     </div>
 
     <div class="topbar-right" style="display:flex; align-items:center; gap:20px;">
@@ -265,10 +273,10 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
       <!-- Profile Menu -->
       <div style="position:relative; display:inline-block;" id="profileMenuWrapper">
         <div style="display:flex; align-items:center; gap:8px; cursor:pointer;" onclick="toggleProfileDropdown()">
-          <div style="width:32px; height:32px; border-radius:50%; background:var(--accent); color:var(--white); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem;" id="headerUserAvatar">RD</div>
+          <div style="width:32px; height:32px; border-radius:50%; background:var(--accent); color:var(--white); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem;" id="headerUserAvatar">AP</div>
           <div style="display:flex; flex-direction:column; text-align:left;">
-            <span style="font-size:0.78rem; font-weight:600; color:var(--navy-950);" id="headerUserName">Riya Desai</span>
-            <span style="font-size:0.65rem; color:var(--muted-dark);" id="headerUserRole">Committee Member</span>
+            <span style="font-size:0.78rem; font-weight:600; color:var(--navy-950);" id="headerUserName">Karan Mehta</span>
+            <span style="font-size:0.65rem; color:var(--muted-dark);" id="headerUserRole">Association President</span>
           </div>
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
@@ -278,7 +286,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
             Change Password
           </a>
           <div style="border-top:1px solid var(--line-dark); margin:4px 0;"></div>
-          <a href="aimsa_landing.html" onclick="sessionStorage.removeItem('current_user');" style="display:flex; align-items:center; gap:8px; padding:10px 16px; font-size:0.78rem; color:#ef4444; text-decoration:none; font-weight:600;">
+          <a href="index.php" onclick="sessionStorage.removeItem('current_user');" style="display:flex; align-items:center; gap:8px; padding:10px 16px; font-size:0.78rem; color:#ef4444; text-decoration:none; font-weight:600;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
             Logout
           </a>
@@ -288,67 +296,62 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   </div>
 
   <div class="content">
-    <div class="section-eyebrow">Committee Member</div>
-    <div class="content-title">Hello, Riya! 👋</div>
-    <div class="content-sub">Technical Committee · Your activity overview — July 21, 2026</div>
+    <div class="section-eyebrow">Association President</div>
+    <div class="content-title">Hey, Karan! ⭐</div>
+    <div class="content-sub">AIMSA leadership dashboard — July 21, 2026</div>
 
-    <!-- STATS — Assigned Events, Attendance Records, Event Reports, Notifications -->
+    <!-- STATS -->
     <div class="stats-grid">
-      <div class="stat-card" id="assigned">
+      <div class="stat-card" id="committee">
+        <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+        <span class="stat-val">35</span>
+        <div class="stat-label">Committee Members</div>
+        <span class="stat-delta up">↑ 5 committees active</span>
+      </div>
+      <div class="stat-card" id="registrations">
+        <div class="stat-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+        <span class="stat-val">1,284</span>
+        <div class="stat-label">Event Registrations</div>
+        <span class="stat-delta up">↑ 146 this week</span>
+      </div>
+      <div class="stat-card" id="approvals">
+        <div class="stat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <span class="stat-val">5</span>
+        <div class="stat-label">Pending Approvals</div>
+        <span class="stat-delta dn">↓ Action required</span>
+      </div>
+      <div class="stat-card" id="upcoming">
         <div class="stat-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
         <span class="stat-val">4</span>
-        <div class="stat-label">Assigned Events</div>
-        <span class="stat-delta up">↑ 1 this month</span>
-      </div>
-      <div class="stat-card" id="attendance">
-        <div class="stat-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
-        <span class="stat-val">92%</span>
-        <div class="stat-label">Attendance Rate</div>
-        <span class="stat-delta up">↑ Excellent</span>
-      </div>
-      <div class="stat-card" id="reports">
-        <div class="stat-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
-        <span class="stat-val">3</span>
-        <div class="stat-label">Event Reports Filed</div>
-        <span class="stat-delta up">↑ 1 pending</span>
-      </div>
-      <div class="stat-card" id="notifications">
-        <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg></div>
-        <span class="stat-val">2</span>
-        <div class="stat-label">Unread Notifications</div>
-        <span class="stat-delta dn">↓ Action needed</span>
+        <div class="stat-label">Upcoming Events</div>
+        <span class="stat-delta up">↑ Next: Jul 28</span>
       </div>
     </div>
 
     <!-- MAIN GRID -->
     <div class="dash-grid">
-      <!-- Assigned Events Table -->
+      <!-- Pending Approvals -->
       <div class="card">
-        <div class="card-head"><div class="card-title">Assigned Events</div><span class="card-action">View All</span></div>
-        <table class="data-table">
-          <thead><tr><th>Event</th><th>Date</th><th>Role</th><th>Tasks</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td><b>Tech Symposium 2026</b></td><td>Jul 28</td><td>Organiser</td><td>Setup, Registration</td><td><span class="badge badge-green">Confirmed</span></td></tr>
-            <tr><td><b>AI Workshop Series</b></td><td>Aug 3</td><td>Volunteer</td><td>Venue arrangement</td><td><span class="badge badge-green">Confirmed</span></td></tr>
-            <tr><td><b>Hackathon 2026</b></td><td>Aug 15</td><td>Participant</td><td>Team formation</td><td><span class="badge badge-blue">Registered</span></td></tr>
-            <tr><td><b>ML Guest Lecture</b></td><td>Sep 5</td><td>Attendee</td><td>—</td><td><span class="badge badge-orange">Pending</span></td></tr>
-          </tbody>
-        </table>
-        <!-- Pending Tasks -->
-        <div style="margin-top:20px;">
-          <div style="font-family:var(--ff-display);font-size:.9rem;font-weight:700;margin-bottom:12px;">My Pending Tasks</div>
-          <div class="task-item">
-            <div class="task-check"></div>
-            <div class="task-info"><b>Finalize Tech Symposium stage setup plan</b><span>Due: Jul 25 · High Priority</span></div>
-          </div>
-          <div class="task-item">
-            <div class="task-check done"></div>
-            <div class="task-info"><b>Collect registration forms — AI Workshop</b><span>Completed · Jul 20</span></div>
-          </div>
-          <div class="task-item">
-            <div class="task-check"></div>
-            <div class="task-info"><b>Submit Hackathon team details</b><span>Due: Aug 10 · Medium Priority</span></div>
-          </div>
+        <div class="card-head"><div class="card-title">Pending Approvals</div><span class="card-action">View All</span></div>
+        <div class="approval-item">
+          <div class="approval-info"><b>Robotics Workshop — Aug 10</b><span>Proposed by Tech Committee · Budget: ₹12,000</span></div>
+          <div class="approval-actions"><button class="approve-btn">Approve</button><button class="reject-btn">Reject</button></div>
+        </div>
+        <div class="approval-item">
+          <div class="approval-info"><b>Cultural Night 2026 — Aug 20</b><span>Proposed by Cultural Committee · Budget: ₹25,000</span></div>
+          <div class="approval-actions"><button class="approve-btn">Approve</button><button class="reject-btn">Reject</button></div>
+        </div>
+        <div class="approval-item">
+          <div class="approval-info"><b>Alumni Connect — Sep 5</b><span>Proposed by Outreach Committee · Budget: ₹8,000</span></div>
+          <div class="approval-actions"><button class="approve-btn">Approve</button><button class="reject-btn">Reject</button></div>
+        </div>
+        <div class="approval-item">
+          <div class="approval-info"><b>Media Partnership — MNC Brand</b><span>Sponsorship proposal · Outreach Committee</span></div>
+          <div class="approval-actions"><button class="approve-btn">Approve</button><button class="reject-btn">Reject</button></div>
+        </div>
+        <div class="approval-item">
+          <div class="approval-info"><b>New Committee Member — Harsh Shah</b><span>Finance Committee · Application pending</span></div>
+          <div class="approval-actions"><button class="approve-btn">Accept</button><button class="reject-btn">Decline</button></div>
         </div>
       </div>
 
@@ -357,76 +360,56 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
         <!-- Notifications -->
         <div class="card" id="notifications">
           <div class="card-head"><div class="card-title">Notifications</div><span class="card-action">Mark Read</span></div>
-          <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>Tech Symposium briefing tomorrow</b><span>10:00 AM, Lab 402 · 2 hrs ago</span></div></div>
-          <div class="list-item"><div class="list-dot" style="background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18);"></div><div class="list-text"><b>Certificate issued for Hackathon 2025</b><span>Download available · Yesterday</span></div></div>
-          <div class="list-item"><div class="list-dot" style="background:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.18);"></div><div class="list-text"><b>Event report submission reminder</b><span>AI Workshop Q1 report due · Jul 24</span></div></div>
-          <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>New task assigned by President</b><span>Finalize setup plan · Today</span></div></div>
-        </div>
-
-        <!-- Event Reports -->
-        <div class="card">
-          <div class="card-head"><div class="card-title">Event Reports</div><span class="card-action">Submit New</span></div>
-          <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>Tech Symposium 2025</b><span>Report ready · Attendance 96%</span></div><span class="card-action" style="font-size:.58rem;padding:3px 8px;">↓ PDF</span></div>
-          <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>AI Workshop Q1 2026</b><span>Report ready · Attendance 88%</span></div><span class="card-action" style="font-size:.58rem;padding:3px 8px;">↓ PDF</span></div>
-          <div class="list-item"><div class="list-dot" style="background:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.18);"></div><div class="list-text"><b>Hackathon 2025</b><span>Report ready · Attendance 91%</span></div><span class="card-action" style="font-size:.58rem;padding:3px 8px;">↓ PDF</span></div>
-          <div class="list-item"><div class="list-dot" style="background:var(--muted-dark);box-shadow:none;"></div><div class="list-text"><b>AI Workshop Q2 2026</b><span>Pending submission</span></div><button class="btn btn-primary" style="font-size:.7rem;padding:4px 10px;">Submit</button></div>
+          <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>5 approvals pending your action</b><span>Review required · 30 min ago</span></div></div>
+          <div class="list-item"><div class="list-dot" style="background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18);"></div><div class="list-text"><b>Tech Symposium registration: 148 confirmed</b><span>Event on Jul 28 · 1 hr ago</span></div></div>
+          <div class="list-item"><div class="list-dot" style="background:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.18);"></div><div class="list-text"><b>Hackathon 2026 sponsorship received</b><span>₹50,000 from TechCorp · 2 hrs ago</span></div></div>
+          <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>Faculty Coordinator review requested</b><span>Monthly report · Jul 25 deadline</span></div></div>
+          <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>2 committee vacancies to fill</b><span>Finance & Outreach · Posted today</span></div></div>
+          <div class="list-item"><div class="list-dot" style="background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18);"></div><div class="list-text"><b>AI Workshop registration: 67 students</b><span>33 seats remaining · Yesterday</span></div></div>
         </div>
       </div>
     </div>
 
     <!-- BOTTOM GRID -->
     <div class="dash-grid-3">
-      <!-- Attendance Record -->
+      <!-- Committee Members -->
       <div class="card">
-        <div class="card-head"><div class="card-title">Attendance Record</div><span class="card-action">Full Log</span></div>
-        <div class="attend-grid">
-          <div class="attend-day attend-present">1</div><div class="attend-day attend-present">2</div>
-          <div class="attend-day attend-absent">3</div><div class="attend-day attend-present">4</div>
-          <div class="attend-day attend-present">5</div><div class="attend-day attend-present">6</div>
-          <div class="attend-day attend-present">7</div><div class="attend-day attend-present">8</div>
-          <div class="attend-day attend-present">9</div><div class="attend-day attend-present">10</div>
-          <div class="attend-day attend-present">11</div><div class="attend-day attend-absent">12</div>
-          <div class="attend-day attend-present">13</div><div class="attend-day attend-upcoming">14</div>
-          <div class="attend-day attend-upcoming">15</div><div class="attend-day attend-upcoming">16</div>
-          <div class="attend-day attend-upcoming">17</div><div class="attend-day attend-upcoming">18</div>
-          <div class="attend-day attend-upcoming">19</div><div class="attend-day attend-upcoming">20</div>
-          <div class="attend-day attend-upcoming">21</div>
-        </div>
-        <div style="display:flex;gap:12px;margin-top:10px;font-family:var(--ff-mono);font-size:.6rem;color:var(--muted-dark);">
-          <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;border-radius:2px;background:rgba(62,139,255,.15);display:inline-block;"></span>Present</span>
-          <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;border-radius:2px;background:rgba(239,68,68,.08);display:inline-block;"></span>Absent</span>
-          <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;border-radius:2px;background:var(--paper-dim);display:inline-block;"></span>Upcoming</span>
-        </div>
+        <div class="card-head"><div class="card-title">Committee Members</div><span class="card-action">Manage</span></div>
+        <div class="member-card"><div class="member-avatar"><div class="in">RD</div></div><div class="member-info"><b>Riya Desai</b><span>Technical Committee Lead</span></div><span class="badge badge-green">Lead</span></div>
+        <div class="member-card"><div class="member-avatar"><div class="in">AK</div></div><div class="member-info"><b>Aman Kulkarni</b><span>Cultural Committee Lead</span></div><span class="badge badge-blue">Lead</span></div>
+        <div class="member-card"><div class="member-avatar"><div class="in">PJ</div></div><div class="member-info"><b>Priya Joshi</b><span>Media & PR Committee</span></div><span class="badge badge-green">Member</span></div>
+        <div class="member-card"><div class="member-avatar"><div class="in">DP</div></div><div class="member-info"><b>Dev Patil</b><span>Finance Committee</span></div><span class="badge badge-orange">Forming</span></div>
+        <div class="member-card"><div class="member-avatar"><div class="in">SR</div></div><div class="member-info"><b>Sneha Rao</b><span>Outreach Committee Lead</span></div><span class="badge badge-green">Lead</span></div>
       </div>
 
-      <!-- Certificates -->
-      <div class="card" style="grid-column:span 2;">
-        <div class="card-head"><div class="card-title">My Certificates</div><span class="card-action">View All</span></div>
-        <div class="cert-grid">
-          <div class="cert-card">
-            <div class="cert-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
-            <h4>Tech Symposium 2025</h4>
-            <span>Organiser · Dec 2025</span>
-            <div class="cert-download">↓ Download PDF</div>
-          </div>
-          <div class="cert-card">
-            <div class="cert-icon"><svg viewBox="0 0 24 24"><path d="M12 2l2 6h6l-5 4 2 6-5-4-5 4 2-6-5-4h6z"/></svg></div>
-            <h4>Hackathon 2025</h4>
-            <span>Participant · Aug 2025</span>
-            <div class="cert-download">↓ Download PDF</div>
-          </div>
-          <div class="cert-card">
-            <div class="cert-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div>
-            <h4>AI Workshop Q4 2025</h4>
-            <span>Volunteer · Nov 2025</span>
-            <div class="cert-download">↓ Download PDF</div>
-          </div>
-          <div class="cert-card" style="opacity:.5;pointer-events:none;">
-            <div class="cert-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg></div>
-            <h4>Hackathon 2026</h4>
-            <span>Pending event · Aug 2026</span>
-            <div class="cert-download" style="color:var(--muted);">Not yet issued</div>
-          </div>
+      <!-- Upcoming Events -->
+      <div class="card">
+        <div class="card-head"><div class="card-title">Upcoming Events</div><span class="card-action">Create Event</span></div>
+        <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>Tech Symposium 2026</b><span>Jul 28 · 148 registered · Auditorium</span></div></div>
+        <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>AI Workshop Series</b><span>Aug 3 · 67 registered · Lab 402</span></div></div>
+        <div class="list-item"><div class="list-dot" style="background:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.18);"></div><div class="list-text"><b>Hackathon 2026</b><span>Aug 15 · 203 registered · Online + Campus</span></div></div>
+        <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>Guest Lecture: ML in Healthcare</b><span>Aug 22 · 89 registered · Seminar Hall</span></div></div>
+        <button class="btn btn-primary" style="width:100%;margin-top:16px;justify-content:center;">+ Create New Event</button>
+      </div>
+
+      <!-- Announcements -->
+      <div class="card" id="announcements">
+        <div class="card-head"><div class="card-title">Announcements</div><span class="card-action">Post New</span></div>
+        <div class="ann-card">
+          <div class="ann-title">🏆 Hackathon 2026 registrations open!</div>
+          <div class="ann-meta">Posted by President · Jul 18 · 203 views</div>
+        </div>
+        <div class="ann-card urgent">
+          <div class="ann-title">⚡ Deadline: Club fee payment — Jul 31</div>
+          <div class="ann-meta">Finance Committee · Jul 15 · Pinned</div>
+        </div>
+        <div class="ann-card important">
+          <div class="ann-title">✅ Tech Symposium venue confirmed</div>
+          <div class="ann-meta">Posted by President · Jul 14 · 187 views</div>
+        </div>
+        <div class="ann-card">
+          <div class="ann-title">📢 New committee vacancies — Apply now</div>
+          <div class="ann-meta">Outreach Committee · Jul 10 · 92 views</div>
         </div>
       </div>
     </div>
@@ -472,41 +455,76 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   <button class="btn btn-primary" style="width:100%; margin-top:10px;" id="savePasswordBtn">Update Password</button>
 </div>
 
-<!-- ── MARK ATTENDANCE DRAWER ── -->
-<div class="drawer" id="markAttendanceDrawer">
+<!-- ── CREATE EVENT DRAWER ── -->
+<div class="drawer" id="createEventDrawer">
   <div class="drawer-header">
-    <div class="drawer-title">Mark Attendance</div>
-    <button class="drawer-close" onclick="closeDrawer('markAttendanceDrawer')">&times;</button>
+    <div class="drawer-title">Create Event</div>
+    <button class="drawer-close" onclick="closeDrawer('createEventDrawer')">&times;</button>
   </div>
   <div class="form-group">
-    <label>Select Event</label>
-    <select id="attendEventSelect">
-      <option value="Tech Symposium 2026">Tech Symposium 2026</option>
-      <option value="AI Workshop Series">AI Workshop Series</option>
-      <option value="Hackathon 2026">Hackathon 2026</option>
+    <label>Event Name</label>
+    <input type="text" id="evtName" placeholder="e.g. AI & Robotics Symposium">
+  </div>
+  <div class="form-group">
+    <label>Category</label>
+    <select id="evtCategory">
+      <option value="Workshop">Workshop</option>
+      <option value="Symposium">Symposium</option>
+      <option value="Hackathon">Hackathon</option>
+      <option value="Guest Lecture">Guest Lecture</option>
     </select>
   </div>
   <div class="form-group">
-    <label>Select Student</label>
-    <select id="attendStudentSelect">
-      <!-- Populated dynamically -->
-    </select>
+    <label>Date</label>
+    <input type="date" id="evtDate">
   </div>
   <div class="form-group">
-    <label>Status</label>
-    <select id="attendStatusSelect">
-      <option value="Present">Present</option>
-      <option value="Absent">Absent</option>
+    <label>Time</label>
+    <input type="time" id="evtTime">
+  </div>
+  <div class="form-group">
+    <label>Venue</label>
+    <input type="text" id="evtVenue" placeholder="e.g. Seminar Hall 3">
+  </div>
+  <div class="form-group">
+    <label>Description</label>
+    <textarea id="evtDescription" rows="3" placeholder="Brief event description..."></textarea>
+  </div>
+  <div class="form-group">
+    <label>Maximum Participants</label>
+    <input type="number" id="evtMaxParticipants" value="100">
+  </div>
+  <div class="form-group">
+    <label>Registration Deadline</label>
+    <input type="date" id="evtDeadline">
+  </div>
+  <div class="form-group">
+    <label>Faculty Coordinator</label>
+    <select id="evtCoordinator">
+      <option value="Prof. Meera Nair">Prof. Meera Nair</option>
+      <option value="Dr. Anjali Sharma">Dr. Anjali Sharma</option>
     </select>
   </div>
-  <button class="btn btn-primary" style="width:100%; margin-top:10px;" id="saveAttendanceBtn">Save Attendance Record</button>
+  <button class="btn btn-primary" style="width:100%; margin-top:10px;" id="saveEventBtn">Publish Event</button>
+</div>
 
-  <div style="margin-top:20px; flex:1; overflow-y:auto;">
-    <h4>Submitted Records</h4>
-    <div id="attendanceRecordsContainer" style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
-      <!-- Populated dynamically -->
-    </div>
+<!-- ── COMMITTEE RESPONSIBILITY DRAWER ── -->
+<div class="drawer" id="commResponsibilityDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Assign Responsibilities</div>
+    <button class="drawer-close" onclick="closeDrawer('commResponsibilityDrawer')">&times;</button>
   </div>
+  <div class="form-group">
+    <label>Select Committee Member</label>
+    <select id="commMemberSelect">
+      <!-- Populated dynamically -->
+    </select>
+  </div>
+  <div class="form-group">
+    <label>Assign Responsibility / Action Plan</label>
+    <textarea id="commResponsibilityText" rows="4" placeholder="Enter assigned tasks..."></textarea>
+  </div>
+  <button class="btn btn-primary" style="width:100%; margin-top:10px;" id="saveResponsibilityBtn">Assign Task</button>
 </div>
 
 <script>
@@ -531,101 +549,98 @@ function closeAllDrawers() {
 
 // Check logged in user session
 let currentUser = JSON.parse(sessionStorage.getItem('current_user')) || {
-  email: 'committee@zealeducation.com',
-  name: 'Riya Desai',
-  role: 'Committee Member'
+  email: 'president@zealeducation.com',
+  name: 'Karan Mehta',
+  role: 'Association President'
 };
 
-document.querySelector('.content-title').innerHTML = `Hey, ${currentUser.name.split(' ')[0]}! 👋`;
-document.querySelector('.role-info b').textContent = currentUser.name;
+document.querySelector('.content-title').innerHTML = `Welcome back, ${currentUser.name.split(' ')[0]}! 👋`;
 
-// Populate student select list
-function initAttendanceOptions() {
-  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
-  const select = document.getElementById('attendStudentSelect');
-  select.innerHTML = '';
-  users.filter(u => u.role === 'Student Member').forEach(u => {
-    select.innerHTML += `<option value="${u.name}">${u.name}</option>`;
-  });
-}
+// Handle Event Creation (Publish Event)
+document.getElementById('saveEventBtn').addEventListener('click', () => {
+  const name = document.getElementById('evtName').value.trim();
+  const cat = document.getElementById('evtCategory').value;
+  const date = document.getElementById('evtDate').value;
+  const time = document.getElementById('evtTime').value;
+  const venue = document.getElementById('evtVenue').value.trim();
+  const desc = document.getElementById('evtDescription').value.trim();
+  const max = document.getElementById('evtMaxParticipants').value;
+  const dl = document.getElementById('evtDeadline').value;
+  const coordinator = document.getElementById('evtCoordinator').value;
 
-// Render marked attendance records
-function renderAttendanceRecords() {
-  const records = JSON.parse(localStorage.getItem('aimsa_attendance')) || [];
-  const container = document.getElementById('attendanceRecordsContainer');
-  container.innerHTML = '';
-
-  if (records.length === 0) {
-    container.innerHTML = `<p style="font-size:0.8rem; color:var(--muted-dark);">No attendance records logged yet.</p>`;
-  } else {
-    records.forEach((rec, idx) => {
-      container.innerHTML += `
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border:1px solid var(--line-dark); border-radius:8px; background:var(--paper);">
-          <div>
-            <b style="font-size:0.85rem;">${rec.student}</b>
-            <br><span style="font-size:0.75rem; color:var(--muted-dark);">${rec.event} · ${rec.status}</span>
-          </div>
-          <button style="border:none; background:none; color:var(--accent); font-size:0.85rem; font-weight:700; cursor:pointer;" onclick="editAttendanceRecord(${idx})">Edit</button>
-        </div>`;
-    });
-  }
-}
-
-document.getElementById('saveAttendanceBtn').addEventListener('click', () => {
-  const event = document.getElementById('attendEventSelect').value;
-  const student = document.getElementById('attendStudentSelect').value;
-  const status = document.getElementById('attendStatusSelect').value;
-
-  const records = JSON.parse(localStorage.getItem('aimsa_attendance')) || [];
-  
-  // If editing an existing index
-  const editIdx = document.getElementById('saveAttendanceBtn').getAttribute('data-edit-index');
-  if (editIdx !== null) {
-    records[parseInt(editIdx)] = {event, student, status};
-    document.getElementById('saveAttendanceBtn').removeAttribute('data-edit-index');
-    document.getElementById('saveAttendanceBtn').textContent = 'Save Attendance Record';
-  } else {
-    records.push({event, student, status});
+  if (!name || !date || !time || !venue || !desc || !dl) {
+    alert('Please fill out all event fields.');
+    return;
   }
 
-  localStorage.setItem('aimsa_attendance', JSON.stringify(records));
-  renderAttendanceRecords();
-  alert('Attendance record saved successfully!');
+  // Save new event to localStorage
+  const events = JSON.parse(localStorage.getItem('aimsa_published_events')) || [];
+  events.push({name, cat, date, time, venue, desc, max, dl, coordinator});
+  localStorage.setItem('aimsa_published_events', JSON.stringify(events));
+
+  addNotification('New Event Published', `${currentUser.name} proposed: ${name}.`, 'green', 'all');
+
+  // Update stats counters
+  const approvedStat = document.querySelector('#upcomingEvents .stat-val');
+  if (approvedStat) {
+    approvedStat.textContent = parseInt(approvedStat.textContent) + 1;
+  }
+
+  closeDrawer('createEventDrawer');
+  alert('Event successfully proposed and published! Student notifications sent.');
 });
 
-window.editAttendanceRecord = function(idx) {
-  const records = JSON.parse(localStorage.getItem('aimsa_attendance')) || [];
-  const rec = records[idx];
-  document.getElementById('attendEventSelect').value = rec.event;
-  document.getElementById('attendStudentSelect').value = rec.student;
-  document.getElementById('attendStatusSelect').value = rec.status;
-
-  const saveBtn = document.getElementById('saveAttendanceBtn');
-  saveBtn.textContent = 'Update Attendance Record';
-  saveBtn.setAttribute('data-edit-index', idx);
-};
-
-// Sidebar / Quick Action trigger for Mark Attendance
-document.getElementById('navAttendance').addEventListener('click', (e) => {
+// Event Proposal buttons trigger create drawer
+document.getElementById('navEvents').addEventListener('click', (e) => {
   e.preventDefault();
-  initAttendanceOptions();
-  renderAttendanceRecords();
-  openDrawer('markAttendanceDrawer');
+  openDrawer('createEventDrawer');
 });
-document.getElementById('attendanceCard').addEventListener('click', () => {
-  initAttendanceOptions();
-  renderAttendanceRecords();
-  openDrawer('markAttendanceDrawer');
+document.getElementById('proposeEventBtn').addEventListener('click', () => {
+  openDrawer('createEventDrawer');
 });
 
-document.querySelectorAll('.nav-item').forEach(item=>{
-  item.addEventListener('click',(e)=>{
-    if(item.href&&(item.href.includes('aimsa_landing')||item.href.includes('committee_dashboard')))return;
-    e.preventDefault();
-    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
-    item.classList.add('active');
+// Committee list rendering
+function renderCommitteeList() {
+  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
+  const select = document.getElementById('commMemberSelect');
+  select.innerHTML = '';
+  users.filter(u => u.role === 'Committee Member' || u.committeeDesignation).forEach(u => {
+    select.innerHTML += `<option value="${u.email}">${u.name} (${u.committeeDesignation || 'Member'})</option>`;
   });
+}
+
+document.getElementById('navCommittee').addEventListener('click', (e) => {
+  e.preventDefault();
+  renderCommitteeList();
+  openDrawer('commResponsibilityDrawer');
 });
+document.getElementById('committeeCard').addEventListener('click', () => {
+  renderCommitteeList();
+  openDrawer('commResponsibilityDrawer');
+});
+
+document.getElementById('saveResponsibilityBtn').addEventListener('click', () => {
+  const email = document.getElementById('commMemberSelect').value;
+  const resp = document.getElementById('commResponsibilityText').value.trim();
+
+  if(!resp) {
+    alert('Please enter responsibilities to assign.');
+    return;
+  }
+
+  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
+  const idx = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+  if (idx !== -1) {
+    users[idx].committeeResponsibility = resp;
+    localStorage.setItem('aimsa_users', JSON.stringify(users));
+    alert('Responsibilities successfully assigned to the committee member!');
+    closeDrawer('commResponsibilityDrawer');
+  }
+});
+
+// Sync default buttons
+document.querySelectorAll('.approve-btn').forEach(btn=>btn.addEventListener('click',()=>alert('Event request approved! Notification sent.')));
+document.querySelectorAll('.reject-btn').forEach(btn=>btn.addEventListener('click',()=>alert('Event request rejected. Notification sent.')));
 
 // Notification Helpers
 function addNotification(title, text, indicator, recipient, email = true) {
@@ -695,22 +710,6 @@ window.clearNotifications = function(containerId, userEmail) {
   localStorage.setItem('aimsa_notifications', JSON.stringify(records));
   renderNotifications(containerId, userEmail);
 };
-
-// Initial state load
-renderNotifications('notifications', currentUser.email);
-
-// Listen to attendance save trigger
-document.getElementById('saveAttendanceBtn').addEventListener('click', () => {
-  const event = document.getElementById('attendEventSelect').value;
-  const student = document.getElementById('attendStudentSelect').value;
-  const status = document.getElementById('attendStatusSelect').value;
-
-  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
-  const targetUser = users.find(u => u.name === student) || {email: 'student@zealeducation.com'};
-
-  // Generate confirmation notification
-  addNotification('Attendance Confirmation', `Your attendance for ${event} was recorded as ${status}.`, 'green', targetUser.email);
-});
 
 // Header Sync
 document.getElementById('headerUserName').textContent = currentUser.name;
@@ -795,24 +794,26 @@ window.openNotifications = function() {
   }
 };
 
+// Animation stats counter and initial notifications render
+renderNotifications('notifications', currentUser.email);
+
 document.querySelectorAll('.stat-val').forEach(el=>{
   const raw=el.textContent.replace(/,/g,'');
   const target=parseInt(raw.replace(/\D/g,''));
   if(isNaN(target))return;
   const suffix=el.textContent.replace(/[\d,]/g,'');
-  let current=0;const step=Math.ceil(target/50)||1;
+  let current=0;const step=Math.ceil(target/50);
   const timer=setInterval(()=>{current=Math.min(current+step,target);el.textContent=current.toLocaleString()+suffix;if(current>=target)clearInterval(timer);},25);
 });
 
-document.querySelectorAll('.cert-download').forEach(btn=>btn.addEventListener('click',(e)=>{
-  const certTitle = e.target.parentNode.querySelector('h4').textContent;
-  alert(`Generating secure PDF for your ${certTitle}... Success! Your certificate download will start shortly.`);
-}));
-
-document.querySelectorAll('.task-check:not(.done)').forEach(chk=>chk.addEventListener('click',()=>{
-  chk.classList.add('done');
-  chk.closest('.task-item').querySelector('b').style.textDecoration='line-through';
-}));
+document.querySelectorAll('.nav-item').forEach(item=>{
+  item.addEventListener('click',(e)=>{
+    if(item.href&&(item.href.includes('index')||item.href.includes('president_dashboard')))return;
+    e.preventDefault();
+    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
 </script>
 </body>
 </html>

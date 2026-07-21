@@ -195,7 +195,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-brand">
     <div class="brand-logo" style="width:42px; height:42px; border-radius:50%; background:var(--white); display:flex; align-items:center; justify-content:center; overflow:hidden; border:2px solid rgba(255,255,255,.3); flex-shrink:0;">
-      <img src="./aimsa_logo.jpg" alt="AIMSA Logo" style="width:100%; height:100%; object-fit:cover;">
+      <img src="images/aimsa_logo.jpg" alt="AIMSA Logo" style="width:100%; height:100%; object-fit:cover;">
     </div>
     <div class="brand-info"><b>AIMSA Portal</b><span>Faculty Access</span></div>
   </div>
@@ -235,7 +235,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
     <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/></svg>Profile</a>
   </nav>
   <div class="sidebar-footer">
-    <a class="nav-item" href="aimsa_landing.html"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>Logout</a>
+    <a class="nav-item" href="index.php"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>Logout</a>
   </div>
 </aside>
 
@@ -245,9 +245,9 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
       <button class="hamburger-btn" id="hamburgerBtn" style="margin-right:8px;"><span></span><span></span><span></span></button>
       <div class="logo-container" style="display:flex; align-items:center; gap:8px;">
         <!-- College Logo -->
-        <img src="./college_logo.png" alt="Zeal Logo" style="height:32px; width:32px; border-radius:50%; object-fit:cover;" title="Zeal Education Society">
+        <img src="images/icons/college_logo.png" alt="Zeal Logo" style="height:32px; width:32px; border-radius:50%; object-fit:cover;" title="Zeal Education Society">
         <!-- AIML Dept Logo -->
-        <img src="./aimsa_logo.jpg" alt="AIMSA Logo" style="height:32px; width:auto; border-radius:50%; object-fit:contain;" title="AIMSA Association">
+        <img src="images/aimsa_logo.jpg" alt="AIMSA Logo" style="height:32px; width:auto; border-radius:50%; object-fit:contain;" title="AIMSA Association">
       </div>
       <div>
         <div class="page-title" style="font-family:var(--ff-display); font-size:1.05rem; font-weight:800; color:var(--navy-950);">AIMSA Portal</div>
@@ -287,7 +287,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
             Change Password
           </a>
           <div style="border-top:1px solid var(--line-dark); margin:4px 0;"></div>
-          <a href="aimsa_landing.html" onclick="sessionStorage.removeItem('current_user');" style="display:flex; align-items:center; gap:8px; padding:10px 16px; font-size:0.78rem; color:#ef4444; text-decoration:none; font-weight:600;">
+          <a href="index.php" onclick="sessionStorage.removeItem('current_user');" style="display:flex; align-items:center; gap:8px; padding:10px 16px; font-size:0.78rem; color:#ef4444; text-decoration:none; font-weight:600;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
             Logout
           </a>
@@ -922,7 +922,7 @@ document.querySelectorAll('.stat-val').forEach(el=>{
 
 document.querySelectorAll('.nav-item').forEach(item=>{
   item.addEventListener('click',(e)=>{
-    if(item.href&&(item.href.includes('aimsa_landing')||item.href.includes('faculty_dashboard')))return;
+    if(item.href&&(item.href.includes('index')||item.href.includes('faculty_dashboard')))return;
     e.preventDefault();
     document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
     item.classList.add('active');
