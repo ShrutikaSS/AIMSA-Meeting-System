@@ -502,7 +502,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
     <label>Faculty Coordinator</label>
     <select id="evtCoordinator">
       <option value="Prof. Meera Nair">Prof. Meera Nair</option>
-      <option value="Dr. Anjali Sharma">Dr. Anjali Sharma</option>
+      <option value="Dipali Shende">Dipali Shende</option>
     </select>
   </div>
   <button class="btn btn-primary" style="width:100%; margin-top:10px;" id="saveEventBtn">Publish Event</button>

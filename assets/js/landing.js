@@ -174,20 +174,17 @@ const roleDashboards = {
 };
 
 // Initial simulated users database
-if(!localStorage.getItem('aimsa_users')) {
-  localStorage.setItem('aimsa_users', JSON.stringify([
-    {email: 'hod@zealeducation.com', password: 'Password123', name: 'Dr. Anjali Sharma', role: 'HOD'},
+localStorage.setItem('aimsa_users', JSON.stringify([
+    {email: 'hod@zealeducation.com', password: 'Password123', name: 'Dipali Shende', role: 'HOD'},
     {email: 'faculty@zealeducation.com', password: 'Password123', name: 'Prof. Meera Nair', role: 'Faculty Coordinator'},
     {email: 'president@zealeducation.com', password: 'Password123', name: 'Karan Mehta', role: 'Association President'},
     {email: 'committee@zealeducation.com', password: 'Password123', name: 'Riya Desai', role: 'Committee Member'},
     {email: 'student@zealeducation.com', password: 'Password123', name: 'Arjun Patil', role: 'Student Member'}
   ]));
-}
 
 // Initial simulated notifications database
-if(!localStorage.getItem('aimsa_notifications')) {
-  localStorage.setItem('aimsa_notifications', JSON.stringify([
-    {title: 'Membership Approved', text: 'Dr. Anjali Sharma verified your credentials.', indicator: 'green', recipient: 'student@zealeducation.com', time: '1 hr ago', email: true},
+localStorage.setItem('aimsa_notifications', JSON.stringify([
+    {title: 'Membership Approved', text: 'Dipali Shende verified your credentials.', indicator: 'green', recipient: 'student@zealeducation.com', time: '1 hr ago', email: true},
     {title: 'New Event Published', text: 'Prof. Meera Nair proposed: Tech Symposium 2026.', indicator: 'green', recipient: 'all', time: '2 hrs ago', email: true},
     {title: 'Registration Successful', text: 'Successfully registered for Hackathon 2026.', indicator: 'green', recipient: 'student@zealeducation.com', time: '4 hrs ago', email: true},
     {title: 'Event Reminder', text: 'Reminder: AI Workshop Series starts on Aug 3.', indicator: 'yellow', recipient: 'all', time: 'Yesterday', email: true},
@@ -198,7 +195,6 @@ if(!localStorage.getItem('aimsa_notifications')) {
     {title: 'Profile Updated', text: 'Successfully updated profile photograph & branch.', indicator: 'green', recipient: 'student@zealeducation.com', time: '2 weeks ago', email: true},
     {title: 'Password Changed Successfully', text: 'Portal login password updated.', indicator: 'green', recipient: 'student@zealeducation.com', time: '2 weeks ago', email: true}
   ]));
-}
 
 // Login verification with session storage
 const loginSubmitBtn = document.getElementById('loginSubmitBtn');

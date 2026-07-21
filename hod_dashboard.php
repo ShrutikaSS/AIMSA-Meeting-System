@@ -233,7 +233,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 
   <div class="sidebar-role">
     <div class="role-avatar"><div class="in">HD</div></div>
-    <div class="role-info"><b>Dr. Anjali Sharma</b><span>Head of Department</span></div>
+    <div class="role-info"><b>Dr. Dipali Shende</b><span>Head of Department</span></div>
   </div>
 
   <nav class="sidebar-nav">
@@ -342,7 +342,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
         <div style="display:flex; align-items:center; gap:8px; cursor:pointer;" onclick="toggleProfileDropdown()">
           <div style="width:32px; height:32px; border-radius:50%; background:var(--accent); color:var(--white); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem;" id="headerUserAvatar">HD</div>
           <div style="display:flex; flex-direction:column; text-align:left;">
-            <span style="font-size:0.78rem; font-weight:600; color:var(--navy-950);" id="headerUserName">Dr. Anjali Sharma</span>
+            <span style="font-size:0.78rem; font-weight:600; color:var(--navy-950);" id="headerUserName">Dr. Dipali Shende</span>
             <span style="font-size:0.65rem; color:var(--muted-dark);" id="headerUserRole">HOD</span>
           </div>
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -365,7 +365,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   <!-- CONTENT -->
   <div class="content">
     <div class="section-eyebrow">HOD Overview</div>
-    <div class="content-title">Good Morning, Dr. Sharma 👋</div>
+    <div class="content-title">Good Morning, Dr. Shende 👋</div>
     <div class="content-sub">Here's what's happening in AIMSA today — July 21, 2026</div>
 
     <!-- STAT CARDS — Total Members, Committee Members, Events Conducted, Event Registrations -->
@@ -728,7 +728,7 @@ function closeAllDrawers() {
 // Check logged in user session
 let currentUser = JSON.parse(sessionStorage.getItem('current_user')) || {
   email: 'hod@zealeducation.com',
-  name: 'Dr. Anjali Sharma',
+  name: 'Dr. Dipali Shende',
   role: 'HOD'
 };
 
