@@ -41,7 +41,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 .nav-badge{margin-left:auto;font-family:var(--ff-mono);font-size:.6rem;background:var(--accent);color:var(--white);padding:2px 7px;border-radius:999px;}
 .sidebar-footer{padding:16px 12px;border-top:1px solid var(--line);}
 .main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;}
-.topbar{background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line-dark);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.topbar{background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line-dark);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
 .topbar-left{display:flex;align-items:center;gap:14px;}
 .page-title{font-family:var(--ff-display);font-size:1.15rem;font-weight:700;color:var(--navy-950);}
 .breadcrumb{font-family:var(--ff-mono);font-size:.68rem;letter-spacing:.08em;color:var(--muted-dark);text-transform:uppercase;}
@@ -69,8 +69,10 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 .stat-label{font-size:.8rem;color:var(--muted-dark);margin-top:2px;}
 .stat-delta{font-family:var(--ff-mono);font-size:.65rem;letter-spacing:.06em;margin-top:8px;display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:999px;}
 .stat-delta.up{background:rgba(34,197,94,.1);color:#16a34a;}
+.stat-delta.dn{background:rgba(239,68,68,.1);color:#dc2626;}
 .dash-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:24px;margin-bottom:24px;}
 .dash-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:24px;}
+.dash-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;}
 .card{background:var(--white);border-radius:var(--radius);border:1px solid var(--line-dark);padding:24px;}
 .card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
 .card-title{font-family:var(--ff-display);font-size:1rem;font-weight:700;}
@@ -85,36 +87,52 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 .badge-green{background:rgba(34,197,94,.1);color:#16a34a;border:1px solid rgba(34,197,94,.2);}
 .badge-blue{background:rgba(62,139,255,.1);color:var(--accent);border:1px solid rgba(62,139,255,.2);}
 .badge-orange{background:rgba(249,115,22,.1);color:#ea580c;border:1px solid rgba(249,115,22,.2);}
+.badge-gray{background:var(--paper-dim);color:var(--muted-dark);border:1px solid var(--line-dark);}
 .list-item{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(8,23,51,.05);}
 .list-item:last-child{border-bottom:none;}
 .list-dot{width:9px;height:9px;border-radius:50%;background:var(--accent);flex-shrink:0;box-shadow:0 0 0 3px rgba(62,139,255,.18);}
 .list-text{flex:1;}
 .list-text b{font-size:.88rem;display:block;margin-bottom:2px;}
 .list-text span{font-size:.76rem;color:var(--muted-dark);font-family:var(--ff-mono);}
+/* Attendance Summary */
+.attend-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
+.attend-box{padding:16px;border-radius:12px;border:1px solid var(--line-dark);text-align:center;}
+.attend-box.present{background:rgba(34,197,94,.05);border-color:rgba(34,197,94,.2);}
+.attend-box.absent{background:rgba(239,68,68,.05);border-color:rgba(239,68,68,.2);}
+.attend-box.total{background:rgba(62,139,255,.05);border-color:rgba(62,139,255,.2);}
+.attend-box-val{font-family:var(--ff-display);font-size:1.8rem;font-weight:700;display:block;color:var(--navy-950);}
+.attend-box.present .attend-box-val{color:#16a34a;}
+.attend-box.absent .attend-box-val{color:#dc2626;}
+.attend-box.total .attend-box-val{color:var(--accent);}
+.attend-box-label{font-family:var(--ff-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-dark);margin-top:4px;}
+/* Progress */
 .progress-item{margin-bottom:16px;}
 .progress-label{display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:6px;}
 .progress-label span:last-child{font-family:var(--ff-mono);color:var(--accent);}
 .progress-bar{height:6px;background:var(--paper-dim);border-radius:999px;overflow:hidden;}
 .progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-soft));}
-.approval-item{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid rgba(8,23,51,.05);}
-.approval-item:last-child{border-bottom:none;}
-.approval-actions{display:flex;gap:8px;margin-left:auto;}
-.btn-sm{padding:5px 12px;border-radius:999px;font-size:.72rem;font-weight:600;border:1px solid;cursor:pointer;transition:.2s ease;}
-.btn-approve{background:rgba(34,197,94,.1);color:#16a34a;border-color:rgba(34,197,94,.3);}
-.btn-approve:hover{background:#16a34a;color:var(--white);}
-.btn-reject{background:rgba(239,68,68,.1);color:#dc2626;border-color:rgba(239,68,68,.3);}
-.btn-reject:hover{background:#dc2626;color:var(--white);}
+/* Achievement */
+.ach-item{display:flex;align-items:center;gap:14px;padding:14px;border-radius:12px;border:1px solid var(--line-dark);background:var(--paper);transition:.2s ease;margin-bottom:10px;}
+.ach-item:hover{border-color:var(--accent);background:var(--white);transform:translateX(4px);}
+.ach-icon{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--navy-950),var(--navy-800));display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.3s ease;}
+.ach-item:hover .ach-icon{background:linear-gradient(135deg,var(--accent),#2563eb);}
+.ach-icon svg{width:18px;height:18px;stroke:var(--accent-soft);fill:none;stroke-width:1.7;}
+.ach-info b{font-size:.88rem;display:block;margin-bottom:2px;}
+.ach-info span{font-size:.75rem;color:var(--muted-dark);font-family:var(--ff-mono);}
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(5,13,26,.5);z-index:99;}
 .btn{display:inline-flex;align-items:center;gap:8px;justify-content:center;padding:10px 20px;border-radius:999px;font-weight:600;font-size:.84rem;border:1px solid transparent;transition:all .25s ease;cursor:pointer;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#2563eb);color:var(--white);box-shadow:0 8px 20px -8px var(--accent-glow);}
+.btn-primary:hover{transform:translateY(-2px);}
 .btn-ghost{background:transparent;border-color:var(--line-dark);color:var(--navy-800);}
 .btn-ghost:hover{background:var(--paper-dim);}
-@media(max-width:1100px){.stats-grid{grid-template-columns:repeat(2,1fr);}.dash-grid{grid-template-columns:1fr;}.dash-grid-3{grid-template-columns:1fr 1fr;}}
-@media(max-width:768px){.sidebar{transform:translateX(-100);}.sidebar.open{transform:translateX(0);}.sidebar-overlay.open{display:block;}.main{margin-left:0;}.hamburger-btn{display:flex;}.content{padding:20px;}.stats-grid{grid-template-columns:1fr 1fr;}.dash-grid-3{grid-template-columns:1fr;}}
+@media(max-width:1100px){.stats-grid{grid-template-columns:repeat(2,1fr);}.dash-grid{grid-template-columns:1fr;}.dash-grid-3{grid-template-columns:1fr 1fr;}.dash-grid-2{grid-template-columns:1fr;}}
+@media(max-width:768px){.sidebar{transform:translateX(-100%);}.sidebar.open{transform:translateX(0);}.sidebar-overlay.open{display:block;}.main{margin-left:0;}.hamburger-btn{display:flex;}.content{padding:20px;}.stats-grid{grid-template-columns:1fr 1fr;}.dash-grid-3{grid-template-columns:1fr;}.attend-summary{grid-template-columns:1fr;}}
 @media(max-width:480px){.stats-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-brand">
     <div class="brand-logo"><svg viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5zM3 9v6l9 5 9-5V9"/></svg></div>
@@ -122,20 +140,36 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   </div>
   <div class="sidebar-role">
     <div class="role-avatar"><div class="in">FC</div></div>
-    <div class="role-info"><b>Prof. Suresh Iyer</b><span>Faculty Coordinator</span></div>
+    <div class="role-info"><b>Prof. Meera Nair</b><span>Faculty Coordinator</span></div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-section-label">Main</div>
-    <a class="nav-item active" href="#"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
-    <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Event Approvals<span class="nav-badge">5</span></a>
-    <div class="nav-section-label">People</div>
-    <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Committee Members</a>
-    <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M22 10L12 5 2 10l10 5 10-5zM6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>Student Members</a>
-    <div class="nav-section-label">Analytics</div>
-    <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Attendance Reports</a>
+    <a class="nav-item active" href="faculty_dashboard.html">
+      <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard
+    </a>
+    <div class="nav-section-label">Events</div>
+    <a class="nav-item" href="#approved">
+      <svg class="nav-icon" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Approved Events
+    </a>
+    <a class="nav-item" href="#pending">
+      <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Pending Events
+      <span class="nav-badge">3</span>
+    </a>
+    <div class="nav-section-label">Statistics</div>
+    <a class="nav-item" href="#memberstats">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2M10 11a4 4 0 100-8 4 4 0 000 8z"/></svg>Member Statistics
+    </a>
+    <a class="nav-item" href="#attendance">
+      <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Attendance Summary
+    </a>
+    <a class="nav-item" href="#achievements">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 9l-5 4.5L17.5 21 12 17l-5.5 4L8 13.5 3 9l6.5-.5z"/></svg>Student Achievements
+    </a>
     <div class="nav-section-label">Communication</div>
-    <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M22 17H2a3 3 0 003-3V9a7 7 0 0114 0v5a3 3 0 003 3zM13.73 21a2 2 0 01-3.46 0"/></svg>Announcements</a>
-    <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>Notifications<span class="nav-badge">3</span></a>
+    <a class="nav-item" href="#notifications">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>Notifications
+      <span class="nav-badge">5</span>
+    </a>
     <div class="nav-section-label">Account</div>
     <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/></svg>Profile</a>
   </nav>
@@ -148,7 +182,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   <div class="topbar">
     <div class="topbar-left">
       <button class="hamburger-btn" id="hamburgerBtn"><span></span><span></span><span></span></button>
-      <div><div class="page-title">Dashboard</div><div class="breadcrumb">Faculty Coordinator / Overview</div></div>
+      <div><div class="page-title">Faculty Coordinator Dashboard</div><div class="breadcrumb">Faculty / Overview</div></div>
     </div>
     <div class="topbar-right">
       <button class="topbar-icon-btn"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
@@ -159,148 +193,148 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 
   <div class="content">
     <div class="section-eyebrow">Faculty Coordinator</div>
-    <div class="content-title">Welcome, Prof. Iyer 👋</div>
-    <div class="content-sub">Faculty coordination overview — July 21, 2026</div>
+    <div class="content-title">Welcome, Prof. Nair 👋</div>
+    <div class="content-sub">Your faculty oversight portal — July 21, 2026</div>
 
+    <!-- STATS — Approved Events, Pending Events, Member Stats, Attendance -->
     <div class="stats-grid">
-      <div class="stat-card">
+      <div class="stat-card" id="approved">
         <div class="stat-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
-        <span class="stat-val">5</span>
-        <div class="stat-label">Pending Approvals</div>
-        <span class="stat-delta up">↑ 2 new today</span>
+        <span class="stat-val">18</span>
+        <div class="stat-label">Approved Events</div>
+        <span class="stat-delta up">↑ 6 this semester</span>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
-        <span class="stat-val">35</span>
-        <div class="stat-label">Committee Members</div>
-        <span class="stat-delta up">↑ 3 new this week</span>
+      <div class="stat-card" id="pending">
+        <div class="stat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <span class="stat-val">3</span>
+        <div class="stat-label">Pending Events</div>
+        <span class="stat-delta dn">↓ Needs review</span>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M22 10L12 5 2 10l10 5 10-5zM6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg></div>
-        <span class="stat-val">212</span>
-        <div class="stat-label">Student Members</div>
-        <span class="stat-delta up">↑ Active enrollment</span>
+      <div class="stat-card" id="memberstats">
+        <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2M10 11a4 4 0 100-8 4 4 0 000 8z"/></svg></div>
+        <span class="stat-val">247</span>
+        <div class="stat-label">Total Student Members</div>
+        <span class="stat-delta up">↑ 12 new this month</span>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" id="attendance">
         <div class="stat-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-        <span class="stat-val">88%</span>
+        <span class="stat-val">89%</span>
         <div class="stat-label">Avg. Attendance</div>
-        <span class="stat-delta up">↑ Above target</span>
+        <span class="stat-delta up">↑ +3% this sem</span>
       </div>
     </div>
 
+    <!-- MAIN GRID -->
     <div class="dash-grid">
-      <!-- Event Approvals -->
+      <!-- Pending Events for Approval -->
       <div class="card">
-        <div class="card-head">
-          <div class="card-title">Event Approvals</div>
-          <span class="card-action">View All</span>
-        </div>
-        <div class="approval-item">
-          <div class="list-dot"></div>
-          <div class="list-text"><b>Tech Symposium 2026</b><span>Proposed by · Association President · Jul 20</span></div>
-          <div class="approval-actions"><button class="btn-sm btn-approve">Approve</button><button class="btn-sm btn-reject">Reject</button></div>
-        </div>
-        <div class="approval-item">
-          <div class="list-dot"></div>
-          <div class="list-text"><b>AI Workshop — TensorFlow</b><span>Proposed by · Technical Committee · Jul 19</span></div>
-          <div class="approval-actions"><button class="btn-sm btn-approve">Approve</button><button class="btn-sm btn-reject">Reject</button></div>
-        </div>
-        <div class="approval-item">
-          <div class="list-dot" style="background:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.18);"></div>
-          <div class="list-text"><b>Cultural Night 2026</b><span>Proposed by · Cultural Committee · Jul 18</span></div>
-          <div class="approval-actions"><button class="btn-sm btn-approve">Approve</button><button class="btn-sm btn-reject">Reject</button></div>
-        </div>
-        <div class="approval-item">
-          <div class="list-dot"></div>
-          <div class="list-text"><b>Hackathon 2026</b><span>Proposed by · Association President · Jul 17</span></div>
-          <div class="approval-actions"><button class="btn-sm btn-approve">Approve</button><button class="btn-sm btn-reject">Reject</button></div>
-        </div>
-        <div class="approval-item">
-          <div class="list-dot"></div>
-          <div class="list-text"><b>Guest Lecture: AI Ethics</b><span>Proposed by · Outreach Committee · Jul 16</span></div>
-          <div class="approval-actions"><button class="btn-sm btn-approve">Approve</button><button class="btn-sm btn-reject">Reject</button></div>
-        </div>
-      </div>
-
-      <div style="display:flex;flex-direction:column;gap:24px;">
-        <!-- Attendance Summary -->
-        <div class="card">
-          <div class="card-head"><div class="card-title">Attendance Reports</div><span class="card-action">Download</span></div>
-          <div class="progress-item">
-            <div class="progress-label"><span>Technical Events</span><span>92%</span></div>
-            <div class="progress-bar"><div class="progress-fill" style="width:92%"></div></div>
-          </div>
-          <div class="progress-item">
-            <div class="progress-label"><span>Workshops</span><span>85%</span></div>
-            <div class="progress-bar"><div class="progress-fill" style="width:85%"></div></div>
-          </div>
-          <div class="progress-item">
-            <div class="progress-label"><span>Cultural Events</span><span>78%</span></div>
-            <div class="progress-bar"><div class="progress-fill" style="width:78%"></div></div>
-          </div>
-        </div>
-
-        <!-- Recent Notifications -->
-        <div class="card">
-          <div class="card-head"><div class="card-title">Notifications</div><span class="card-action">Clear All</span></div>
-          <div class="list-item">
-            <div class="list-dot"></div>
-            <div class="list-text"><b>New event submitted for approval</b><span>Tech Symposium 2026 · 2 mins ago</span></div>
-          </div>
-          <div class="list-item">
-            <div class="list-dot"></div>
-            <div class="list-text"><b>Attendance report ready</b><span>June 2026 summary available · 1 hr ago</span></div>
-          </div>
-          <div class="list-item">
-            <div class="list-dot" style="background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18);"></div>
-            <div class="list-text"><b>New student member joined</b><span>Rohit Sharma enrolled · Yesterday</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="dash-grid-3">
-      <div class="card">
-        <div class="card-head"><div class="card-title">Committee Members</div><span class="card-action">View All</span></div>
+        <div class="card-head"><div class="card-title">Events Pending Approval</div><span class="card-action">Review All</span></div>
         <table class="data-table">
-          <thead><tr><th>Name</th><th>Role</th><th>Status</th></tr></thead>
+          <thead><tr><th>Event</th><th>Proposed By</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
           <tbody>
-            <tr><td>Riya Desai</td><td>Technical Lead</td><td><span class="badge badge-green">Active</span></td></tr>
-            <tr><td>Aman Kulkarni</td><td>Cultural Head</td><td><span class="badge badge-green">Active</span></td></tr>
-            <tr><td>Dev Patil</td><td>Media Lead</td><td><span class="badge badge-blue">Active</span></td></tr>
-            <tr><td>Sneha Rao</td><td>Finance Head</td><td><span class="badge badge-orange">Forming</span></td></tr>
+            <tr><td><b>Robotics Workshop</b></td><td>Tech Committee</td><td>Aug 10</td><td><span class="badge badge-orange">Pending</span></td><td><button style="background:rgba(34,197,94,.1);color:#16a34a;border:1px solid rgba(34,197,94,.2);border-radius:6px;padding:4px 10px;font-size:.72rem;cursor:pointer;">Approve</button></td></tr>
+            <tr><td><b>Cultural Night 2026</b></td><td>Cultural Committee</td><td>Aug 20</td><td><span class="badge badge-orange">Pending</span></td><td><button style="background:rgba(34,197,94,.1);color:#16a34a;border:1px solid rgba(34,197,94,.2);border-radius:6px;padding:4px 10px;font-size:.72rem;cursor:pointer;">Approve</button></td></tr>
+            <tr><td><b>Alumni Connect 2026</b></td><td>Outreach Committee</td><td>Sep 5</td><td><span class="badge badge-blue">Review</span></td><td><button style="background:rgba(62,139,255,.1);color:var(--accent);border:1px solid rgba(62,139,255,.2);border-radius:6px;padding:4px 10px;font-size:.72rem;cursor:pointer;">Review</button></td></tr>
           </tbody>
         </table>
-      </div>
-      <div class="card">
-        <div class="card-head"><div class="card-title">Announcements</div><span class="card-action">Post New</span></div>
-        <div class="list-item">
-          <div class="list-dot"></div>
-          <div class="list-text"><b>Semester project deadline extended</b><span>Jul 20, 2026</span></div>
-        </div>
-        <div class="list-item">
-          <div class="list-dot"></div>
-          <div class="list-text"><b>AIML lab maintenance schedule</b><span>Jul 18, 2026</span></div>
-        </div>
-        <div class="list-item">
-          <div class="list-dot"></div>
-          <div class="list-text"><b>Internship opportunity at TechCorp</b><span>Jul 15, 2026</span></div>
+        <div style="margin-top:16px;">
+          <div class="card-head" style="margin-bottom:12px;"><div class="card-title" style="font-size:.9rem;">Approved Events This Semester</div></div>
+          <table class="data-table">
+            <thead><tr><th>Event</th><th>Date</th><th>Registrations</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td><b>Tech Symposium 2026</b></td><td>Jul 28</td><td>148</td><td><span class="badge badge-green">Approved</span></td></tr>
+              <tr><td><b>AI Workshop Series</b></td><td>Aug 3</td><td>67</td><td><span class="badge badge-green">Approved</span></td></tr>
+              <tr><td><b>Hackathon 2026</b></td><td>Aug 15</td><td>203</td><td><span class="badge badge-green">Approved</span></td></tr>
+              <tr><td><b>ML Guest Lecture</b></td><td>Aug 22</td><td>89</td><td><span class="badge badge-green">Approved</span></td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
+
+      <!-- Right Column -->
+      <div style="display:flex;flex-direction:column;gap:24px;">
+        <!-- Notifications -->
+        <div class="card" id="notifications">
+          <div class="card-head"><div class="card-title">Notifications</div><span class="card-action">Mark Read</span></div>
+          <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>Robotics Workshop awaits approval</b><span>Submitted by Tech Committee · 1 hr ago</span></div></div>
+          <div class="list-item"><div class="list-dot" style="background:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.18);"></div><div class="list-text"><b>3 student achievement nominations</b><span>Review required · 2 hrs ago</span></div></div>
+          <div class="list-item"><div class="list-dot" style="background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18);"></div><div class="list-text"><b>Tech Symposium attendance: 94%</b><span>Report submitted · Yesterday</span></div></div>
+          <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>New membership applications: 8</b><span>Pending faculty acknowledgement · 3 hrs ago</span></div></div>
+          <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>HOD review requested</b><span>Monthly report due · Jul 25</span></div></div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+          <div class="card-head"><div class="card-title">Quick Actions</div></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <button style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 10px;border-radius:12px;border:1.5px solid var(--line-dark);background:var(--paper);cursor:pointer;transition:.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--line-dark)'">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#123163" stroke-width="1.8"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              <span style="font-size:.76rem;font-weight:600;color:var(--navy-900);">Approve Event</span>
+            </button>
+            <button style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 10px;border-radius:12px;border:1.5px solid var(--line-dark);background:var(--paper);cursor:pointer;transition:.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--line-dark)'">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#123163" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              <span style="font-size:.76rem;font-weight:600;color:var(--navy-900);">View Reports</span>
+            </button>
+            <button style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 10px;border-radius:12px;border:1.5px solid var(--line-dark);background:var(--paper);cursor:pointer;transition:.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--line-dark)'">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#123163" stroke-width="1.8"><path d="M12 2l2.5 6.5L21 9l-5 4.5L17.5 21 12 17l-5.5 4L8 13.5 3 9l6.5-.5z"/></svg>
+              <span style="font-size:.76rem;font-weight:600;color:var(--navy-900);">Nominate</span>
+            </button>
+            <button style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 10px;border-radius:12px;border:1.5px solid var(--line-dark);background:var(--paper);cursor:pointer;transition:.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--line-dark)'">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#123163" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+              <span style="font-size:.76rem;font-weight:600;color:var(--navy-900);">Notify Students</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM GRID -->
+    <div class="dash-grid-3">
+      <!-- Attendance Summary -->
       <div class="card">
-        <div class="card-head"><div class="card-title">Student Members</div><span class="card-action">View All</span></div>
-        <div class="progress-item">
-          <div class="progress-label"><span>AIML-A (3rd Yr)</span><span>48/60</span></div>
-          <div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div>
+        <div class="card-head"><div class="card-title">Attendance Summary</div><span class="card-action">Full Log</span></div>
+        <div class="attend-summary">
+          <div class="attend-box present"><span class="attend-box-val">89%</span><div class="attend-box-label">Present Rate</div></div>
+          <div class="attend-box absent"><span class="attend-box-val">11%</span><div class="attend-box-label">Absent Rate</div></div>
+          <div class="attend-box total"><span class="attend-box-val">24</span><div class="attend-box-label">Total Events</div></div>
         </div>
-        <div class="progress-item">
-          <div class="progress-label"><span>AIML-B (3rd Yr)</span><span>52/60</span></div>
-          <div class="progress-bar"><div class="progress-fill" style="width:87%"></div></div>
+        <div class="progress-item"><div class="progress-label"><span>Tech Symposium</span><span>94%</span></div><div class="progress-bar"><div class="progress-fill" style="width:94%"></div></div></div>
+        <div class="progress-item"><div class="progress-label"><span>AI Workshop</span><span>88%</span></div><div class="progress-bar"><div class="progress-fill" style="width:88%"></div></div></div>
+        <div class="progress-item"><div class="progress-label"><span>Hackathon</span><span>91%</span></div><div class="progress-bar"><div class="progress-fill" style="width:91%"></div></div></div>
+        <div class="progress-item"><div class="progress-label"><span>Guest Lecture</span><span>82%</span></div><div class="progress-bar"><div class="progress-fill" style="width:82%"></div></div></div>
+      </div>
+
+      <!-- Member Statistics -->
+      <div class="card">
+        <div class="card-head"><div class="card-title">Member Statistics</div><span class="card-action">Detail View</span></div>
+        <div class="progress-item"><div class="progress-label"><span>AIML 3rd Year</span><span>87 students</span></div><div class="progress-bar"><div class="progress-fill" style="width:87%"></div></div></div>
+        <div class="progress-item"><div class="progress-label"><span>AIML 2nd Year</span><span>72 students</span></div><div class="progress-bar"><div class="progress-fill" style="width:72%"></div></div></div>
+        <div class="progress-item"><div class="progress-label"><span>CS Students</span><span>54 students</span></div><div class="progress-bar"><div class="progress-fill" style="width:54%"></div></div></div>
+        <div class="progress-item"><div class="progress-label"><span>Data Science</span><span>34 students</span></div><div class="progress-bar"><div class="progress-fill" style="width:34%"></div></div></div>
+        <div style="margin-top:16px;padding:12px;background:var(--paper);border-radius:10px;border:1px solid var(--line-dark);">
+          <div style="font-family:var(--ff-mono);font-size:.65rem;color:var(--muted-dark);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;">Active / Total</div>
+          <div style="font-family:var(--ff-display);font-size:1.4rem;font-weight:700;color:var(--navy-950);">247 <span style="font-size:.9rem;color:var(--muted-dark);">/ 312 enrolled</span></div>
         </div>
-        <div class="progress-item">
-          <div class="progress-label"><span>AIML (2nd Yr)</span><span>62/80</span></div>
-          <div class="progress-bar"><div class="progress-fill" style="width:78%"></div></div>
+      </div>
+
+      <!-- Student Achievements -->
+      <div class="card" id="achievements">
+        <div class="card-head"><div class="card-title">Student Achievements</div><span class="card-action">Nominate</span></div>
+        <div class="ach-item">
+          <div class="ach-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+          <div class="ach-info"><b>Arjun Patil — 1st Place Hackathon</b><span>AIML 3rd Year · Hackathon 2026</span></div>
+        </div>
+        <div class="ach-item">
+          <div class="ach-icon"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 9l-5 4.5L17.5 21 12 17l-5.5 4L8 13.5 3 9l6.5-.5z"/></svg></div>
+          <div class="ach-info"><b>Riya Desai — Best Organiser</b><span>Technical Committee · Tech Symposium</span></div>
+        </div>
+        <div class="ach-item">
+          <div class="ach-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          <div class="ach-info"><b>Sneha Rao — Research Paper Published</b><span>AIML 4th Year · IEEE Conference</span></div>
+        </div>
+        <div class="ach-item">
+          <div class="ach-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <div class="ach-info"><b>Aman Kulkarni — Top Performer</b><span>100% attendance · Semester II</span></div>
         </div>
       </div>
     </div>
@@ -311,8 +345,9 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 const sidebar=document.getElementById('sidebar'),overlay=document.getElementById('sidebarOverlay'),hamburger=document.getElementById('hamburgerBtn');
 hamburger.addEventListener('click',()=>{sidebar.classList.toggle('open');overlay.classList.toggle('open');});
 overlay.addEventListener('click',()=>{sidebar.classList.remove('open');overlay.classList.remove('open');});
-document.querySelectorAll('.nav-item').forEach(item=>{ item.addEventListener('click',(e)=>{if(item.href&&item.href.includes('aimsa_landing'))return;e.preventDefault();document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));item.classList.add('active');});});
-document.querySelectorAll('.btn-sm').forEach(btn=>{btn.addEventListener('click',function(){const row=this.closest('.approval-item');const action=this.classList.contains('btn-approve')?'approved':'rejected';row.style.opacity='.5';row.style.pointerEvents='none';setTimeout(()=>{row.remove();},400);});});
+document.querySelectorAll('.nav-item').forEach(item=>{item.addEventListener('click',(e)=>{if(item.href&&(item.href.includes('aimsa_landing')||item.href.includes('faculty_dashboard')))return;e.preventDefault();document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));item.classList.add('active');});});
+document.querySelectorAll('.stat-val').forEach(el=>{const raw=el.textContent.replace(/,/g,'');const target=parseInt(raw.replace(/\D/g,''));if(isNaN(target))return;const suffix=el.textContent.replace(/[\d,]/g,'');let current=0;const step=Math.ceil(target/50);const timer=setInterval(()=>{current=Math.min(current+step,target);el.textContent=current.toLocaleString()+suffix;if(current>=target)clearInterval(timer);},25);});
+document.querySelectorAll('button[style*="Approve"],button[style*="Review"]').forEach(btn=>btn.addEventListener('click',()=>alert('Action recorded. Notification sent to event organiser.')));
 </script>
 </body>
 </html>

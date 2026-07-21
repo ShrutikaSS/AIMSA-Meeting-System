@@ -41,7 +41,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 .nav-badge{margin-left:auto;font-family:var(--ff-mono);font-size:.6rem;background:var(--accent);color:var(--white);padding:2px 7px;border-radius:999px;}
 .sidebar-footer{padding:16px 12px;border-top:1px solid var(--line);}
 .main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;}
-.topbar{background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line-dark);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.topbar{background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line-dark);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
 .topbar-left{display:flex;align-items:center;gap:14px;}
 .page-title{font-family:var(--ff-display);font-size:1.15rem;font-weight:700;}
 .breadcrumb{font-family:var(--ff-mono);font-size:.68rem;letter-spacing:.08em;color:var(--muted-dark);text-transform:uppercase;}
@@ -69,6 +69,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 .stat-label{font-size:.8rem;color:var(--muted-dark);margin-top:2px;}
 .stat-delta{font-family:var(--ff-mono);font-size:.65rem;margin-top:8px;display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:999px;}
 .stat-delta.up{background:rgba(34,197,94,.1);color:#16a34a;}
+.stat-delta.dn{background:rgba(239,68,68,.1);color:#dc2626;}
 .dash-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:24px;margin-bottom:24px;}
 .dash-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:24px;}
 .card{background:var(--white);border-radius:var(--radius);border:1px solid var(--line-dark);padding:24px;}
@@ -91,28 +92,37 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 .list-text{flex:1;}
 .list-text b{font-size:.88rem;display:block;margin-bottom:2px;}
 .list-text span{font-size:.76rem;color:var(--muted-dark);font-family:var(--ff-mono);}
-.progress-item{margin-bottom:16px;}
-.progress-label{display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:6px;}
-.progress-label span:last-child{font-family:var(--ff-mono);color:var(--accent);}
-.progress-bar{height:6px;background:var(--paper-dim);border-radius:999px;overflow:hidden;}
-.progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-soft));}
-/* Gallery grid */
-.gallery-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-.gal-thumb{
-  aspect-ratio:1;border-radius:10px;overflow:hidden;position:relative;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  transition:transform .2s ease,box-shadow .2s ease;
-}
-.gal-thumb:hover{transform:scale(1.04);box-shadow:0 8px 20px -8px var(--accent-glow);}
-.gal-thumb:nth-child(1){background:linear-gradient(135deg,#123163,#3E8BFF);}
-.gal-thumb:nth-child(2){background:linear-gradient(135deg,#1a4180,#123163);}
-.gal-thumb:nth-child(3){background:linear-gradient(135deg,#3E8BFF,#081733);}
-.gal-thumb:nth-child(4){background:linear-gradient(135deg,#0c2148,#3E8BFF);}
-.gal-thumb:nth-child(5){background:linear-gradient(135deg,#081733,#1a4180);}
-.gal-thumb:nth-child(6){background:linear-gradient(135deg,#3E8BFF,#123163);}
-.gal-label{color:var(--white);font-family:var(--ff-mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;position:absolute;bottom:8px;left:8px;}
+/* Announcement card */
+.ann-card{padding:16px;border-radius:12px;border:1px solid var(--line-dark);background:var(--paper);margin-bottom:10px;transition:.2s ease;position:relative;overflow:hidden;}
+.ann-card:hover{border-color:var(--accent);background:var(--white);transform:translateX(4px);}
+.ann-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);border-radius:999px;}
+.ann-card.urgent::before{background:#f97316;}
+.ann-card.important::before{background:#22c55e;}
+.ann-title{font-size:.88rem;font-weight:600;margin-bottom:4px;}
+.ann-meta{font-family:var(--ff-mono);font-size:.68rem;color:var(--muted-dark);}
+/* Approval item */
+.approval-item{display:flex;align-items:center;gap:14px;padding:14px;border-radius:12px;border:1px solid var(--line-dark);background:var(--paper);transition:.2s ease;margin-bottom:10px;}
+.approval-item:hover{border-color:var(--accent);background:var(--white);}
+.approval-info{flex:1;}
+.approval-info b{font-size:.88rem;display:block;margin-bottom:2px;}
+.approval-info span{font-size:.75rem;color:var(--muted-dark);font-family:var(--ff-mono);}
+.approval-actions{display:flex;gap:8px;}
+.approve-btn{background:rgba(34,197,94,.1);color:#16a34a;border:1px solid rgba(34,197,94,.2);border-radius:6px;padding:5px 12px;font-size:.72rem;cursor:pointer;font-family:inherit;transition:.2s;}
+.approve-btn:hover{background:#16a34a;color:var(--white);}
+.reject-btn{background:rgba(239,68,68,.08);color:#dc2626;border:1px solid rgba(239,68,68,.15);border-radius:6px;padding:5px 12px;font-size:.72rem;cursor:pointer;font-family:inherit;transition:.2s;}
+.reject-btn:hover{background:#dc2626;color:var(--white);}
+/* Member card */
+.member-card{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;border:1px solid var(--line-dark);background:var(--paper);transition:.2s;margin-bottom:8px;}
+.member-card:hover{border-color:var(--accent);background:var(--white);}
+.member-avatar{width:36px;height:36px;border-radius:50%;background:conic-gradient(from 180deg,var(--accent),var(--navy-700),var(--accent));padding:2px;flex-shrink:0;}
+.member-avatar .in{width:100%;height:100%;border-radius:50%;background:var(--navy-800);display:flex;align-items:center;justify-content:center;font-family:var(--ff-display);font-weight:700;color:var(--white);font-size:.72rem;}
+.member-info{flex:1;}
+.member-info b{font-size:.85rem;display:block;}
+.member-info span{font-size:.72rem;color:var(--muted-dark);font-family:var(--ff-mono);}
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(5,13,26,.5);z-index:99;}
 .btn{display:inline-flex;align-items:center;gap:8px;justify-content:center;padding:10px 20px;border-radius:999px;font-weight:600;font-size:.84rem;border:1px solid transparent;transition:all .25s ease;cursor:pointer;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#2563eb);color:var(--white);box-shadow:0 8px 20px -8px var(--accent-glow);}
+.btn-primary:hover{transform:translateY(-2px);}
 .btn-ghost{background:transparent;border-color:var(--line-dark);color:var(--navy-800);}
 .btn-ghost:hover{background:var(--paper-dim);}
 @media(max-width:1100px){.stats-grid{grid-template-columns:repeat(2,1fr);}.dash-grid{grid-template-columns:1fr;}.dash-grid-3{grid-template-columns:1fr 1fr;}}
@@ -122,6 +132,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 </head>
 <body>
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-brand">
     <div class="brand-logo"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 9l-5 4.5L17.5 21 12 17l-5.5 4L8 13.5 3 9l6.5-.5z"/></svg></div>
@@ -129,20 +140,35 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   </div>
   <div class="sidebar-role">
     <div class="role-avatar"><div class="in">AP</div></div>
-    <div class="role-info"><b>Vikram Mehta</b><span>Association President</span></div>
+    <div class="role-info"><b>Karan Mehta</b><span>Association President</span></div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-section-label">Main</div>
-    <a class="nav-item active" href="#"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
-    <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Create Events</a>
+    <a class="nav-item active" href="president_dashboard.html">
+      <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard
+    </a>
     <div class="nav-section-label">Management</div>
-    <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Assign Committee</a>
-    <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2M10 11a4 4 0 100-8 4 4 0 000 8z"/></svg>Member Management</a>
-    <div class="nav-section-label">Content</div>
-    <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Event Reports</a>
-    <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>Gallery</a>
+    <a class="nav-item" href="#committee">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Committee Members
+    </a>
+    <a class="nav-item" href="#registrations">
+      <svg class="nav-icon" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Event Registrations
+    </a>
+    <a class="nav-item" href="#approvals">
+      <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Pending Approvals
+      <span class="nav-badge">5</span>
+    </a>
+    <a class="nav-item" href="#upcoming">
+      <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Upcoming Events
+    </a>
     <div class="nav-section-label">Communication</div>
-    <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>Notifications<span class="nav-badge">6</span></a>
+    <a class="nav-item" href="#announcements">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M22 4s-3.5 3-10 3S2 4 2 4v6c0 5.52 4.48 10 10 10s10-4.48 10-10V4z"/></svg>Announcements
+    </a>
+    <a class="nav-item" href="#notifications">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>Notifications
+      <span class="nav-badge">6</span>
+    </a>
     <div class="nav-section-label">Account</div>
     <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/></svg>Profile</a>
   </nav>
@@ -155,7 +181,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   <div class="topbar">
     <div class="topbar-left">
       <button class="hamburger-btn" id="hamburgerBtn"><span></span><span></span><span></span></button>
-      <div><div class="page-title">Dashboard</div><div class="breadcrumb">Association President / Overview</div></div>
+      <div><div class="page-title">President Dashboard</div><div class="breadcrumb">Association President / Overview</div></div>
     </div>
     <div class="topbar-right">
       <button class="topbar-icon-btn"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
@@ -166,121 +192,119 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 
   <div class="content">
     <div class="section-eyebrow">Association President</div>
-    <div class="content-title">Welcome back, Vikram 👋</div>
-    <div class="content-sub">Association overview & leadership dashboard — July 21, 2026</div>
+    <div class="content-title">Hey, Karan! ⭐</div>
+    <div class="content-sub">AIMSA leadership dashboard — July 21, 2026</div>
 
+    <!-- STATS -->
     <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-        <span class="stat-val">6</span>
-        <div class="stat-label">Events Created</div>
-        <span class="stat-delta up">↑ 2 this month</span>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
-        <span class="stat-val">247</span>
-        <div class="stat-label">Total Members</div>
-        <span class="stat-delta up">↑ Growing</span>
-      </div>
-      <div class="stat-card">
+      <div class="stat-card" id="committee">
         <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
         <span class="stat-val">35</span>
         <div class="stat-label">Committee Members</div>
-        <span class="stat-delta up">↑ 5 committees</span>
+        <span class="stat-delta up">↑ 5 committees active</span>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div>
-        <span class="stat-val">48</span>
-        <div class="stat-label">Gallery Photos</div>
-        <span class="stat-delta up">↑ 8 new uploads</span>
+      <div class="stat-card" id="registrations">
+        <div class="stat-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+        <span class="stat-val">1,284</span>
+        <div class="stat-label">Event Registrations</div>
+        <span class="stat-delta up">↑ 146 this week</span>
+      </div>
+      <div class="stat-card" id="approvals">
+        <div class="stat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <span class="stat-val">5</span>
+        <div class="stat-label">Pending Approvals</div>
+        <span class="stat-delta dn">↓ Action required</span>
+      </div>
+      <div class="stat-card" id="upcoming">
+        <div class="stat-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <span class="stat-val">4</span>
+        <div class="stat-label">Upcoming Events</div>
+        <span class="stat-delta up">↑ Next: Jul 28</span>
       </div>
     </div>
 
+    <!-- MAIN GRID -->
     <div class="dash-grid">
+      <!-- Pending Approvals -->
       <div class="card">
-        <div class="card-head"><div class="card-title">My Events</div><span class="card-action">Create New</span></div>
-        <table class="data-table">
-          <thead><tr><th>Event</th><th>Date</th><th>Registrations</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td><b>Tech Symposium 2026</b></td><td>Jul 28</td><td>142</td><td><span class="badge badge-green">Approved</span></td></tr>
-            <tr><td><b>AI Workshop Series</b></td><td>Aug 3</td><td>67</td><td><span class="badge badge-green">Approved</span></td></tr>
-            <tr><td><b>Hackathon 2026</b></td><td>Aug 15</td><td>89</td><td><span class="badge badge-blue">Pending</span></td></tr>
-            <tr><td><b>Cultural Night</b></td><td>Aug 22</td><td>203</td><td><span class="badge badge-green">Approved</span></td></tr>
-            <tr><td><b>ML Guest Lecture</b></td><td>Sep 5</td><td>41</td><td><span class="badge badge-orange">Review</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:24px;">
-        <div class="card">
-          <div class="card-head"><div class="card-title">Committee Assignment</div><span class="card-action">Assign</span></div>
-          <div class="list-item">
-            <div class="list-dot"></div>
-            <div class="list-text"><b>Technical Committee</b><span>Lead: Riya Desai · 12 members</span></div>
-            <span style="font-family:var(--ff-mono);font-size:.65rem;color:var(--accent);">Active</span>
-          </div>
-          <div class="list-item">
-            <div class="list-dot"></div>
-            <div class="list-text"><b>Cultural Committee</b><span>Lead: Aman Kulkarni · 8 members</span></div>
-            <span style="font-family:var(--ff-mono);font-size:.65rem;color:var(--accent);">Active</span>
-          </div>
-          <div class="list-item">
-            <div class="list-dot"></div>
-            <div class="list-text"><b>Media & PR</b><span>Lead: Dev Patil · 6 members</span></div>
-            <span style="font-family:var(--ff-mono);font-size:.65rem;color:var(--accent);">Active</span>
-          </div>
-          <div class="list-item">
-            <div class="list-dot" style="background:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.18);"></div>
-            <div class="list-text"><b>Finance Committee</b><span>No lead assigned · 4 members</span></div>
-            <span style="font-family:var(--ff-mono);font-size:.65rem;color:#ea580c;">Forming</span>
-          </div>
+        <div class="card-head"><div class="card-title">Pending Approvals</div><span class="card-action">View All</span></div>
+        <div class="approval-item">
+          <div class="approval-info"><b>Robotics Workshop — Aug 10</b><span>Proposed by Tech Committee · Budget: ₹12,000</span></div>
+          <div class="approval-actions"><button class="approve-btn">Approve</button><button class="reject-btn">Reject</button></div>
         </div>
-        <div class="card">
-          <div class="card-head"><div class="card-title">Notifications</div><span class="card-action">View All</span></div>
-          <div class="list-item">
-            <div class="list-dot"></div>
-            <div class="list-text"><b>Hackathon 2026 pending approval</b><span>Faculty review needed · 1 hr ago</span></div>
-          </div>
-          <div class="list-item">
-            <div class="list-dot"></div>
-            <div class="list-text"><b>New registrations for Tech Symposium</b><span>+12 today · 3 hrs ago</span></div>
-          </div>
-          <div class="list-item">
-            <div class="list-dot" style="background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18);"></div>
-            <div class="list-text"><b>Cultural Night approved</b><span>All clearances received · Yesterday</span></div>
-          </div>
+        <div class="approval-item">
+          <div class="approval-info"><b>Cultural Night 2026 — Aug 20</b><span>Proposed by Cultural Committee · Budget: ₹25,000</span></div>
+          <div class="approval-actions"><button class="approve-btn">Approve</button><button class="reject-btn">Reject</button></div>
+        </div>
+        <div class="approval-item">
+          <div class="approval-info"><b>Alumni Connect — Sep 5</b><span>Proposed by Outreach Committee · Budget: ₹8,000</span></div>
+          <div class="approval-actions"><button class="approve-btn">Approve</button><button class="reject-btn">Reject</button></div>
+        </div>
+        <div class="approval-item">
+          <div class="approval-info"><b>Media Partnership — MNC Brand</b><span>Sponsorship proposal · Outreach Committee</span></div>
+          <div class="approval-actions"><button class="approve-btn">Approve</button><button class="reject-btn">Reject</button></div>
+        </div>
+        <div class="approval-item">
+          <div class="approval-info"><b>New Committee Member — Harsh Shah</b><span>Finance Committee · Application pending</span></div>
+          <div class="approval-actions"><button class="approve-btn">Accept</button><button class="reject-btn">Decline</button></div>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div style="display:flex;flex-direction:column;gap:24px;">
+        <!-- Notifications -->
+        <div class="card" id="notifications">
+          <div class="card-head"><div class="card-title">Notifications</div><span class="card-action">Mark Read</span></div>
+          <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>5 approvals pending your action</b><span>Review required · 30 min ago</span></div></div>
+          <div class="list-item"><div class="list-dot" style="background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18);"></div><div class="list-text"><b>Tech Symposium registration: 148 confirmed</b><span>Event on Jul 28 · 1 hr ago</span></div></div>
+          <div class="list-item"><div class="list-dot" style="background:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.18);"></div><div class="list-text"><b>Hackathon 2026 sponsorship received</b><span>₹50,000 from TechCorp · 2 hrs ago</span></div></div>
+          <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>Faculty Coordinator review requested</b><span>Monthly report · Jul 25 deadline</span></div></div>
+          <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>2 committee vacancies to fill</b><span>Finance & Outreach · Posted today</span></div></div>
+          <div class="list-item"><div class="list-dot" style="background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18);"></div><div class="list-text"><b>AI Workshop registration: 67 students</b><span>33 seats remaining · Yesterday</span></div></div>
         </div>
       </div>
     </div>
 
+    <!-- BOTTOM GRID -->
     <div class="dash-grid-3">
+      <!-- Committee Members -->
       <div class="card">
-        <div class="card-head"><div class="card-title">Event Reports</div><span class="card-action">Download</span></div>
-        <div class="progress-item">
-          <div class="progress-label"><span>Tech Symposium 2025</span><span>96%</span></div>
-          <div class="progress-bar"><div class="progress-fill" style="width:96%"></div></div>
-        </div>
-        <div class="progress-item">
-          <div class="progress-label"><span>Hackathon 2025</span><span>89%</span></div>
-          <div class="progress-bar"><div class="progress-fill" style="width:89%"></div></div>
-        </div>
-        <div class="progress-item">
-          <div class="progress-label"><span>Workshop Series</span><span>82%</span></div>
-          <div class="progress-bar"><div class="progress-fill" style="width:82%"></div></div>
-        </div>
-        <div class="progress-item">
-          <div class="progress-label"><span>Cultural Night</span><span>94%</span></div>
-          <div class="progress-bar"><div class="progress-fill" style="width:94%"></div></div>
-        </div>
+        <div class="card-head"><div class="card-title">Committee Members</div><span class="card-action">Manage</span></div>
+        <div class="member-card"><div class="member-avatar"><div class="in">RD</div></div><div class="member-info"><b>Riya Desai</b><span>Technical Committee Lead</span></div><span class="badge badge-green">Lead</span></div>
+        <div class="member-card"><div class="member-avatar"><div class="in">AK</div></div><div class="member-info"><b>Aman Kulkarni</b><span>Cultural Committee Lead</span></div><span class="badge badge-blue">Lead</span></div>
+        <div class="member-card"><div class="member-avatar"><div class="in">PJ</div></div><div class="member-info"><b>Priya Joshi</b><span>Media & PR Committee</span></div><span class="badge badge-green">Member</span></div>
+        <div class="member-card"><div class="member-avatar"><div class="in">DP</div></div><div class="member-info"><b>Dev Patil</b><span>Finance Committee</span></div><span class="badge badge-orange">Forming</span></div>
+        <div class="member-card"><div class="member-avatar"><div class="in">SR</div></div><div class="member-info"><b>Sneha Rao</b><span>Outreach Committee Lead</span></div><span class="badge badge-green">Lead</span></div>
       </div>
-      <div class="card" style="grid-column:span 2;">
-        <div class="card-head"><div class="card-title">Gallery</div><span class="card-action">Upload Photos</span></div>
-        <div class="gallery-mini">
-          <div class="gal-thumb"><span class="gal-label">Tech Symposium</span></div>
-          <div class="gal-thumb"><span class="gal-label">Hackathon</span></div>
-          <div class="gal-thumb"><span class="gal-label">Workshop</span></div>
-          <div class="gal-thumb"><span class="gal-label">Cultural Night</span></div>
-          <div class="gal-thumb"><span class="gal-label">Guest Lecture</span></div>
-          <div class="gal-thumb"><span class="gal-label">Orientation</span></div>
+
+      <!-- Upcoming Events -->
+      <div class="card">
+        <div class="card-head"><div class="card-title">Upcoming Events</div><span class="card-action">Create Event</span></div>
+        <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>Tech Symposium 2026</b><span>Jul 28 · 148 registered · Auditorium</span></div></div>
+        <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>AI Workshop Series</b><span>Aug 3 · 67 registered · Lab 402</span></div></div>
+        <div class="list-item"><div class="list-dot" style="background:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.18);"></div><div class="list-text"><b>Hackathon 2026</b><span>Aug 15 · 203 registered · Online + Campus</span></div></div>
+        <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>Guest Lecture: ML in Healthcare</b><span>Aug 22 · 89 registered · Seminar Hall</span></div></div>
+        <button class="btn btn-primary" style="width:100%;margin-top:16px;justify-content:center;">+ Create New Event</button>
+      </div>
+
+      <!-- Announcements -->
+      <div class="card" id="announcements">
+        <div class="card-head"><div class="card-title">Announcements</div><span class="card-action">Post New</span></div>
+        <div class="ann-card">
+          <div class="ann-title">🏆 Hackathon 2026 registrations open!</div>
+          <div class="ann-meta">Posted by President · Jul 18 · 203 views</div>
+        </div>
+        <div class="ann-card urgent">
+          <div class="ann-title">⚡ Deadline: Club fee payment — Jul 31</div>
+          <div class="ann-meta">Finance Committee · Jul 15 · Pinned</div>
+        </div>
+        <div class="ann-card important">
+          <div class="ann-title">✅ Tech Symposium venue confirmed</div>
+          <div class="ann-meta">Posted by President · Jul 14 · 187 views</div>
+        </div>
+        <div class="ann-card">
+          <div class="ann-title">📢 New committee vacancies — Apply now</div>
+          <div class="ann-meta">Outreach Committee · Jul 10 · 92 views</div>
         </div>
       </div>
     </div>
@@ -291,7 +315,10 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 const sidebar=document.getElementById('sidebar'),overlay=document.getElementById('sidebarOverlay'),hamburger=document.getElementById('hamburgerBtn');
 hamburger.addEventListener('click',()=>{sidebar.classList.toggle('open');overlay.classList.toggle('open');});
 overlay.addEventListener('click',()=>{sidebar.classList.remove('open');overlay.classList.remove('open');});
-document.querySelectorAll('.nav-item').forEach(item=>{item.addEventListener('click',(e)=>{if(item.href&&item.href.includes('aimsa_landing'))return;e.preventDefault();document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));item.classList.add('active');});});
+document.querySelectorAll('.nav-item').forEach(item=>{item.addEventListener('click',(e)=>{if(item.href&&(item.href.includes('aimsa_landing')||item.href.includes('president_dashboard')))return;e.preventDefault();document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));item.classList.add('active');});});
+document.querySelectorAll('.stat-val').forEach(el=>{const raw=el.textContent.replace(/,/g,'');const target=parseInt(raw.replace(/\D/g,''));if(isNaN(target))return;const suffix=el.textContent.replace(/[\d,]/g,'');let current=0;const step=Math.ceil(target/50);const timer=setInterval(()=>{current=Math.min(current+step,target);el.textContent=current.toLocaleString()+suffix;if(current>=target)clearInterval(timer);},25);});
+document.querySelectorAll('.approve-btn').forEach(btn=>btn.addEventListener('click',()=>alert('Request approved! Committee and HOD notified.')));
+document.querySelectorAll('.reject-btn').forEach(btn=>btn.addEventListener('click',()=>alert('Request declined. Proposer notified with feedback.')));
 </script>
 </body>
 </html>
