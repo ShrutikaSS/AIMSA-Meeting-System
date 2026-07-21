@@ -125,6 +125,28 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 .btn-primary:hover{transform:translateY(-2px);}
 .btn-ghost{background:transparent;border-color:var(--line-dark);color:var(--navy-800);}
 .btn-ghost:hover{background:var(--paper-dim);}
+
+/* Drawer Panel styles */
+.drawer{
+  position:fixed; top:0; right:-450px; width:min(420px, 100%); height:100vh;
+  background:var(--white); border-left:1px solid var(--line-dark); z-index:200;
+  transition:right 0.3s cubic-bezier(0.16, 1, 0.3, 1); padding:30px;
+  display:flex; flex-direction:column; gap:20px; overflow-y:auto;
+  box-shadow: -10px 0 30px -10px rgba(0,0,0,0.15);
+}
+.drawer.open{right:0;}
+.drawer-header{display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line-dark); padding-bottom:15px; margin-bottom:10px;}
+.drawer-title{font-family:var(--ff-display); font-size:1.15rem; font-weight:700;}
+.drawer-close{background:none; border:none; font-size:1.5rem; color:var(--muted-dark); cursor:pointer;}
+.form-group{display:flex; flex-direction:column; gap:6px; margin-bottom:12px;}
+.form-group label{font-size:0.8rem; font-weight:600; color:var(--navy-950);}
+.form-group input, .form-group select, .form-group textarea{
+  width:100%; padding:10px 12px; border-radius:8px; border:1.5px solid var(--line-dark); font-size:0.88rem; font-family:inherit;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus{
+  outline:none; border-color:var(--accent);
+}
+
 @media(max-width:1100px){.stats-grid{grid-template-columns:repeat(2,1fr);}.dash-grid{grid-template-columns:1fr;}.dash-grid-3{grid-template-columns:1fr 1fr;}}
 @media(max-width:768px){.sidebar{transform:translateX(-100%);}.sidebar.open{transform:translateX(0);}.sidebar-overlay.open{display:block;}.main{margin-left:0;}.hamburger-btn{display:flex;}.content{padding:20px;}.stats-grid{grid-template-columns:1fr 1fr;}.dash-grid-3{grid-template-columns:1fr;}}
 @media(max-width:480px){.stats-grid{grid-template-columns:1fr;}}
@@ -311,14 +333,209 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   </div>
 </div>
 
+<!-- ── CREATE EVENT DRAWER ── -->
+<div class="drawer" id="createEventDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Create Event</div>
+    <button class="drawer-close" onclick="closeDrawer('createEventDrawer')">&times;</button>
+  </div>
+  <div class="form-group">
+    <label>Event Name</label>
+    <input type="text" id="evtName" placeholder="e.g. AI & Robotics Symposium">
+  </div>
+  <div class="form-group">
+    <label>Category</label>
+    <select id="evtCategory">
+      <option value="Workshop">Workshop</option>
+      <option value="Symposium">Symposium</option>
+      <option value="Hackathon">Hackathon</option>
+      <option value="Guest Lecture">Guest Lecture</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>Date</label>
+    <input type="date" id="evtDate">
+  </div>
+  <div class="form-group">
+    <label>Time</label>
+    <input type="time" id="evtTime">
+  </div>
+  <div class="form-group">
+    <label>Venue</label>
+    <input type="text" id="evtVenue" placeholder="e.g. Seminar Hall 3">
+  </div>
+  <div class="form-group">
+    <label>Description</label>
+    <textarea id="evtDescription" rows="3" placeholder="Brief event description..."></textarea>
+  </div>
+  <div class="form-group">
+    <label>Maximum Participants</label>
+    <input type="number" id="evtMaxParticipants" value="100">
+  </div>
+  <div class="form-group">
+    <label>Registration Deadline</label>
+    <input type="date" id="evtDeadline">
+  </div>
+  <div class="form-group">
+    <label>Faculty Coordinator</label>
+    <select id="evtCoordinator">
+      <option value="Prof. Meera Nair">Prof. Meera Nair</option>
+      <option value="Dr. Anjali Sharma">Dr. Anjali Sharma</option>
+    </select>
+  </div>
+  <button class="btn btn-primary" style="width:100%; margin-top:10px;" id="saveEventBtn">Publish Event</button>
+</div>
+
+<!-- ── COMMITTEE RESPONSIBILITY DRAWER ── -->
+<div class="drawer" id="commResponsibilityDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Assign Responsibilities</div>
+    <button class="drawer-close" onclick="closeDrawer('commResponsibilityDrawer')">&times;</button>
+  </div>
+  <div class="form-group">
+    <label>Select Committee Member</label>
+    <select id="commMemberSelect">
+      <!-- Populated dynamically -->
+    </select>
+  </div>
+  <div class="form-group">
+    <label>Assign Responsibility / Action Plan</label>
+    <textarea id="commResponsibilityText" rows="4" placeholder="Enter assigned tasks..."></textarea>
+  </div>
+  <button class="btn btn-primary" style="width:100%; margin-top:10px;" id="saveResponsibilityBtn">Assign Task</button>
+</div>
+
 <script>
 const sidebar=document.getElementById('sidebar'),overlay=document.getElementById('sidebarOverlay'),hamburger=document.getElementById('hamburgerBtn');
 hamburger.addEventListener('click',()=>{sidebar.classList.toggle('open');overlay.classList.toggle('open');});
-overlay.addEventListener('click',()=>{sidebar.classList.remove('open');overlay.classList.remove('open');});
-document.querySelectorAll('.nav-item').forEach(item=>{item.addEventListener('click',(e)=>{if(item.href&&(item.href.includes('aimsa_landing')||item.href.includes('president_dashboard')))return;e.preventDefault();document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));item.classList.add('active');});});
-document.querySelectorAll('.stat-val').forEach(el=>{const raw=el.textContent.replace(/,/g,'');const target=parseInt(raw.replace(/\D/g,''));if(isNaN(target))return;const suffix=el.textContent.replace(/[\d,]/g,'');let current=0;const step=Math.ceil(target/50);const timer=setInterval(()=>{current=Math.min(current+step,target);el.textContent=current.toLocaleString()+suffix;if(current>=target)clearInterval(timer);},25);});
-document.querySelectorAll('.approve-btn').forEach(btn=>btn.addEventListener('click',()=>alert('Request approved! Committee and HOD notified.')));
-document.querySelectorAll('.reject-btn').forEach(btn=>btn.addEventListener('click',()=>alert('Request declined. Proposer notified with feedback.')));
+overlay.addEventListener('click',()=>{sidebar.classList.remove('open');overlay.classList.remove('open');closeAllDrawers();});
+
+function openDrawer(id) {
+  closeAllDrawers();
+  document.getElementById(id).classList.add('open');
+  overlay.classList.add('open');
+}
+
+function closeDrawer(id) {
+  document.getElementById(id).classList.remove('open');
+  overlay.classList.remove('open');
+}
+
+function closeAllDrawers() {
+  document.querySelectorAll('.drawer').forEach(d => d.classList.remove('open'));
+}
+
+// Check logged in user session
+let currentUser = JSON.parse(sessionStorage.getItem('current_user')) || {
+  email: 'president@zealeducation.com',
+  name: 'Karan Mehta',
+  role: 'Association President'
+};
+
+document.querySelector('.content-title').innerHTML = `Welcome back, ${currentUser.name.split(' ')[0]}! 👋`;
+
+// Handle Event Creation (Publish Event)
+document.getElementById('saveEventBtn').addEventListener('click', () => {
+  const name = document.getElementById('evtName').value.trim();
+  const cat = document.getElementById('evtCategory').value;
+  const date = document.getElementById('evtDate').value;
+  const time = document.getElementById('evtTime').value;
+  const venue = document.getElementById('evtVenue').value.trim();
+  const desc = document.getElementById('evtDescription').value.trim();
+  const max = document.getElementById('evtMaxParticipants').value;
+  const dl = document.getElementById('evtDeadline').value;
+  const coordinator = document.getElementById('evtCoordinator').value;
+
+  if (!name || !date || !time || !venue || !desc || !dl) {
+    alert('Please fill out all event fields.');
+    return;
+  }
+
+  // Save new event to localStorage
+  const events = JSON.parse(localStorage.getItem('aimsa_published_events')) || [];
+  events.push({name, cat, date, time, venue, desc, max, dl, coordinator});
+  localStorage.setItem('aimsa_published_events', JSON.stringify(events));
+
+  // Update stats counters
+  const approvedStat = document.querySelector('#upcomingEvents .stat-val');
+  if (approvedStat) {
+    approvedStat.textContent = parseInt(approvedStat.textContent) + 1;
+  }
+
+  closeDrawer('createEventDrawer');
+  alert('Event successfully proposed and published! Student notifications sent.');
+});
+
+// Event Proposal buttons trigger create drawer
+document.getElementById('navEvents').addEventListener('click', (e) => {
+  e.preventDefault();
+  openDrawer('createEventDrawer');
+});
+document.getElementById('proposeEventBtn').addEventListener('click', () => {
+  openDrawer('createEventDrawer');
+});
+
+// Committee list rendering
+function renderCommitteeList() {
+  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
+  const select = document.getElementById('commMemberSelect');
+  select.innerHTML = '';
+  users.filter(u => u.role === 'Committee Member' || u.committeeDesignation).forEach(u => {
+    select.innerHTML += `<option value="${u.email}">${u.name} (${u.committeeDesignation || 'Member'})</option>`;
+  });
+}
+
+document.getElementById('navCommittee').addEventListener('click', (e) => {
+  e.preventDefault();
+  renderCommitteeList();
+  openDrawer('commResponsibilityDrawer');
+});
+document.getElementById('committeeCard').addEventListener('click', () => {
+  renderCommitteeList();
+  openDrawer('commResponsibilityDrawer');
+});
+
+document.getElementById('saveResponsibilityBtn').addEventListener('click', () => {
+  const email = document.getElementById('commMemberSelect').value;
+  const resp = document.getElementById('commResponsibilityText').value.trim();
+
+  if(!resp) {
+    alert('Please enter responsibilities to assign.');
+    return;
+  }
+
+  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
+  const idx = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+  if (idx !== -1) {
+    users[idx].committeeResponsibility = resp;
+    localStorage.setItem('aimsa_users', JSON.stringify(users));
+    alert('Responsibilities successfully assigned to the committee member!');
+    closeDrawer('commResponsibilityDrawer');
+  }
+});
+
+// Sync default buttons
+document.querySelectorAll('.approve-btn').forEach(btn=>btn.addEventListener('click',()=>alert('Event request approved! Notification sent.')));
+document.querySelectorAll('.reject-btn').forEach(btn=>btn.addEventListener('click',()=>alert('Event request rejected. Notification sent.')));
+
+// Animation stats counter
+document.querySelectorAll('.stat-val').forEach(el=>{
+  const raw=el.textContent.replace(/,/g,'');
+  const target=parseInt(raw.replace(/\D/g,''));
+  if(isNaN(target))return;
+  const suffix=el.textContent.replace(/[\d,]/g,'');
+  let current=0;const step=Math.ceil(target/50);
+  const timer=setInterval(()=>{current=Math.min(current+step,target);el.textContent=current.toLocaleString()+suffix;if(current>=target)clearInterval(timer);},25);
+});
+
+document.querySelectorAll('.nav-item').forEach(item=>{
+  item.addEventListener('click',(e)=>{
+    if(item.href&&(item.href.includes('aimsa_landing')||item.href.includes('president_dashboard')))return;
+    e.preventDefault();
+    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
 </script>
 </body>
 </html>

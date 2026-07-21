@@ -124,6 +124,28 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 .btn-primary:hover{transform:translateY(-2px);}
 .btn-ghost{background:transparent;border-color:var(--line-dark);color:var(--navy-800);}
 .btn-ghost:hover{background:var(--paper-dim);}
+
+/* Drawer Panel styles */
+.drawer{
+  position:fixed; top:0; right:-450px; width:min(420px, 100%); height:100vh;
+  background:var(--white); border-left:1px solid var(--line-dark); z-index:200;
+  transition:right 0.3s cubic-bezier(0.16, 1, 0.3, 1); padding:30px;
+  display:flex; flex-direction:column; gap:20px; overflow-y:auto;
+  box-shadow: -10px 0 30px -10px rgba(0,0,0,0.15);
+}
+.drawer.open{right:0;}
+.drawer-header{display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line-dark); padding-bottom:15px; margin-bottom:10px;}
+.drawer-title{font-family:var(--ff-display); font-size:1.15rem; font-weight:700;}
+.drawer-close{background:none; border:none; font-size:1.5rem; color:var(--muted-dark); cursor:pointer;}
+.form-group{display:flex; flex-direction:column; gap:6px; margin-bottom:12px;}
+.form-group label{font-size:0.8rem; font-weight:600; color:var(--navy-950);}
+.form-group input, .form-group select, .form-group textarea{
+  width:100%; padding:10px 12px; border-radius:8px; border:1.5px solid var(--line-dark); font-size:0.88rem; font-family:inherit;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus{
+  outline:none; border-color:var(--accent);
+}
+
 @media(max-width:1100px){.stats-grid{grid-template-columns:repeat(2,1fr);}.dash-grid{grid-template-columns:1fr;}.dash-grid-3{grid-template-columns:1fr 1fr;}}
 @media(max-width:768px){.sidebar{transform:translateX(-100%);}.sidebar.open{transform:translateX(0);}.sidebar-overlay.open{display:block;}.main{margin-left:0;}.hamburger-btn{display:flex;}.content{padding:20px;}.stats-grid{grid-template-columns:1fr 1fr;}.dash-grid-3{grid-template-columns:1fr;}.cert-grid{grid-template-columns:1fr;}}
 @media(max-width:480px){.stats-grid{grid-template-columns:1fr;}}
@@ -328,14 +350,179 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   </div>
 </div>
 
+<!-- ── MARK ATTENDANCE DRAWER ── -->
+<div class="drawer" id="markAttendanceDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Mark Attendance</div>
+    <button class="drawer-close" onclick="closeDrawer('markAttendanceDrawer')">&times;</button>
+  </div>
+  <div class="form-group">
+    <label>Select Event</label>
+    <select id="attendEventSelect">
+      <option value="Tech Symposium 2026">Tech Symposium 2026</option>
+      <option value="AI Workshop Series">AI Workshop Series</option>
+      <option value="Hackathon 2026">Hackathon 2026</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>Select Student</label>
+    <select id="attendStudentSelect">
+      <!-- Populated dynamically -->
+    </select>
+  </div>
+  <div class="form-group">
+    <label>Status</label>
+    <select id="attendStatusSelect">
+      <option value="Present">Present</option>
+      <option value="Absent">Absent</option>
+    </select>
+  </div>
+  <button class="btn btn-primary" style="width:100%; margin-top:10px;" id="saveAttendanceBtn">Save Attendance Record</button>
+
+  <div style="margin-top:20px; flex:1; overflow-y:auto;">
+    <h4>Submitted Records</h4>
+    <div id="attendanceRecordsContainer" style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+      <!-- Populated dynamically -->
+    </div>
+  </div>
+</div>
+
 <script>
 const sidebar=document.getElementById('sidebar'),overlay=document.getElementById('sidebarOverlay'),hamburger=document.getElementById('hamburgerBtn');
 hamburger.addEventListener('click',()=>{sidebar.classList.toggle('open');overlay.classList.toggle('open');});
-overlay.addEventListener('click',()=>{sidebar.classList.remove('open');overlay.classList.remove('open');});
-document.querySelectorAll('.nav-item').forEach(item=>{item.addEventListener('click',(e)=>{if(item.href&&(item.href.includes('aimsa_landing')||item.href.includes('committee_dashboard')))return;e.preventDefault();document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));item.classList.add('active');});});
-document.querySelectorAll('.stat-val').forEach(el=>{const raw=el.textContent.replace(/,/g,'');const target=parseInt(raw.replace(/\D/g,''));if(isNaN(target))return;const suffix=el.textContent.replace(/[\d,]/g,'');let current=0;const step=Math.ceil(target/50)||1;const timer=setInterval(()=>{current=Math.min(current+step,target);el.textContent=current.toLocaleString()+suffix;if(current>=target)clearInterval(timer);},25);});
-document.querySelectorAll('.cert-download').forEach(btn=>btn.addEventListener('click',()=>alert('Certificate download will begin shortly!')));
-document.querySelectorAll('.task-check:not(.done)').forEach(chk=>chk.addEventListener('click',()=>{chk.classList.add('done');chk.closest('.task-item').querySelector('b').style.textDecoration='line-through';}));
+overlay.addEventListener('click',()=>{sidebar.classList.remove('open');overlay.classList.remove('open');closeAllDrawers();});
+
+function openDrawer(id) {
+  closeAllDrawers();
+  document.getElementById(id).classList.add('open');
+  overlay.classList.add('open');
+}
+
+function closeDrawer(id) {
+  document.getElementById(id).classList.remove('open');
+  overlay.classList.remove('open');
+}
+
+function closeAllDrawers() {
+  document.querySelectorAll('.drawer').forEach(d => d.classList.remove('open'));
+}
+
+// Check logged in user session
+let currentUser = JSON.parse(sessionStorage.getItem('current_user')) || {
+  email: 'committee@zealeducation.com',
+  name: 'Riya Desai',
+  role: 'Committee Member'
+};
+
+document.querySelector('.content-title').innerHTML = `Hey, ${currentUser.name.split(' ')[0]}! 👋`;
+document.querySelector('.role-info b').textContent = currentUser.name;
+
+// Populate student select list
+function initAttendanceOptions() {
+  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
+  const select = document.getElementById('attendStudentSelect');
+  select.innerHTML = '';
+  users.filter(u => u.role === 'Student Member').forEach(u => {
+    select.innerHTML += `<option value="${u.name}">${u.name}</option>`;
+  });
+}
+
+// Render marked attendance records
+function renderAttendanceRecords() {
+  const records = JSON.parse(localStorage.getItem('aimsa_attendance')) || [];
+  const container = document.getElementById('attendanceRecordsContainer');
+  container.innerHTML = '';
+
+  if (records.length === 0) {
+    container.innerHTML = `<p style="font-size:0.8rem; color:var(--muted-dark);">No attendance records logged yet.</p>`;
+  } else {
+    records.forEach((rec, idx) => {
+      container.innerHTML += `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border:1px solid var(--line-dark); border-radius:8px; background:var(--paper);">
+          <div>
+            <b style="font-size:0.85rem;">${rec.student}</b>
+            <br><span style="font-size:0.75rem; color:var(--muted-dark);">${rec.event} · ${rec.status}</span>
+          </div>
+          <button style="border:none; background:none; color:var(--accent); font-size:0.85rem; font-weight:700; cursor:pointer;" onclick="editAttendanceRecord(${idx})">Edit</button>
+        </div>`;
+    });
+  }
+}
+
+document.getElementById('saveAttendanceBtn').addEventListener('click', () => {
+  const event = document.getElementById('attendEventSelect').value;
+  const student = document.getElementById('attendStudentSelect').value;
+  const status = document.getElementById('attendStatusSelect').value;
+
+  const records = JSON.parse(localStorage.getItem('aimsa_attendance')) || [];
+  
+  // If editing an existing index
+  const editIdx = document.getElementById('saveAttendanceBtn').getAttribute('data-edit-index');
+  if (editIdx !== null) {
+    records[parseInt(editIdx)] = {event, student, status};
+    document.getElementById('saveAttendanceBtn').removeAttribute('data-edit-index');
+    document.getElementById('saveAttendanceBtn').textContent = 'Save Attendance Record';
+  } else {
+    records.push({event, student, status});
+  }
+
+  localStorage.setItem('aimsa_attendance', JSON.stringify(records));
+  renderAttendanceRecords();
+  alert('Attendance record saved successfully!');
+});
+
+window.editAttendanceRecord = function(idx) {
+  const records = JSON.parse(localStorage.getItem('aimsa_attendance')) || [];
+  const rec = records[idx];
+  document.getElementById('attendEventSelect').value = rec.event;
+  document.getElementById('attendStudentSelect').value = rec.student;
+  document.getElementById('attendStatusSelect').value = rec.status;
+
+  const saveBtn = document.getElementById('saveAttendanceBtn');
+  saveBtn.textContent = 'Update Attendance Record';
+  saveBtn.setAttribute('data-edit-index', idx);
+};
+
+// Sidebar / Quick Action trigger for Mark Attendance
+document.getElementById('navAttendance').addEventListener('click', (e) => {
+  e.preventDefault();
+  initAttendanceOptions();
+  renderAttendanceRecords();
+  openDrawer('markAttendanceDrawer');
+});
+document.getElementById('attendanceCard').addEventListener('click', () => {
+  initAttendanceOptions();
+  renderAttendanceRecords();
+  openDrawer('markAttendanceDrawer');
+});
+
+document.querySelectorAll('.nav-item').forEach(item=>{
+  item.addEventListener('click',(e)=>{
+    if(item.href&&(item.href.includes('aimsa_landing')||item.href.includes('committee_dashboard')))return;
+    e.preventDefault();
+    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
+
+document.querySelectorAll('.stat-val').forEach(el=>{
+  const raw=el.textContent.replace(/,/g,'');
+  const target=parseInt(raw.replace(/\D/g,''));
+  if(isNaN(target))return;
+  const suffix=el.textContent.replace(/[\d,]/g,'');
+  let current=0;const step=Math.ceil(target/50)||1;
+  const timer=setInterval(()=>{current=Math.min(current+step,target);el.textContent=current.toLocaleString()+suffix;if(current>=target)clearInterval(timer);},25);
+});
+
+document.querySelectorAll('.cert-download').forEach(btn=>btn.addEventListener('click',(e)=>{
+  const certTitle = e.target.parentNode.querySelector('h4').textContent;
+  alert(`Generating secure PDF for your ${certTitle}... Success! Your certificate download will start shortly.`);
+}));
+
+document.querySelectorAll('.task-check:not(.done)').forEach(chk=>chk.addEventListener('click',()=>{
+  chk.classList.add('done');
+  chk.closest('.task-item').querySelector('b').style.textDecoration='line-through';
+}));
 </script>
 </body>
 </html>

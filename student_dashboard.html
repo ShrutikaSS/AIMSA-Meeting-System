@@ -148,6 +148,27 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 .btn-ghost{background:transparent;border-color:var(--line-dark);color:var(--navy-800);}
 .btn-ghost:hover{background:var(--paper-dim);}
 
+/* Drawer Panel styles */
+.drawer{
+  position:fixed; top:0; right:-450px; width:min(420px, 100%); height:100vh;
+  background:var(--white); border-left:1px solid var(--line-dark); z-index:200;
+  transition:right 0.3s cubic-bezier(0.16, 1, 0.3, 1); padding:30px;
+  display:flex; flex-direction:column; gap:20px; overflow-y:auto;
+  box-shadow: -10px 0 30px -10px rgba(0,0,0,0.15);
+}
+.drawer.open{right:0;}
+.drawer-header{display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line-dark); padding-bottom:15px; margin-bottom:10px;}
+.drawer-title{font-family:var(--ff-display); font-size:1.15rem; font-weight:700;}
+.drawer-close{background:none; border:none; font-size:1.5rem; color:var(--muted-dark); cursor:pointer;}
+.form-group{display:flex; flex-direction:column; gap:6px; margin-bottom:12px;}
+.form-group label{font-size:0.8rem; font-weight:600; color:var(--navy-950);}
+.form-group input, .form-group select, .form-group textarea{
+  width:100%; padding:10px 12px; border-radius:8px; border:1.5px solid var(--line-dark); font-size:0.88rem; font-family:inherit;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus{
+  outline:none; border-color:var(--accent);
+}
+
 @media(max-width:1100px){.stats-grid{grid-template-columns:repeat(2,1fr);}.dash-grid{grid-template-columns:1fr;}.dash-grid-3{grid-template-columns:1fr 1fr;}}
 @media(max-width:768px){.sidebar{transform:translateX(-100%);}.sidebar.open{transform:translateX(0);}.sidebar-overlay.open{display:block;}.main{margin-left:0;}.hamburger-btn{display:flex;}.content{padding:20px;}.stats-grid{grid-template-columns:1fr 1fr;}.dash-grid-3{grid-template-columns:1fr;}.cert-grid-2{grid-template-columns:1fr;}}
 @media(max-width:480px){.stats-grid{grid-template-columns:1fr;}}
@@ -374,14 +395,384 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   </div>
 </div>
 
+<!-- ── PROFILE DRAWER ── -->
+<div class="drawer" id="profileDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Update Profile</div>
+    <button class="drawer-close" onclick="closeDrawer('profileDrawer')">&times;</button>
+  </div>
+  <div style="display:flex; flex-direction:column; align-items:center; gap:12px; margin-bottom:20px;">
+    <div style="width:100px; height:100px; border-radius:50%; background:var(--paper-dim); border:2px solid var(--accent); overflow:hidden; display:flex; align-items:center; justify-content:center;" id="photoPreviewContainer">
+      <span style="font-size:2rem; color:var(--muted-dark);" id="avatarInitials">SM</span>
+    </div>
+    <div class="form-group" style="width:100%;">
+      <label>Upload Photograph</label>
+      <input type="file" id="profilePhotoInput" accept="image/*" style="padding:4px;">
+    </div>
+  </div>
+  <div class="form-group">
+    <label>Full Name</label>
+    <input type="text" id="profileName">
+  </div>
+  <div class="form-group">
+    <label>College Email ID</label>
+    <input type="email" id="profileEmail" readonly style="background:var(--paper-dim);">
+  </div>
+  <div class="form-group">
+    <label>Student ID</label>
+    <input type="text" id="profileStudentID">
+  </div>
+  <div class="form-group">
+    <label>Contact Number</label>
+    <input type="text" id="profilePhone" placeholder="+91 XXXXX XXXXX">
+  </div>
+  <div class="form-group">
+    <label>Academic Year</label>
+    <select id="profileYear">
+      <option value="1st Year">1st Year</option>
+      <option value="2nd Year">2nd Year</option>
+      <option value="3rd Year" selected>3rd Year</option>
+      <option value="4th Year">4th Year</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>Department / Branch</label>
+    <select id="profileBranch">
+      <option value="AI & ML">AI & ML</option>
+      <option value="Computer Science">Computer Science</option>
+      <option value="Data Science">Data Science</option>
+    </select>
+  </div>
+  <button class="btn btn-primary" style="margin-top:10px; width:100%;" id="saveProfileBtn">Save Profile Changes</button>
+</div>
+
+<!-- ── ACHIEVEMENT UPLOAD DRAWER ── -->
+<div class="drawer" id="achievementDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Submit Achievement</div>
+    <button class="drawer-close" onclick="closeDrawer('achievementDrawer')">&times;</button>
+  </div>
+  <div class="form-group">
+    <label>Achievement Category</label>
+    <select id="achCategory">
+      <option value="Competition Certificate">Competition Certificate</option>
+      <option value="Internship Certificate">Internship Certificate</option>
+      <option value="Research Publication">Research Publication</option>
+      <option value="Hackathon Achievement">Hackathon Achievement</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>Title</label>
+    <input type="text" id="achTitle" placeholder="e.g. 1st Place Smart India Hackathon">
+  </div>
+  <div class="form-group">
+    <label>Description / Details</label>
+    <textarea id="achDescription" rows="4" placeholder="Briefly describe your achievement, organization, and date..."></textarea>
+  </div>
+  <div class="form-group">
+    <label>Attach Certificate (PDF / Image)</label>
+    <input type="file" id="achFile" accept="image/*,.pdf" style="padding:4px;">
+  </div>
+  <button class="btn btn-primary" style="margin-top:10px; width:100%;" id="submitAchievementBtn">Submit Achievement</button>
+</div>
+
 <script>
 const sidebar=document.getElementById('sidebar'),overlay=document.getElementById('sidebarOverlay'),hamburger=document.getElementById('hamburgerBtn');
 hamburger.addEventListener('click',()=>{sidebar.classList.toggle('open');overlay.classList.toggle('open');});
-overlay.addEventListener('click',()=>{sidebar.classList.remove('open');overlay.classList.remove('open');});
-document.querySelectorAll('.nav-item').forEach(item=>{item.addEventListener('click',(e)=>{if(item.href&&(item.href.includes('aimsa_landing')||item.href.includes('student_dashboard')))return;e.preventDefault();document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));item.classList.add('active');});});
-document.querySelectorAll('.stat-val').forEach(el=>{const raw=el.textContent.replace(/,/g,'');const target=parseInt(raw.replace(/\D/g,''));if(isNaN(target))return;const suffix=el.textContent.replace(/[\d,]/g,'');let current=0;const step=Math.ceil(target/50)||1;const timer=setInterval(()=>{current=Math.min(current+step,target);el.textContent=current.toLocaleString()+suffix;if(current>=target)clearInterval(timer);},25);});
-document.querySelectorAll('.cert-download').forEach(btn=>btn.addEventListener('click',()=>alert('Certificate download will begin shortly!')));
-document.querySelectorAll('.cal-day:not(.cal-header):not(.cal-empty)').forEach(day=>{day.addEventListener('click',()=>{document.querySelectorAll('.cal-day:not(.cal-header)').forEach(d=>{if(!d.classList.contains('cal-empty')){d.classList.remove('cal-today');}});day.classList.add('cal-today');});});
+overlay.addEventListener('click',()=>{sidebar.classList.remove('open');overlay.classList.remove('open');closeAllDrawers();});
+
+function openDrawer(id) {
+  closeAllDrawers();
+  document.getElementById(id).classList.add('open');
+  overlay.classList.add('open');
+}
+
+function closeDrawer(id) {
+  document.getElementById(id).classList.remove('open');
+  overlay.classList.remove('open');
+}
+
+function closeAllDrawers() {
+  document.querySelectorAll('.drawer').forEach(d => d.classList.remove('open'));
+}
+
+// Check logged in user session
+let currentUser = JSON.parse(sessionStorage.getItem('current_user')) || {
+  email: 'student@zealeducation.com',
+  name: 'Arjun Patil',
+  role: 'Student Member',
+  studentId: 'AIMSA-2024-0127',
+  membershipStatus: 'Active',
+  membershipRenewed: false,
+  photograph: '',
+  phone: '+91 98765 43210',
+  year: '3rd Year',
+  branch: 'AI & ML'
+};
+
+// Render user profile details
+function renderProfile() {
+  // Update name in headers/cards
+  document.querySelector('.content-title').innerHTML = `Hey, ${currentUser.name.split(' ')[0]}! 👋`;
+  document.querySelector('.role-info b').textContent = currentUser.name;
+  document.querySelector('.membership-name').textContent = currentUser.name;
+  
+  const initials = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+  document.querySelector('.role-avatar .in').textContent = initials;
+  document.getElementById('avatarInitials').textContent = initials;
+
+  // Membership status card render
+  const cardID = document.querySelector('.membership-id');
+  cardID.textContent = `Member ID · ${currentUser.studentId || 'AIMSA-PENDING'} · ${currentUser.branch || 'AI & ML'} (${currentUser.year || '3rd Year'})`;
+
+  const statusBadge = document.querySelector('.membership-status');
+  statusBadge.textContent = `● ${currentUser.membershipStatus || 'Pending'}`;
+  
+  if (currentUser.membershipStatus === 'Active') {
+    statusBadge.style.color = '#4ade80';
+    statusBadge.style.borderColor = 'rgba(34,197,94,.3)';
+    statusBadge.style.background = 'rgba(34,197,94,.15)';
+  } else if (currentUser.membershipStatus === 'Pending') {
+    statusBadge.style.color = '#fbbf24';
+    statusBadge.style.borderColor = 'rgba(251,191,36,.3)';
+    statusBadge.style.background = 'rgba(251,191,36,.15)';
+  } else {
+    statusBadge.style.color = '#f87171';
+    statusBadge.style.borderColor = 'rgba(239,110,110,.3)';
+    statusBadge.style.background = 'rgba(239,110,110,.15)';
+  }
+
+  // If photo exists, render preview
+  if (currentUser.photograph) {
+    const photoURL = currentUser.photograph;
+    document.getElementById('photoPreviewContainer').innerHTML = `<img src="${photoURL}" style="width:100%; height:100%; object-fit:cover;">`;
+  }
+}
+
+// Handle photograph upload preview
+document.getElementById('profilePhotoInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      currentUser.photograph = evt.target.result;
+      document.getElementById('photoPreviewContainer').innerHTML = `<img src="${evt.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+// Trigger Profile Drawer
+document.querySelector('a[href="#"]').addEventListener('click', (e) => {
+  e.preventDefault();
+  // Populate fields
+  document.getElementById('profileName').value = currentUser.name;
+  document.getElementById('profileEmail').value = currentUser.email;
+  document.getElementById('profileStudentID').value = currentUser.studentId || '';
+  document.getElementById('profilePhone').value = currentUser.phone || '';
+  document.getElementById('profileYear').value = currentUser.year || '3rd Year';
+  document.getElementById('profileBranch').value = currentUser.branch || 'AI & ML';
+  openDrawer('profileDrawer');
+});
+
+// Save profile updates
+document.getElementById('saveProfileBtn').addEventListener('click', () => {
+  currentUser.name = document.getElementById('profileName').value.trim();
+  currentUser.studentId = document.getElementById('profileStudentID').value.trim();
+  currentUser.phone = document.getElementById('profilePhone').value.trim();
+  currentUser.year = document.getElementById('profileYear').value;
+  currentUser.branch = document.getElementById('profileBranch').value;
+
+  sessionStorage.setItem('current_user', JSON.stringify(currentUser));
+  
+  // Sync to localStorage aimsa_users
+  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
+  const idx = users.findIndex(u => u.email.toLowerCase() === currentUser.email.toLowerCase());
+  if (idx !== -1) {
+    users[idx] = {...users[idx], ...currentUser};
+    localStorage.setItem('aimsa_users', JSON.stringify(users));
+  }
+
+  renderProfile();
+  closeDrawer('profileDrawer');
+  alert('Profile updated successfully!');
+});
+
+// Membership Renewal Button
+document.querySelector('.membership-card').addEventListener('click', (e) => {
+  // If clicked inside membership right (renew button trigger)
+  if (currentUser.membershipStatus === 'Expired' || !currentUser.membershipRenewed) {
+    const confirmRenew = confirm('Would you like to renew your AIMSA student membership for the upcoming academic year 2026-27?');
+    if (confirmRenew) {
+      currentUser.membershipStatus = 'Active';
+      currentUser.membershipRenewed = true;
+      sessionStorage.setItem('current_user', JSON.stringify(currentUser));
+      
+      const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
+      const idx = users.findIndex(u => u.email.toLowerCase() === currentUser.email.toLowerCase());
+      if (idx !== -1) {
+        users[idx].membershipStatus = 'Active';
+        users[idx].membershipRenewed = true;
+        localStorage.setItem('aimsa_users', JSON.stringify(users));
+      }
+      renderProfile();
+      alert('Membership renewed successfully!');
+    }
+  }
+});
+
+// Setup dynamic events list registration / cancel registration
+let regEvents = JSON.parse(localStorage.getItem('registered_events_list')) || [
+  'Tech Symposium 2026', 'Hackathon 2026'
+];
+
+function renderEvents() {
+  const container = document.querySelector('#calendar .list-item').parentNode;
+  container.innerHTML = `<div style="font-family:var(--ff-mono);font-size:.65rem;color:var(--accent);margin-bottom:10px;text-transform:uppercase;letter-spacing:.1em;">My Registered Events</div>`;
+
+  // Render registered events inside left column
+  if (regEvents.length === 0) {
+    container.innerHTML += `<p style="font-size:0.8rem; color:var(--muted-dark); padding:10px 0;">No registered events yet.</p>`;
+  } else {
+    regEvents.forEach(evt => {
+      container.innerHTML += `
+        <div class="list-item">
+          <div class="list-dot"></div>
+          <div class="list-text">
+            <b>${evt}</b>
+            <span>Scheduled · <span class="badge badge-blue">Registered</span> <span style="color:#ef4444; cursor:pointer; margin-left:12px; font-weight:600;" onclick="cancelEventReg('${evt}')">Cancel</span></span>
+          </div>
+        </div>`;
+    });
+  }
+
+  // Update register status table
+  const tbody = document.querySelector('.data-table tbody');
+  tbody.innerHTML = '';
+  const allEvents = [
+    {name: 'Tech Symposium 2026', date: 'Jul 28', type: 'Attendee', dl: '2026-07-27'},
+    {name: 'AI Workshop Series', date: 'Aug 3', type: 'Attendee', dl: '2026-08-02'},
+    {name: 'Hackathon 2026', date: 'Aug 15', type: 'Participant', dl: '2026-08-12'}
+  ];
+
+  allEvents.forEach(evt => {
+    const isReg = regEvents.includes(evt.name);
+    tbody.innerHTML += `
+      <tr>
+        <td><b>${evt.name}</b></td>
+        <td>${evt.date}</td>
+        <td>${evt.type}</td>
+        <td>
+          ${isReg ? `<span class="badge badge-blue">Registered</span>` : `<button class="btn btn-ghost" style="padding:4px 10px; font-size:0.75rem;" onclick="registerForEvent('${evt.name}')">Register</button>`}
+        </td>
+      </tr>`;
+  });
+  
+  // Update stat card upcoming count
+  document.querySelector('#upcoming .stat-val').textContent = regEvents.length;
+}
+
+window.registerForEvent = function(name) {
+  if (!regEvents.includes(name)) {
+    regEvents.push(name);
+    localStorage.setItem('registered_events_list', JSON.stringify(regEvents));
+    renderEvents();
+    alert(`Successfully registered for ${name}!`);
+  }
+};
+
+window.cancelEventReg = function(name) {
+  const confirmCancel = confirm(`Are you sure you want to cancel your registration for ${name}?`);
+  if (confirmCancel) {
+    regEvents = regEvents.filter(e => e !== name);
+    localStorage.setItem('registered_events_list', JSON.stringify(regEvents));
+    renderEvents();
+  }
+};
+
+// Handle Achievement Upload Drawer trigger
+document.querySelector('a[href="#achievements"]').addEventListener('click', (e) => {
+  e.preventDefault();
+  openDrawer('achievementDrawer');
+});
+
+document.getElementById('submitAchievementBtn').addEventListener('click', () => {
+  const cat = document.getElementById('achCategory').value;
+  const title = document.getElementById('achTitle').value.trim();
+  const desc = document.getElementById('achDescription').value.trim();
+
+  if (!title || !desc) {
+    alert('Please fill out the achievement title and details.');
+    return;
+  }
+
+  // Push achievement into local storage list
+  const achievements = JSON.parse(localStorage.getItem('aimsa_achievements')) || [];
+  achievements.push({
+    student: currentUser.name,
+    email: currentUser.email,
+    category: cat,
+    title: title,
+    description: desc,
+    status: 'Pending',
+    date: new Date().toLocaleDateString('en-US', {month: 'short', year: 'numeric'})
+  });
+  localStorage.setItem('aimsa_achievements', JSON.stringify(achievements));
+
+  // Dynamically append new achievement badge
+  const stack = document.querySelector('.ach-stack');
+  const badgeHTML = `
+    <div class="achievement-badge">
+      <div class="ach-icon"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 9l-5 4.5L17.5 21 12 17l-5.5 4L8 13.5 3 9l6.5-.5z"/></svg></div>
+      <div class="ach-info"><b>${title}</b><span>${cat} · Pending Approval</span></div>
+    </div>`;
+  stack.insertAdjacentHTML('afterbegin', badgeHTML);
+
+  // Update achievements stats
+  const statVal = document.querySelector('#achievements .stat-val');
+  statVal.textContent = parseInt(statVal.textContent) + 1;
+
+  closeDrawer('achievementDrawer');
+  alert('Achievement successfully submitted for faculty approval!');
+});
+
+// Setup sidebar nav trigger to open profile/membership
+document.querySelectorAll('.nav-item').forEach(item=>{
+  item.addEventListener('click',(e)=>{
+    if(item.href&&(item.href.includes('aimsa_landing')||item.href.includes('student_dashboard')))return;
+    e.preventDefault();
+    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
+
+// Page Initialization
+renderProfile();
+renderEvents();
+
+document.querySelectorAll('.stat-val').forEach(el=>{
+  const raw=el.textContent.replace(/,/g,'');
+  const target=parseInt(raw.replace(/\D/g,''));
+  if(isNaN(target))return;
+  const suffix=el.textContent.replace(/[\d,]/g,'');
+  let current=0;const step=Math.ceil(target/50)||1;
+  const timer=setInterval(()=>{current=Math.min(current+step,target);el.textContent=current.toLocaleString()+suffix;if(current>=target)clearInterval(timer);},25);
+});
+
+// Certificate generator simulation
+document.querySelectorAll('.cert-download').forEach(btn=>btn.addEventListener('click',(e)=>{
+  const certTitle = e.target.parentNode.querySelector('h4').textContent;
+  alert(`Generating secure PDF for your ${certTitle}... Success! Your certificate download will start shortly.`);
+}));
+
+document.querySelectorAll('.cal-day:not(.cal-header):not(.cal-empty)').forEach(day=>{
+  day.addEventListener('click',()=>{
+    document.querySelectorAll('.cal-day:not(.cal-header)').forEach(d=>{
+      if(!d.classList.contains('cal-empty')){d.classList.remove('cal-today');}
+    });
+    day.classList.add('cal-today');
+  });
+});
 </script>
 </body>
 </html>

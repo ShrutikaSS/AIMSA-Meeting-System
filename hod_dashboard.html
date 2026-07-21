@@ -156,6 +156,27 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 .btn-ghost{background:transparent;border-color:var(--line-dark);color:var(--navy-800);}
 .btn-ghost:hover{background:var(--paper-dim);}
 
+/* Drawer Panel styles */
+.drawer{
+  position:fixed; top:0; right:-450px; width:min(450px, 100%); height:100vh;
+  background:var(--white); border-left:1px solid var(--line-dark); z-index:200;
+  transition:right 0.3s cubic-bezier(0.16, 1, 0.3, 1); padding:30px;
+  display:flex; flex-direction:column; gap:20px; overflow-y:auto;
+  box-shadow: -10px 0 30px -10px rgba(0,0,0,0.15);
+}
+.drawer.open{right:0;}
+.drawer-header{display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line-dark); padding-bottom:15px; margin-bottom:10px;}
+.drawer-title{font-family:var(--ff-display); font-size:1.15rem; font-weight:700;}
+.drawer-close{background:none; border:none; font-size:1.5rem; color:var(--muted-dark); cursor:pointer;}
+.form-group{display:flex; flex-direction:column; gap:6px; margin-bottom:12px;}
+.form-group label{font-size:0.8rem; font-weight:600; color:var(--navy-950);}
+.form-group input, .form-group select, .form-group textarea{
+  width:100%; padding:10px 12px; border-radius:8px; border:1.5px solid var(--line-dark); font-size:0.88rem; font-family:inherit;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus{
+  outline:none; border-color:var(--accent);
+}
+
 @media(max-width:1100px){.stats-grid{grid-template-columns:repeat(2,1fr);}.dash-grid{grid-template-columns:1fr;}.dash-grid-3{grid-template-columns:1fr 1fr;}.dash-grid-2{grid-template-columns:1fr;}}
 @media(max-width:768px){.sidebar{transform:translateX(-100%);}.sidebar.open{transform:translateX(0);}.sidebar-overlay.open{display:block;}.main{margin-left:0;}.hamburger-btn{display:flex;}.content{padding:20px;}.stats-grid{grid-template-columns:1fr 1fr;}.dash-grid-3{grid-template-columns:1fr;}}
 @media(max-width:480px){.stats-grid{grid-template-columns:1fr;}}
@@ -296,17 +317,13 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 
     <!-- MAIN GRID -->
     <div class="dash-grid">
-      <!-- Recent Activity -->
-      <div class="card">
-        <div class="card-head"><div class="card-title">Recent Activity</div><span class="card-action">View All</span></div>
-        <table class="data-table">
-          <thead><tr><th>Member</th><th>Action</th><th>Date</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td><b>Riya Desai</b></td><td>Event Registration</td><td>Jul 20</td><td><span class="badge badge-green">Approved</span></td></tr>
-            <tr><td><b>Aman Kulkarni</b></td><td>Membership Renewal</td><td>Jul 19</td><td><span class="badge badge-blue">Pending</span></td></tr>
-            <tr><td><b>Priya Joshi</b></td><td>Committee Join</td><td>Jul 18</td><td><span class="badge badge-green">Approved</span></td></tr>
-            <tr><td><b>Dev Patil</b></td><td>Certificate Request</td><td>Jul 17</td><td><span class="badge badge-orange">Review</span></td></tr>
-            <tr><td><b>Sneha Rao</b></td><td>Event Creation</td><td>Jul 16</td><td><span class="badge badge-green">Approved</span></td></tr>
+      <!-- Membership Applications & Requests -->
+      <div class="card" id="membershipRequestsCard">
+        <div class="card-head"><div class="card-title">Membership Applications</div><span class="card-action" id="viewAllMembersBtn">View Member List</span></div>
+        <table class="data-table" id="pendingMembersTable">
+          <thead><tr><th>Student</th><th>Email ID</th><th>Branch</th><th>Action</th></tr></thead>
+          <tbody id="pendingMembersBody">
+            <!-- Dynamically populated -->
           </tbody>
         </table>
       </div>
@@ -415,10 +432,468 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   </div><!-- /content -->
 </div><!-- /main -->
 
+<!-- ── MEMBER LIST DRAWER ── -->
+<div class="drawer" id="membersDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Member Directory</div>
+    <button class="drawer-close" onclick="closeDrawer('membersDrawer')">&times;</button>
+  </div>
+  <div class="form-group">
+    <label>Search Members</label>
+    <input type="text" id="memberSearchInput" placeholder="Search by name, email, or role...">
+  </div>
+  <div style="flex:1; overflow-y:auto;">
+    <table class="data-table" id="allMembersTable">
+      <thead><tr><th>Name</th><th>Role / Status</th></tr></thead>
+      <tbody id="allMembersBody">
+        <!-- Dynamically populated -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── COMMITTEE DRAWER ── -->
+<div class="drawer" id="committeeDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Committee Management</div>
+    <button class="drawer-close" onclick="closeDrawer('committeeDrawer')">&times;</button>
+  </div>
+  <div style="border-bottom:1px solid var(--line-dark); padding-bottom:15px; margin-bottom:15px;">
+    <h4>Add / Update Member</h4>
+    <div class="form-group" style="margin-top:10px;">
+      <label>Select User</label>
+      <select id="commSelectUser">
+        <!-- Populated dynamically -->
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Designation</label>
+      <select id="commDesignation">
+        <option value="President">President</option>
+        <option value="Vice President">Vice President</option>
+        <option value="Secretary">Secretary</option>
+        <option value="Treasurer">Treasurer</option>
+        <option value="Technical Head">Technical Head</option>
+        <option value="Event Coordinator">Event Coordinator</option>
+        <option value="Public Relations Officer">Public Relations Officer</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Assigned Responsibility</label>
+      <input type="text" id="commResponsibility" placeholder="e.g. Technical workshops leader">
+    </div>
+    <button class="btn btn-primary" style="width:100%;" id="saveCommitteeBtn">Add to Committee</button>
+  </div>
+  <div style="flex:1; overflow-y:auto;">
+    <h4>Current Committee</h4>
+    <table class="data-table" style="margin-top:10px;">
+      <thead><tr><th>Name</th><th>Designation</th><th>Action</th></tr></thead>
+      <tbody id="currentCommitteeBody">
+        <!-- Populated dynamically -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── CERTIFICATE GENERATOR DRAWER ── -->
+<div class="drawer" id="certGeneratorDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Generate Certificate</div>
+    <button class="drawer-close" onclick="closeDrawer('certGeneratorDrawer')">&times;</button>
+  </div>
+  <div class="form-group">
+    <label>Certificate Type</label>
+    <select id="certType">
+      <option value="Participation Certificate">Participation Certificate</option>
+      <option value="Volunteer Certificate">Volunteer Certificate</option>
+      <option value="Winner Certificate">Winner Certificate</option>
+      <option value="Appreciation Certificate">Appreciation Certificate</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>Select Event</label>
+    <select id="certEvent">
+      <option value="Tech Symposium 2026">Tech Symposium 2026</option>
+      <option value="AI Workshop Series">AI Workshop Series</option>
+      <option value="Hackathon 2026">Hackathon 2026</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>Select Student</label>
+    <select id="certStudent">
+      <!-- Populated dynamically -->
+    </select>
+  </div>
+  <button class="btn btn-primary" style="width:100%; margin-top:10px;" id="generateCertBtn">Generate &amp; Issue PDF</button>
+</div>
+
+<!-- ── REPORT HUB DRAWER ── -->
+<div class="drawer" id="reportHubDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Reports Hub</div>
+    <button class="drawer-close" onclick="closeDrawer('reportHubDrawer')">&times;</button>
+  </div>
+  <div class="form-group">
+    <label>Select Report Type</label>
+    <select id="reportCategory">
+      <option value="Member Report">Member Report</option>
+      <option value="Event Report">Event Report</option>
+      <option value="Attendance Report">Attendance Report</option>
+      <option value="Achievement Report">Achievement Report</option>
+      <option value="Certificate Report">Certificate Report</option>
+      <option value="Committee Report">Committee Report</option>
+      <option value="Participation Statistics">Participation Statistics</option>
+    </select>
+  </div>
+  <div style="display:flex; flex-direction:column; gap:12px; margin-top:15px;">
+    <button class="btn btn-primary" style="justify-content:center;" onclick="exportReport('PDF')">Export as PDF</button>
+    <button class="btn btn-ghost" style="justify-content:center;" onclick="exportReport('Excel')">Export as Excel</button>
+    <button class="btn btn-ghost" style="justify-content:center;" onclick="exportReport('Print')">Print Report</button>
+  </div>
+</div>
+
+<!-- ── GALLERY ORGANIZER DRAWER ── -->
+<div class="drawer" id="galleryDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Gallery Organizer</div>
+    <button class="drawer-close" onclick="closeDrawer('galleryDrawer')">&times;</button>
+  </div>
+  <div style="border-bottom:1px solid var(--line-dark); padding-bottom:15px; margin-bottom:15px;">
+    <h4>Upload Gallery Item</h4>
+    <div class="form-group" style="margin-top:10px;">
+      <label>Item Type</label>
+      <select id="galleryItemType">
+        <option value="Photo">Photo</option>
+        <option value="Video">Video</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Album Name</label>
+      <input type="text" id="galleryAlbum" placeholder="e.g. ML Bootcamp 2026">
+    </div>
+    <div class="form-group">
+      <label>Select File</label>
+      <input type="file" id="galleryFileInput" accept="image/*,video/*" style="padding:4px;">
+    </div>
+    <button class="btn btn-primary" style="width:100%;" id="uploadGalleryBtn">Upload &amp; Organize</button>
+  </div>
+  <div style="flex:1; overflow-y:auto;">
+    <h4>Gallery Content</h4>
+    <div id="galleryItemsContainer" style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+      <!-- Populated dynamically -->
+    </div>
+  </div>
+</div>
+
 <script>
 const sidebar=document.getElementById('sidebar'),overlay=document.getElementById('sidebarOverlay'),hamburger=document.getElementById('hamburgerBtn');
 hamburger.addEventListener('click',()=>{sidebar.classList.toggle('open');overlay.classList.toggle('open');});
-overlay.addEventListener('click',()=>{sidebar.classList.remove('open');overlay.classList.remove('open');});
+overlay.addEventListener('click',()=>{sidebar.classList.remove('open');overlay.classList.remove('open');closeAllDrawers();});
+
+function openDrawer(id) {
+  closeAllDrawers();
+  document.getElementById(id).classList.add('open');
+  overlay.classList.add('open');
+}
+
+function closeDrawer(id) {
+  document.getElementById(id).classList.remove('open');
+  overlay.classList.remove('open');
+}
+
+function closeAllDrawers() {
+  document.querySelectorAll('.drawer').forEach(d => d.classList.remove('open'));
+}
+
+// Check logged in user session
+let currentUser = JSON.parse(sessionStorage.getItem('current_user')) || {
+  email: 'hod@zealeducation.com',
+  name: 'Dr. Anjali Sharma',
+  role: 'HOD'
+};
+
+document.querySelector('.content-title').innerHTML = `Good Morning, ${currentUser.name} 👋`;
+
+// Load, approve/reject simulated student registration
+function renderMembershipRequests() {
+  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
+  const pendingUsers = users.filter(u => u.role === 'Student Member' && u.membershipStatus === 'Pending');
+  const tbody = document.getElementById('pendingMembersBody');
+  tbody.innerHTML = '';
+
+  if (pendingUsers.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--muted-dark); padding:20px;">No pending membership applications.</td></tr>`;
+  } else {
+    pendingUsers.forEach(u => {
+      tbody.innerHTML += `
+        <tr>
+          <td><b>${u.name}</b></td>
+          <td>${u.email}</td>
+          <td>${u.branch || 'AI & ML'}</td>
+          <td>
+            <button class="badge badge-green" style="cursor:pointer;" onclick="approveMember('${u.email}')">Approve</button>
+            <button class="badge badge-orange" style="cursor:pointer; margin-left:6px;" onclick="rejectMember('${u.email}')">Reject</button>
+          </td>
+        </tr>`;
+    });
+  }
+}
+
+window.approveMember = function(email) {
+  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
+  const idx = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+  if (idx !== -1) {
+    users[idx].membershipStatus = 'Active';
+    localStorage.setItem('aimsa_users', JSON.stringify(users));
+    alert('Membership request approved!');
+    renderMembershipRequests();
+    renderAllMembers();
+  }
+};
+
+window.rejectMember = function(email) {
+  const confirmReject = confirm('Are you sure you want to reject this student membership?');
+  if (confirmReject) {
+    const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
+    const idx = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+    if (idx !== -1) {
+      users[idx].membershipStatus = 'Rejected';
+      localStorage.setItem('aimsa_users', JSON.stringify(users));
+      renderMembershipRequests();
+      renderAllMembers();
+    }
+  }
+};
+
+// Render full members directory
+function renderAllMembers() {
+  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
+  const searchVal = document.getElementById('memberSearchInput').value.toLowerCase();
+  const tbody = document.getElementById('allMembersBody');
+  tbody.innerHTML = '';
+
+  const filtered = users.filter(u => 
+    u.name.toLowerCase().includes(searchVal) || 
+    u.email.toLowerCase().includes(searchVal) || 
+    u.role.toLowerCase().includes(searchVal)
+  );
+
+  filtered.forEach(u => {
+    tbody.innerHTML += `
+      <tr>
+        <td><b>${u.name}</b><br><span style="font-size:0.75rem; color:var(--muted-dark);">${u.email}</span></td>
+        <td>
+          <span style="font-size:0.75rem; color:var(--muted-dark); font-weight:600;">${u.role}</span><br>
+          <span class="badge ${u.membershipStatus === 'Active' ? 'badge-green' : u.membershipStatus === 'Pending' ? 'badge-blue' : 'badge-orange'}">${u.membershipStatus || 'Active'}</span>
+        </td>
+      </tr>`;
+  });
+  
+  // Update stats counter
+  document.querySelector('#members .stat-val').textContent = users.length;
+}
+
+document.getElementById('memberSearchInput').addEventListener('input', renderAllMembers);
+
+// Open directory drawer
+document.getElementById('viewAllMembersBtn').addEventListener('click', () => {
+  renderAllMembers();
+  openDrawer('membersDrawer');
+});
+document.getElementById('navMembers').addEventListener('click', (e) => {
+  e.preventDefault();
+  renderAllMembers();
+  openDrawer('membersDrawer');
+});
+document.querySelector('#members').addEventListener('click', () => {
+  renderAllMembers();
+  openDrawer('membersDrawer');
+});
+
+// Committee Management Drawer Setup
+function renderCommittee() {
+  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
+  const tbody = document.getElementById('currentCommitteeBody');
+  tbody.innerHTML = '';
+
+  // Get active committee members (we can simulate based on custom properties)
+  const committee = users.filter(u => u.committeeDesignation);
+  committee.forEach(u => {
+    tbody.innerHTML += `
+      <tr>
+        <td><b>${u.name}</b></td>
+        <td>${u.committeeDesignation}</td>
+        <td><button style="border:none; background:none; color:#ef4444; font-size:1.15rem; cursor:pointer;" onclick="removeCommitteeMember('${u.email}')">&times;</button></td>
+      </tr>`;
+  });
+
+  // Populate Add Member select option list
+  const commSelectUser = document.getElementById('commSelectUser');
+  commSelectUser.innerHTML = '';
+  users.forEach(u => {
+    commSelectUser.innerHTML += `<option value="${u.email}">${u.name} (${u.role})</option>`;
+  });
+
+  // Update stats counter
+  document.querySelector('#committee .stat-val').textContent = committee.length;
+}
+
+document.getElementById('saveCommitteeBtn').addEventListener('click', () => {
+  const email = document.getElementById('commSelectUser').value;
+  const design = document.getElementById('commDesignation').value;
+  const resp = document.getElementById('commResponsibility').value.trim();
+
+  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
+  const idx = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+  if (idx !== -1) {
+    users[idx].committeeDesignation = design;
+    users[idx].committeeResponsibility = resp;
+    users[idx].role = 'Committee Member'; // promote student to committee member if added
+    localStorage.setItem('aimsa_users', JSON.stringify(users));
+    alert('User added/promoted to Committee successfully!');
+    renderCommittee();
+    renderAllMembers();
+  }
+});
+
+window.removeCommitteeMember = function(email) {
+  const confirmRem = confirm('Remove this user from the committee?');
+  if (confirmRem) {
+    const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
+    const idx = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+    if (idx !== -1) {
+      delete users[idx].committeeDesignation;
+      delete users[idx].committeeResponsibility;
+      localStorage.setItem('aimsa_users', JSON.stringify(users));
+      renderCommittee();
+      renderAllMembers();
+    }
+  }
+};
+
+document.getElementById('navCommittee').addEventListener('click', (e) => {
+  e.preventDefault();
+  renderCommittee();
+  openDrawer('committeeDrawer');
+});
+document.getElementById('committee').addEventListener('click', () => {
+  renderCommittee();
+  openDrawer('committeeDrawer');
+});
+
+// Certificate Drawer Trigger and Generation
+function initCertificateOptions() {
+  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
+  const select = document.getElementById('certStudent');
+  select.innerHTML = '';
+  users.filter(u => u.role === 'Student Member').forEach(u => {
+    select.innerHTML += `<option value="${u.name}">${u.name}</option>`;
+  });
+}
+
+document.getElementById('navCerts').addEventListener('click', (e) => {
+  e.preventDefault();
+  initCertificateOptions();
+  openDrawer('certGeneratorDrawer');
+});
+document.querySelector('#certificates .card-action').addEventListener('click', (e) => {
+  initCertificateOptions();
+  openDrawer('certGeneratorDrawer');
+});
+
+document.getElementById('generateCertBtn').addEventListener('click', () => {
+  const type = document.getElementById('certType').value;
+  const event = document.getElementById('certEvent').value;
+  const studentName = document.getElementById('certStudent').value;
+
+  // Append generated certificate entry to list
+  const certsList = JSON.parse(localStorage.getItem('aimsa_issued_certs')) || [];
+  certsList.push({type, event, studentName, date: new Date().toLocaleDateString()});
+  localStorage.setItem('aimsa_issued_certs', JSON.stringify(certsList));
+
+  // Update HOD certificates card counters
+  const counterVal = document.querySelector('.cert-counter-val');
+  counterVal.textContent = parseInt(counterVal.textContent) + 1;
+
+  closeDrawer('certGeneratorDrawer');
+  alert(`Certificate generated successfully for ${studentName}! The student is notified.`);
+});
+
+// Reports Hub Drawer Trigger
+document.getElementById('navReports').addEventListener('click', (e) => {
+  e.preventDefault();
+  openDrawer('reportHubDrawer');
+});
+document.querySelector('#reports .card-action').addEventListener('click', () => {
+  openDrawer('reportHubDrawer');
+});
+
+window.exportReport = function(format) {
+  const cat = document.getElementById('reportCategory').value;
+  alert(`Exporting ${cat}... Format: ${format} Success! Download initiated.`);
+};
+
+// Gallery Organizer Drawer trigger (via Quick Action button)
+document.querySelector('.quick-grid button:nth-child(2)').addEventListener('click', () => {
+  renderGallery();
+  openDrawer('galleryDrawer');
+});
+
+let galleryList = JSON.parse(localStorage.getItem('aimsa_gallery_items')) || [
+  {type: 'Photo', album: 'ML Bootcamp 2026', name: 'bootcamp_pic.jpg'},
+  {type: 'Photo', album: 'Orientation Day', name: 'orientation_pic.jpg'}
+];
+
+function renderGallery() {
+  const container = document.getElementById('galleryItemsContainer');
+  container.innerHTML = '';
+  galleryList.forEach((item, idx) => {
+    container.innerHTML += `
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border:1px solid var(--line-dark); border-radius:8px; background:var(--paper);">
+        <div>
+          <b style="font-size:0.85rem;">[${item.type}] ${item.name}</b>
+          <br><span style="font-size:0.75rem; color:var(--muted-dark);">Album: ${item.album}</span>
+        </div>
+        <button style="border:none; background:none; color:#ef4444; font-size:1.15rem; cursor:pointer;" onclick="deleteGalleryItem(${idx})">&times;</button>
+      </div>`;
+  });
+}
+
+document.getElementById('uploadGalleryBtn').addEventListener('click', () => {
+  const type = document.getElementById('galleryItemType').value;
+  const album = document.getElementById('galleryAlbum').value.trim() || 'General';
+  const fileInput = document.getElementById('galleryFileInput');
+
+  if (!fileInput.files[0]) {
+    alert('Please select a file to upload.');
+    return;
+  }
+
+  galleryList.push({
+    type,
+    album,
+    name: fileInput.files[0].name
+  });
+  localStorage.setItem('aimsa_gallery_items', JSON.stringify(galleryList));
+  renderGallery();
+  alert('Gallery item uploaded & organized successfully!');
+});
+
+window.deleteGalleryItem = function(idx) {
+  const confirmDel = confirm('Are you sure you want to delete this gallery item?');
+  if (confirmDel) {
+    galleryList.splice(idx, 1);
+    localStorage.setItem('aimsa_gallery_items', JSON.stringify(galleryList));
+    renderGallery();
+  }
+};
+
+// Initial Page Render Calls
+renderMembershipRequests();
+renderCommittee();
+renderAllMembers();
+
+// default event links in navigation settings
 document.querySelectorAll('.nav-item').forEach(item=>{
   item.addEventListener('click',(e)=>{
     if(item.href&&(item.href.includes('aimsa_landing')||item.href.includes('hod_dashboard')))return;
@@ -427,6 +902,7 @@ document.querySelectorAll('.nav-item').forEach(item=>{
     item.classList.add('active');
   });
 });
+
 document.querySelectorAll('.stat-val').forEach(el=>{
   const raw=el.textContent.replace(/,/g,'');
   const target=parseInt(raw.replace(/\D/g,''));

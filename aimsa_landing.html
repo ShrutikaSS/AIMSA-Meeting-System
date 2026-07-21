@@ -720,6 +720,7 @@ footer{ background:var(--ink); color:var(--muted); padding:56px 0 26px;}
   <div class="modal">
     <button class="modal-close" id="modalCloseBtn"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
 
+    <!-- STEP 1: Select Role -->
     <div id="roleStep">
       <h3>Login to AIMSA Portal</h3>
       <p class="sub">Select your role to continue to secure sign-in.</p>
@@ -747,28 +748,137 @@ footer{ background:var(--ink); color:var(--muted); padding:56px 0 26px;}
       </div>
     </div>
 
+    <!-- STEP 2: Login or Register Form -->
     <div id="formStep" class="login-form">
-      <span class="back-link" id="backToRoles">← Back to roles</span>
+      <span class="back-link" id="backToRoles" style="cursor:pointer;">← Back to roles</span>
       <div class="selected-role-chip" id="roleChip">Student Member</div>
+
+      <!-- Auth Action Tabs -->
+      <div style="display:flex; border-bottom:1.5px solid var(--line-dark); margin-bottom:18px;">
+        <button id="tabLogin" style="flex:1; padding:10px; background:none; border:none; border-bottom:2px solid var(--accent); font-weight:700; color:var(--navy-950);">Sign In</button>
+        <button id="tabRegister" style="flex:1; padding:10px; background:none; border:none; border-bottom:2px solid transparent; font-weight:500; color:var(--muted-dark);">Register</button>
+      </div>
+
+      <!-- Sign In Fields -->
+      <div id="signInSection" style="display:flex; flex-direction:column; gap:14px;">
+        <div>
+          <label>College Email ID</label>
+          <input type="email" id="loginEmail" placeholder="you@zealeducation.com">
+        </div>
+        <div>
+          <label>Password</label>
+          <div style="position:relative;">
+            <input type="password" id="loginPassword" placeholder="••••••••" style="padding-right:40px; width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
+            <button type="button" class="toggle-password" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--muted-dark);" onclick="togglePasswordVisibility('loginPassword')">👁️</button>
+          </div>
+        </div>
+        <div class="form-row-between">
+          <label style="display:flex; align-items:center; gap:6px; font-weight:500;"><input type="checkbox" id="keepSignedIn" style="width:auto;"> Keep me signed in</label>
+          <a href="#" id="forgotLink">Forgot password?</a>
+        </div>
+        <button class="btn btn-primary" style="width:100%; margin-top:6px; padding:13px;" id="loginSubmitBtn">Secure Login →</button>
+      </div>
+
+      <!-- Register Fields -->
+      <div id="registerSection" style="display:none; flex-direction:column; gap:14px;">
+        <div>
+          <label>Full Name</label>
+          <input type="text" id="regName" placeholder="John Doe" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
+        </div>
+        <div>
+          <label>Student/Faculty ID</label>
+          <input type="text" id="regID" placeholder="ZES-AIML-2026-102" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
+        </div>
+        <div>
+          <label>College Email ID</label>
+          <input type="email" id="regEmail" placeholder="you@zealeducation.com" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
+        </div>
+        <div>
+          <label>Password</label>
+          <div style="position:relative;">
+            <input type="password" id="regPassword" placeholder="••••••••" style="padding-right:40px; width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
+            <button type="button" class="toggle-password" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--muted-dark);" onclick="togglePasswordVisibility('regPassword')">👁️</button>
+          </div>
+          <div id="pwdStrengthWrapper" style="margin-top:6px;">
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--muted-dark); margin-bottom:4px;">
+              <span>Password Strength</span>
+              <span id="pwdStrengthLabel">Too Weak</span>
+            </div>
+            <div style="height:6px; background:var(--paper-dim); border-radius:3px; overflow:hidden;">
+              <div id="pwdStrengthBar" style="height:100%; width:0%; background:#dc2626; transition:all 0.3s ease;"></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <label>Confirm Password</label>
+          <input type="password" id="regConfirmPassword" placeholder="••••••••" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
+        </div>
+        <button class="btn btn-primary" style="width:100%; margin-top:6px; padding:13px;" id="registerSubmitBtn">Create Account →</button>
+      </div>
+
+      <div class="secure-note"><svg viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-4z"/></svg> Encrypted login · role-based access · auto session timeout</div>
+    </div>
+
+    <!-- STEP 3: Forgot Password Form -->
+    <div id="forgotStep" style="display:none; flex-direction:column; gap:16px;">
+      <span class="back-link" id="backToLogin" style="cursor:pointer; margin-bottom:8px;">← Back to sign in</span>
+      <h3>Reset Password</h3>
+      <p class="sub">Enter your college email ID. We will send a secure password reset link.</p>
       <div>
         <label>College Email ID</label>
-        <input type="email" placeholder="you@zealeducation.com">
+        <input type="email" id="forgotEmail" placeholder="you@zealeducation.com" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
       </div>
-      <div>
-        <label>Password</label>
-        <input type="password" placeholder="••••••••">
-      </div>
-      <div class="form-row-between">
-        <label style="display:flex; align-items:center; gap:6px; font-weight:500;"><input type="checkbox" style="width:auto;"> Keep me signed in</label>
-        <a href="#" id="forgotLink">Forgot password?</a>
-      </div>
-      <button class="btn btn-primary" style="width:100%; margin-top:6px; padding:13px;" id="loginSubmitBtn">Secure Login →</button>
-      <div class="secure-note"><svg viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-4z"/></svg> Encrypted login · role-based access · auto session timeout</div>
+      <button class="btn btn-primary" style="width:100%; padding:13px;" id="forgotSubmitBtn">Send Reset Link →</button>
     </div>
   </div>
 </div>
 
 <script>
+// Password show/hide helper
+function togglePasswordVisibility(fieldId) {
+  const field = document.getElementById(fieldId);
+  if (field.type === "password") {
+    field.type = "text";
+  } else {
+    field.type = "password";
+  }
+}
+
+// Password strength meter logic
+document.getElementById('regPassword').addEventListener('input', (e) => {
+  const pwd = e.target.value;
+  let score = 0;
+  if (pwd.length > 5) score++;
+  if (/[A-Z]/.test(pwd)) score++;
+  if (/[0-9]/.test(pwd)) score++;
+  if (/[^A-Za-z0-9]/.test(pwd)) score++;
+
+  const bar = document.getElementById('pwdStrengthBar');
+  const label = document.getElementById('pwdStrengthLabel');
+
+  if (pwd.length === 0) {
+    bar.style.width = '0%';
+    bar.style.backgroundColor = '#dc2626';
+    label.textContent = 'Too Weak';
+  } else if (score <= 1) {
+    bar.style.width = '25%';
+    bar.style.backgroundColor = '#dc2626';
+    label.textContent = 'Weak';
+  } else if (score === 2) {
+    bar.style.width = '50%';
+    bar.style.backgroundColor = '#ea580c';
+    label.textContent = 'Medium';
+  } else if (score === 3) {
+    bar.style.width = '75%';
+    bar.style.backgroundColor = '#3E8BFF';
+    label.textContent = 'Strong';
+  } else {
+    bar.style.width = '100%';
+    bar.style.backgroundColor = '#22c55e';
+    label.textContent = 'Very Secure';
+  }
+});
+
 // mobile nav toggle
 const hamburger = document.getElementById('hamburgerBtn');
 const links = document.querySelector('nav.links');
@@ -782,16 +892,50 @@ hamburger.addEventListener('click', ()=>{
 const revealEls = document.querySelectorAll('.reveal');
 const io = new IntersectionObserver((entries)=>{
   entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
-},{threshold:.15});
+  },{threshold:.15});
 revealEls.forEach(el=>io.observe(el));
 
 // login modal
 const overlay = document.getElementById('modalOverlay');
 const roleStep = document.getElementById('roleStep');
 const formStep = document.getElementById('formStep');
+const forgotStep = document.getElementById('forgotStep');
 const roleChip = document.getElementById('roleChip');
 
-function openModal(){ overlay.classList.add('show'); roleStep.style.display='block'; formStep.classList.remove('show'); }
+// Tabs for login vs register
+const tabLogin = document.getElementById('tabLogin');
+const tabRegister = document.getElementById('tabRegister');
+const signInSection = document.getElementById('signInSection');
+const registerSection = document.getElementById('registerSection');
+
+tabLogin.addEventListener('click', () => {
+  tabLogin.style.borderBottomColor = 'var(--accent)';
+  tabLogin.style.fontWeight = '700';
+  tabLogin.style.color = 'var(--navy-950)';
+  tabRegister.style.borderBottomColor = 'transparent';
+  tabRegister.style.fontWeight = '500';
+  tabRegister.style.color = 'var(--muted-dark)';
+  signInSection.style.display = 'flex';
+  registerSection.style.display = 'none';
+});
+
+tabRegister.addEventListener('click', () => {
+  tabRegister.style.borderBottomColor = 'var(--accent)';
+  tabRegister.style.fontWeight = '700';
+  tabRegister.style.color = 'var(--navy-950)';
+  tabLogin.style.borderBottomColor = 'transparent';
+  tabLogin.style.fontWeight = '500';
+  tabLogin.style.color = 'var(--muted-dark)';
+  registerSection.style.display = 'flex';
+  signInSection.style.display = 'none';
+});
+
+function openModal(){ 
+  overlay.classList.add('show'); 
+  roleStep.style.display='block'; 
+  formStep.classList.remove('show'); 
+  forgotStep.style.display='none';
+}
 function closeModal(){ overlay.classList.remove('show'); }
 
 document.getElementById('openLoginBtn2').addEventListener('click', openModal);
@@ -805,11 +949,29 @@ document.querySelectorAll('.role-card').forEach(card=>{
     roleChip.textContent = role;
     roleStep.style.display='none';
     formStep.classList.add('show');
+    // Hide register tab for staff, show only for Student Member
+    if(role !== 'Student Member') {
+      tabRegister.style.display = 'none';
+      tabLogin.click();
+    } else {
+      tabRegister.style.display = 'block';
+    }
   });
 });
 document.getElementById('backToRoles').addEventListener('click', ()=>{
   formStep.classList.remove('show');
   roleStep.style.display='block';
+});
+
+document.getElementById('forgotLink').addEventListener('click', (e) => {
+  e.preventDefault();
+  formStep.classList.remove('show');
+  forgotStep.style.display = 'flex';
+});
+
+document.getElementById('backToLogin').addEventListener('click', () => {
+  forgotStep.style.display = 'none';
+  formStep.classList.add('show');
 });
 
 // Role → dashboard page mapping
@@ -821,14 +983,100 @@ const roleDashboards = {
   'Student Member': 'student_dashboard.html'
 };
 
+// Initial simulated users database
+if(!localStorage.getItem('aimsa_users')) {
+  localStorage.setItem('aimsa_users', JSON.stringify([
+    {email: 'hod@zealeducation.com', password: 'Password123', name: 'Dr. Anjali Sharma', role: 'HOD'},
+    {email: 'faculty@zealeducation.com', password: 'Password123', name: 'Prof. Meera Nair', role: 'Faculty Coordinator'},
+    {email: 'president@zealeducation.com', password: 'Password123', name: 'Karan Mehta', role: 'Association President'},
+    {email: 'committee@zealeducation.com', password: 'Password123', name: 'Riya Desai', role: 'Committee Member'},
+    {email: 'student@zealeducation.com', password: 'Password123', name: 'Arjun Patil', role: 'Student Member'}
+  ]));
+}
+
+// Login verification with session storage
 document.getElementById('loginSubmitBtn').addEventListener('click', ()=>{
   const selectedRole = roleChip.textContent.trim();
-  const target = roleDashboards[selectedRole];
-  if(target){ window.location.href = target; }
+  const emailVal = document.getElementById('loginEmail').value.trim();
+  const pwdVal = document.getElementById('loginPassword').value;
+
+  if(!emailVal || !pwdVal) {
+    alert('Please enter college email ID and password.');
+    return;
+  }
+
+  const users = JSON.parse(localStorage.getItem('aimsa_users'));
+  const user = users.find(u => u.email.toLowerCase() === emailVal.toLowerCase() && u.password === pwdVal && u.role === selectedRole);
+
+  if(user) {
+    // Store user session
+    sessionStorage.setItem('current_user', JSON.stringify(user));
+    if(document.getElementById('keepSignedIn').checked) {
+      localStorage.setItem('keep_signed_in_user', JSON.stringify(user));
+    }
+    const target = roleDashboards[selectedRole];
+    if(target){ window.location.href = target; }
+  } else {
+    alert('Invalid Email ID or Password for the selected role. Please use the simulated default credentials (e.g. email: student@zealeducation.com, password: Password123).');
+  }
 });
-document.getElementById('forgotLink').addEventListener('click', (e)=>{
-  e.preventDefault();
-  alert('A password reset link will be sent to your registered college email.');
+
+// Registration Flow
+document.getElementById('registerSubmitBtn').addEventListener('click', () => {
+  const selectedRole = roleChip.textContent.trim();
+  const nameVal = document.getElementById('regName').value.trim();
+  const idVal = document.getElementById('regID').value.trim();
+  const emailVal = document.getElementById('regEmail').value.trim();
+  const pwdVal = document.getElementById('regPassword').value;
+  const confPwdVal = document.getElementById('regConfirmPassword').value;
+
+  if(!nameVal || !idVal || !emailVal || !pwdVal || !confPwdVal) {
+    alert('Please fill out all fields to register.');
+    return;
+  }
+
+  if(pwdVal !== confPwdVal) {
+    alert('Passwords do not match.');
+    return;
+  }
+
+  const users = JSON.parse(localStorage.getItem('aimsa_users'));
+  if(users.some(u => u.email.toLowerCase() === emailVal.toLowerCase())) {
+    alert('A user with this Email ID already exists.');
+    return;
+  }
+
+  // Create new user (Student)
+  const newUser = {
+    email: emailVal,
+    password: pwdVal,
+    name: nameVal,
+    role: selectedRole,
+    studentId: idVal,
+    membershipStatus: 'Pending',
+    membershipRenewed: false,
+    photograph: ''
+  };
+
+  users.push(newUser);
+  localStorage.setItem('aimsa_users', JSON.stringify(users));
+
+  // Auto sign in simulation
+  sessionStorage.setItem('current_user', JSON.stringify(newUser));
+  alert('Registration successful! Click OK to go to your student dashboard.');
+  window.location.href = roleDashboards[selectedRole];
+});
+
+// Forgot Password Flow
+document.getElementById('forgotSubmitBtn').addEventListener('click', () => {
+  const emailVal = document.getElementById('forgotEmail').value.trim();
+  if(!emailVal) {
+    alert('Please enter your college email ID.');
+    return;
+  }
+  alert(`A secure password reset link has been successfully generated and sent to: ${emailVal}`);
+  forgotStep.style.display = 'none';
+  formStep.classList.add('show');
 });
 
 // generative node field background for hero + committee section
