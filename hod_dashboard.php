@@ -1,3 +1,9 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+require_once __DIR__ . '/include/dbConfig.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,7 +31,6 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 .sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--navy-950);min-height:100vh;position:fixed;left:0;top:0;bottom:0;display:flex;flex-direction:column;border-right:1px solid var(--line);z-index:100;transition:transform .3s ease;}
 .sidebar-brand{padding:24px 22px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;}
 .brand-logo{width:42px;height:42px;border-radius:50%;background:var(--white);display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid rgba(255,255,255,.3);flex-shrink:0;}
-.brand-logo svg{width:22px;height:22px;stroke:var(--navy-950);fill:none;stroke-width:1.8;}
 .brand-info b{font-family:var(--ff-display);color:var(--white);font-size:.95rem;display:block;}
 .brand-info span{font-family:var(--ff-mono);font-size:.58rem;letter-spacing:.14em;color:var(--accent-soft);text-transform:uppercase;}
 .sidebar-role{padding:16px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;}
@@ -67,7 +72,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 
 /* ── STAT CARDS ── */
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:32px;}
-.stat-card{background:var(--white);border-radius:16px;padding:22px 24px;border:1px solid var(--line-dark);transition:transform .2s ease,box-shadow .3s ease;position:relative;overflow:hidden;}
+.stat-card{background:var(--white);border-radius:16px;padding:22px 24px;border:1px solid var(--line-dark);transition:transform .2s ease,box-shadow .3s ease;position:relative;overflow:hidden;cursor:pointer;}
 .stat-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
 .stat-card::after{content:'';position:absolute;right:-30px;top:-30px;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,var(--accent-glow),transparent 70%);opacity:.4;}
 .stat-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--navy-950),var(--navy-800));display:flex;align-items:center;justify-content:center;margin-bottom:16px;transition:transform .3s cubic-bezier(.34,1.56,.64,1);}
@@ -146,59 +151,27 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 .cert-counter-val{font-family:var(--ff-display);font-size:2.4rem;font-weight:700;display:block;line-height:1;}
 .cert-counter-label{font-family:var(--ff-mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:4px;}
 
-/* ── SIDEBAR OVERLAY ── */
+/* ── SIDEBAR OVERLAY & DRAWER ── */
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(5,13,26,.5);z-index:99;}
-
-/* ── BTN ── */
 .btn{display:inline-flex;align-items:center;gap:8px;justify-content:center;padding:10px 20px;border-radius:999px;font-weight:600;font-size:.84rem;border:1px solid transparent;transition:all .25s ease;cursor:pointer;}
 .btn-primary{background:linear-gradient(135deg,var(--accent),#2563eb);color:var(--white);box-shadow:0 8px 20px -8px var(--accent-glow);}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 28px -8px var(--accent-glow);}
 .btn-ghost{background:transparent;border-color:var(--line-dark);color:var(--navy-800);}
 .btn-ghost:hover{background:var(--paper-dim);}
 
-/* Header Topbar Search Bar & Logo styles */
 .header-search-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--paper);
-  border: 1.5px solid var(--line-dark);
-  border-radius: 99px;
-  padding: 6px 14px;
-  width: min(280px, 100%);
-  transition: border-color 0.2s;
+  display: flex; align-items: center; gap: 8px; background: var(--paper);
+  border: 1.5px solid var(--line-dark); border-radius: 99px; padding: 6px 14px;
+  width: min(280px, 100%); transition: border-color 0.2s;
 }
-.header-search-bar:focus-within {
-  border-color: var(--accent);
-}
-.header-search-bar input {
-  background: transparent;
-  border: none;
-  font-size: 0.8rem;
-  font-family: inherit;
-  color: var(--navy-950);
-  outline: none;
-  width: 100%;
-}
-.logo-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-right: 12px;
-}
-.logo-container svg {
-  transition: transform 0.2s;
-}
-.logo-container svg:hover {
-  transform: scale(1.1);
-}
+.header-search-bar:focus-within { border-color: var(--accent); }
+.header-search-bar input { background: transparent; border: none; font-size: 0.8rem; font-family: inherit; color: var(--navy-950); outline: none; width: 100%; }
 
-/* Drawer Panel styles */
 .drawer{
-  position:fixed; top:0; right:-450px; width:min(450px, 100%); height:100vh;
+  position:fixed; top:0; right:-480px; width:min(480px, 100%); height:100vh;
   background:var(--white); border-left:1px solid var(--line-dark); z-index:200;
   transition:right 0.3s cubic-bezier(0.16, 1, 0.3, 1); padding:30px;
-  display:flex; flex-direction:column; gap:20px; overflow-y:auto;
+  display:flex; flex-direction:column; gap:16px; overflow-y:auto;
   box-shadow: -10px 0 30px -10px rgba(0,0,0,0.15);
 }
 .drawer.open{right:0;}
@@ -214,6 +187,10 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   outline:none; border-color:var(--accent);
 }
 
+.tab-buttons{display:flex; gap:8px; border-bottom:1px solid var(--line-dark); padding-bottom:10px; margin-bottom:15px;}
+.tab-btn{background:none; border:none; padding:6px 14px; font-size:0.82rem; font-weight:600; color:var(--muted-dark); cursor:pointer; border-radius:6px;}
+.tab-btn.active{background:rgba(62,139,255,0.12); color:var(--accent);}
+
 @media(max-width:1100px){.stats-grid{grid-template-columns:repeat(2,1fr);}.dash-grid{grid-template-columns:1fr;}.dash-grid-3{grid-template-columns:1fr 1fr;}.dash-grid-2{grid-template-columns:1fr;}}
 @media(max-width:768px){.sidebar{transform:translateX(-100%);}.sidebar.open{transform:translateX(0);}.sidebar-overlay.open{display:block;}.main{margin-left:0;}.hamburger-btn{display:flex;}.content{padding:20px;}.stats-grid{grid-template-columns:1fr 1fr;}.dash-grid-3{grid-template-columns:1fr;}}
 @media(max-width:480px){.stats-grid{grid-template-columns:1fr;}}
@@ -225,7 +202,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 <!-- ══ SIDEBAR ══ -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-brand">
-    <div class="brand-logo" style="width:42px; height:42px; border-radius:50%; background:var(--white); display:flex; align-items:center; justify-content:center; overflow:hidden; border:2px solid rgba(255,255,255,.3); flex-shrink:0;">
+    <div class="brand-logo">
       <img src="images/aimsa_logo.jpg" alt="AIMSA Logo" style="width:100%; height:100%; object-fit:cover;">
     </div>
     <div class="brand-info"><b>AIMSA Portal</b><span>HOD Access</span></div>
@@ -238,7 +215,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 
   <nav class="sidebar-nav">
     <div class="nav-section-label">Main</div>
-    <a class="nav-item active" href="hod_dashboard.html" id="navDashboard">
+    <a class="nav-item active" href="hod_dashboard.php" id="navDashboard">
       <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
       Dashboard
     </a>
@@ -247,7 +224,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
     <a class="nav-item" href="#members" id="navMembers">
       <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2M10 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
       Total Members
-      <span class="nav-badge">247</span>
+      <span class="nav-badge" id="navMembersBadge">0</span>
     </a>
 
     <a class="nav-item" href="#committee" id="navCommittee">
@@ -265,11 +242,6 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
       Upcoming Events
     </a>
 
-    <a class="nav-item" href="#registrations" id="navReg">
-      <svg class="nav-icon" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-      Event Registrations
-    </a>
-
     <div class="nav-section-label">Reports & Analytics</div>
     <a class="nav-item" href="#certificates" id="navCerts">
       <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
@@ -281,11 +253,15 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
       Reports
     </a>
 
-    <div class="nav-section-label">Communication</div>
+    <div class="nav-section-label">Communication & Media</div>
     <a class="nav-item" href="#notifications" id="navNotif">
       <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
       Notifications
-      <span class="nav-badge">4</span>
+    </a>
+
+    <a class="nav-item" href="#" id="navGallery">
+      <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      Gallery & Documents
     </a>
 
     <div class="nav-section-label">Account</div>
@@ -306,18 +282,16 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 <!-- ══ MAIN ══ -->
 <div class="main">
   <!-- TOP BAR -->
-  <div class="topbar" style="justify-content:space-between; padding:15px 30px; background:var(--white); border-bottom:1px solid var(--line-dark);">
-    <div class="topbar-left" style="display:flex; align-items:center; gap:16px;">
-      <button class="hamburger-btn" id="hamburgerBtn" style="margin-right:8px;"><span></span><span></span><span></span></button>
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="hamburger-btn" id="hamburgerBtn"><span></span><span></span><span></span></button>
       <div class="logo-container" style="display:flex; align-items:center; gap:8px;">
-        <!-- College Logo -->
         <img src="images/icons/college_logo.png" alt="Zeal Logo" style="height:32px; width:32px; border-radius:50%; object-fit:cover;" title="Zeal Education Society">
-        <!-- AIML Dept Logo -->
         <img src="images/aimsa_logo.jpg" alt="AIMSA Logo" style="height:32px; width:auto; border-radius:50%; object-fit:contain;" title="AIMSA Association">
       </div>
       <div>
-        <div class="page-title" style="font-family:var(--ff-display); font-size:1.05rem; font-weight:800; color:var(--navy-950);">AIMSA Portal</div>
-        <div class="breadcrumb" style="font-size:0.68rem; color:var(--muted-dark);">AI &amp; ML Department (HOD)</div>
+        <div class="page-title">AIMSA Portal</div>
+        <div class="breadcrumb">AI &amp; ML Department (HOD)</div>
       </div>
     </div>
 
@@ -327,17 +301,14 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
       <input type="text" id="headerSearchInput" placeholder="Search members, events...">
     </div>
 
-    <div class="topbar-right" style="display:flex; align-items:center; gap:20px;">
-      <!-- Language selection dropdown -->
+    <div class="topbar-right">
       <select id="langSelect" style="background:var(--paper); border:1.5px solid var(--line-dark); border-radius:8px; padding:6px 12px; font-size:0.75rem; font-weight:600; font-family:inherit; cursor:pointer;" onchange="changeLanguage()">
         <option value="en">English</option>
         <option value="mr">मराठी (Marathi)</option>
       </select>
 
-      <!-- Notification button -->
-      <button class="topbar-icon-btn" onclick="openNotifications()" style="position:relative;"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg><span class="notif-dot"></span></button>
+      <button class="topbar-icon-btn" onclick="openNotifications()"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg><span class="notif-dot"></span></button>
 
-      <!-- Profile Menu -->
       <div style="position:relative; display:inline-block;" id="profileMenuWrapper">
         <div style="display:flex; align-items:center; gap:8px; cursor:pointer;" onclick="toggleProfileDropdown()">
           <div style="width:32px; height:32px; border-radius:50%; background:var(--accent); color:var(--white); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem;" id="headerUserAvatar">HD</div>
@@ -353,7 +324,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
             Change Password
           </a>
           <div style="border-top:1px solid var(--line-dark); margin:4px 0;"></div>
-          <a href="index.php" onclick="sessionStorage.removeItem('current_user');" style="display:flex; align-items:center; gap:8px; padding:10px 16px; font-size:0.78rem; color:#ef4444; text-decoration:none; font-weight:600;">
+          <a href="index.php" style="display:flex; align-items:center; gap:8px; padding:10px 16px; font-size:0.78rem; color:#ef4444; text-decoration:none; font-weight:600;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
             Logout
           </a>
@@ -366,33 +337,33 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   <div class="content">
     <div class="section-eyebrow">HOD Overview</div>
     <div class="content-title">Good Morning, Dr. Shende 👋</div>
-    <div class="content-sub">Here's what's happening in AIMSA today — July 21, 2026</div>
+    <div class="content-sub">Here's what's happening in AIMSA today — <?php echo date('F j, Y'); ?></div>
 
-    <!-- STAT CARDS — Total Members, Committee Members, Events Conducted, Event Registrations -->
+    <!-- STAT CARDS -->
     <div class="stats-grid" id="members">
-      <div class="stat-card">
+      <div class="stat-card" onclick="openDrawer('membersDrawer')">
         <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2M10 11a4 4 0 100-8 4 4 0 000 8z"/></svg></div>
-        <span class="stat-val">247</span>
+        <span class="stat-val" id="statTotalMembers">0</span>
         <div class="stat-label">Total Members</div>
-        <span class="stat-delta up">↑ 12 this month</span>
+        <span class="stat-delta up">↑ Live Database</span>
       </div>
-      <div class="stat-card" id="committee">
+      <div class="stat-card" id="committee" onclick="openDrawer('committeeDrawer')">
         <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
-        <span class="stat-val">35</span>
+        <span class="stat-val" id="statCommittee">0</span>
         <div class="stat-label">Committee Members</div>
-        <span class="stat-delta up">↑ 5 Committees</span>
+        <span class="stat-delta up">↑ Active Roles</span>
       </div>
-      <div class="stat-card" id="events">
+      <div class="stat-card" id="events" onclick="openDrawer('newEventDrawer')">
         <div class="stat-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-        <span class="stat-val">24</span>
+        <span class="stat-val" id="statEvents">0</span>
         <div class="stat-label">Events Conducted</div>
-        <span class="stat-delta up">↑ 8 this semester</span>
+        <span class="stat-delta up">↑ Approved &amp; Live</span>
       </div>
       <div class="stat-card" id="registrations">
         <div class="stat-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
-        <span class="stat-val">1,284</span>
+        <span class="stat-val" id="statRegistrations">0</span>
         <div class="stat-label">Event Registrations</div>
-        <span class="stat-delta up">↑ 146 this week</span>
+        <span class="stat-delta up">↑ Total Participants</span>
       </div>
     </div>
 
@@ -400,13 +371,18 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
     <div class="dash-grid">
       <!-- Membership Applications & Requests -->
       <div class="card" id="membershipRequestsCard">
-        <div class="card-head"><div class="card-title">Membership Applications</div><span class="card-action" id="viewAllMembersBtn">View Member List</span></div>
-        <table class="data-table" id="pendingMembersTable">
-          <thead><tr><th>Student</th><th>Email ID</th><th>Branch</th><th>Action</th></tr></thead>
-          <tbody id="pendingMembersBody">
-            <!-- Dynamically populated -->
-          </tbody>
-        </table>
+        <div class="card-head">
+          <div class="card-title">Membership Applications</div>
+          <span class="card-action" onclick="openDrawer('membersDrawer')">View All Members</span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="data-table" id="pendingMembersTable">
+            <thead><tr><th>Student</th><th>Email ID</th><th>Branch</th><th>Action</th></tr></thead>
+            <tbody id="pendingMembersBody">
+              <!-- Dynamically populated from MySQL -->
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <!-- Quick Actions + Notifications -->
@@ -414,51 +390,71 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
         <div class="card">
           <div class="card-head"><div class="card-title">Quick Actions</div></div>
           <div class="quick-grid">
-            <button class="quick-btn"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8zM19 8v6M22 11h-6"/></svg><span>Add Member</span></button>
-            <button class="quick-btn"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>New Event</span></button>
-            <button class="quick-btn"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span>View Reports</span></button>
-            <button class="quick-btn"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg><span>Notify All</span></button>
+            <button class="quick-btn" onclick="openDrawer('addMemberDrawer')">
+              <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8zM19 8v6M22 11h-6"/></svg>
+              <span>Add Member</span>
+            </button>
+            <button class="quick-btn" onclick="openDrawer('newEventDrawer')">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span>New Event</span>
+            </button>
+            <button class="quick-btn" onclick="openDrawer('reportHubDrawer')">
+              <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              <span>View Reports</span>
+            </button>
+            <button class="quick-btn" onclick="openDrawer('notifyAllDrawer')">
+              <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+              <span>Notify All</span>
+            </button>
           </div>
         </div>
-        <!-- Notifications -->
+
+        <!-- Notifications Card -->
         <div class="card" id="notifications">
-          <div class="card-head"><div class="card-title">Notifications</div><span class="card-action">Mark Read</span></div>
-          <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>New membership applications</b><span>4 pending approval · 2 mins ago</span></div></div>
-          <div class="list-item"><div class="list-dot" style="background:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.18);"></div><div class="list-text"><b>Tech Symposium 2026 approved</b><span>Event goes live · 1 hour ago</span></div></div>
-          <div class="list-item"><div class="list-dot" style="background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18);"></div><div class="list-text"><b>Monthly report generated</b><span>June 2026 analytics ready · Yesterday</span></div></div>
-          <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>5 certificates awaiting approval</b><span>Review required · 3 hrs ago</span></div></div>
+          <div class="card-head">
+            <div class="card-title">Notifications</div>
+            <span class="card-action" onclick="openDrawer('notifyAllDrawer')">Send Announcement</span>
+          </div>
+          <div id="notificationsCardContainer">
+            <!-- Dynamically populated from MySQL -->
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- BOTTOM ROW — Upcoming Events + Member Growth + Committee Status -->
+    <!-- BOTTOM ROW — Membership Growth + Upcoming Events + Committee Status -->
     <div class="dash-grid-3">
       <!-- Membership Growth -->
       <div class="card">
-        <div class="card-head"><div class="card-title">Membership Growth</div><span class="card-action">Full Report</span></div>
-        <div class="progress-item"><div class="progress-label"><span>AIML Batch 2024</span><span>87%</span></div><div class="progress-bar"><div class="progress-fill" style="width:87%"></div></div></div>
-        <div class="progress-item"><div class="progress-label"><span>AIML Batch 2025</span><span>72%</span></div><div class="progress-bar"><div class="progress-fill" style="width:72%"></div></div></div>
-        <div class="progress-item"><div class="progress-label"><span>CS Batch 2024</span><span>54%</span></div><div class="progress-bar"><div class="progress-fill" style="width:54%"></div></div></div>
-        <div class="progress-item"><div class="progress-label"><span>DS Batch 2025</span><span>61%</span></div><div class="progress-bar"><div class="progress-fill" style="width:61%"></div></div></div>
+        <div class="card-head">
+          <div class="card-title">Membership Growth</div>
+          <span class="card-action" onclick="openDrawer('reportHubDrawer')">Full Analytics</span>
+        </div>
+        <div id="growthContainer">
+          <!-- Dynamically populated from MySQL -->
+        </div>
       </div>
 
       <!-- Upcoming Events -->
       <div class="card" id="upcoming">
-        <div class="card-head"><div class="card-title">Upcoming Events</div><span class="card-action">All Events</span></div>
-        <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>Tech Symposium 2026</b><span>Jul 28 · Main Auditorium</span></div></div>
-        <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>AI Workshop Series</b><span>Aug 3 · Lab 402</span></div></div>
-        <div class="list-item"><div class="list-dot" style="background:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.18);"></div><div class="list-text"><b>Hackathon 2026</b><span>Aug 15 · Online + Campus</span></div></div>
-        <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>Guest Lecture: ML in Healthcare</b><span>Aug 22 · Seminar Hall</span></div></div>
+        <div class="card-head">
+          <div class="card-title">Upcoming Events</div>
+          <span class="card-action" onclick="openDrawer('newEventDrawer')">Manage Events</span>
+        </div>
+        <div id="upcomingEventsList">
+          <!-- Dynamically populated from MySQL -->
+        </div>
       </div>
 
       <!-- Committee Status -->
       <div class="card">
-        <div class="card-head"><div class="card-title">Committee Status</div><span class="card-action">Manage</span></div>
-        <div class="list-item"><div class="list-text"><b>Technical Committee</b><span>12 members · Active</span></div><span class="badge badge-green">Active</span></div>
-        <div class="list-item"><div class="list-text"><b>Cultural Committee</b><span>8 members · Active</span></div><span class="badge badge-green">Active</span></div>
-        <div class="list-item"><div class="list-text"><b>Media & PR</b><span>6 members · Active</span></div><span class="badge badge-blue">Active</span></div>
-        <div class="list-item"><div class="list-text"><b>Finance Committee</b><span>4 members · Forming</span></div><span class="badge badge-orange">Forming</span></div>
-        <div class="list-item"><div class="list-text"><b>Outreach Committee</b><span>5 members · Active</span></div><span class="badge badge-green">Active</span></div>
+        <div class="card-head">
+          <div class="card-title">Committee Status</div>
+          <span class="card-action" onclick="openDrawer('committeeDrawer')">Manage Roles</span>
+        </div>
+        <div id="committeeStatusList">
+          <!-- Dynamically populated from MySQL -->
+        </div>
       </div>
     </div>
 
@@ -466,52 +462,40 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
     <div class="dash-grid-2" id="certificates">
       <!-- Certificates Generated -->
       <div class="card">
-        <div class="card-head"><div class="card-title">Certificates Generated</div><span class="card-action">Generate New</span></div>
+        <div class="card-head">
+          <div class="card-title">Certificates Generated</div>
+          <span class="card-action" onclick="openDrawer('certGeneratorDrawer')">Generate New</span>
+        </div>
         <div class="cert-counter">
           <div class="cert-counter-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
           <div style="position:relative;z-index:1;">
-            <span class="cert-counter-val">312</span>
+            <span class="cert-counter-val" id="statCertsIssued">0</span>
             <div class="cert-counter-label">Total Certificates Issued</div>
           </div>
         </div>
-        <table class="data-table">
-          <thead><tr><th>Event</th><th>Issued</th><th>Pending</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td><b>Tech Symposium 2025</b></td><td>148</td><td>0</td><td><span class="badge badge-green">Complete</span></td></tr>
-            <tr><td><b>Hackathon 2025</b></td><td>96</td><td>0</td><td><span class="badge badge-green">Complete</span></td></tr>
-            <tr><td><b>AI Workshop Q1</b></td><td>68</td><td>5</td><td><span class="badge badge-orange">Partial</span></td></tr>
-            <tr><td><b>Cultural Night 2025</b></td><td>0</td><td>—</td><td><span class="badge badge-gray">Pending</span></td></tr>
-          </tbody>
-        </table>
+        <div style="overflow-x:auto;">
+          <table class="data-table">
+            <thead><tr><th>Certificate ID</th><th>Type</th><th>Student</th><th>Action</th></tr></thead>
+            <tbody id="certificatesTableBody">
+              <!-- Dynamically populated from MySQL -->
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <!-- Reports -->
+      <!-- Reports Hub Card -->
       <div class="card" id="reports">
-        <div class="card-head"><div class="card-title">Reports</div><span class="card-action">Generate</span></div>
-        <div class="report-item">
-          <div class="report-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
-          <div class="report-info"><b>Monthly Analytics — June 2026</b><span>247 members · 8 events · 96% attendance</span></div>
-          <div class="report-dl">↓ PDF</div>
+        <div class="card-head">
+          <div class="card-title">Reports</div>
+          <span class="card-action" onclick="openDrawer('reportHubDrawer')">Generate New</span>
         </div>
-        <div class="report-item">
-          <div class="report-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2M10 11a4 4 0 100-8 4 4 0 000 8z"/></svg></div>
-          <div class="report-info"><b>Semester Membership Report</b><span>Batch-wise breakdown · Sem II 2025-26</span></div>
-          <div class="report-dl">↓ PDF</div>
-        </div>
-        <div class="report-item">
-          <div class="report-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-          <div class="report-info"><b>Event Completion Report</b><span>24 events · 1,284 registrations · Q2 2026</span></div>
-          <div class="report-dl">↓ PDF</div>
-        </div>
-        <div class="report-item">
-          <div class="report-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
-          <div class="report-info"><b>Certificate Issuance Log</b><span>312 issued · 5 pending · July 2026</span></div>
-          <div class="report-dl">↓ CSV</div>
+        <div id="reportsListContainer">
+          <!-- Dynamically populated from MySQL -->
         </div>
       </div>
     </div>
 
-    <!-- consistent footer -->
+    <!-- FOOTER -->
     <footer class="portal-footer" style="margin-top:40px; padding:24px 30px; background:var(--white); border-top:1px solid var(--line-dark); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
       <div style="font-size:0.78rem; color:var(--muted-dark);">
         <span>© 2026 <b>Department of AIML</b>, Zeal College of Engineering and Research, Pune. All rights reserved.</span>
@@ -520,18 +504,314 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
         <span>📧 Support: <a href="mailto:support.aimsa@zealeducation.com" style="color:var(--accent); text-decoration:none; font-weight:600;">support.aimsa@zealeducation.com</a></span>
         <span>📞 Call: <b>+91 20 6720 6000</b></span>
         <span style="color:var(--line-dark);">|</span>
-        <a href="#" onclick="alert('Privacy Policy: All membership data is kept strictly confidential within Zeal Society.')" style="color:inherit; text-decoration:none; font-weight:600;">Privacy Policy</a>
-        <a href="#" onclick="alert('Terms &amp; Conditions: AIMSA portal usage is governed by college guidelines.')" style="color:inherit; text-decoration:none; font-weight:600;">Terms &amp; Conditions</a>
-        <span style="color:var(--line-dark);">|</span>
-        <span>Version: <b>v2.1.0</b></span>
-        <span>Last Updated: <b>July 21, 2026</b></span>
+        <span>MySQL Backend <b>Active</b></span>
       </div>
     </footer>
 
   </div><!-- /content -->
 </div><!-- /main -->
 
-<!-- ── CHANGE PASSWORD DRAWER ── -->
+<!-- ── DRAWER 1: QUICK ACTION - ADD MEMBER ── -->
+<div class="drawer" id="addMemberDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Add New Member</div>
+    <button class="drawer-close" onclick="closeDrawer('addMemberDrawer')">&times;</button>
+  </div>
+  <form id="addMemberForm" onsubmit="submitAddMember(event)">
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" id="addMemName" placeholder="e.g. Siddhesh Kulkarni" required>
+    </div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="addMemEmail" placeholder="siddhesh@zealeducation.com" required>
+    </div>
+    <div class="form-group">
+      <label>Initial Password</label>
+      <input type="password" id="addMemPassword" value="password123" required>
+    </div>
+    <div class="form-group">
+      <label>Role</label>
+      <select id="addMemRole">
+        <option value="Student Member">Student Member</option>
+        <option value="Committee Member">Committee Member</option>
+        <option value="Faculty Coordinator">Faculty Coordinator</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Branch / Department</label>
+      <select id="addMemBranch">
+        <option value="AI & ML">AI & ML</option>
+        <option value="CS">Computer Science (CS)</option>
+        <option value="DS">Data Science (DS)</option>
+        <option value="IT">Information Technology (IT)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Batch Year</label>
+      <select id="addMemBatch">
+        <option value="2026">2026</option>
+        <option value="2025">2025</option>
+        <option value="2024">2024</option>
+        <option value="2027">2027</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary" style="width:100%; margin-top:10px;">Add Member to Assosciation</button>
+  </form>
+</div>
+
+<!-- ── DRAWER 2: QUICK ACTION - NEW EVENT & EVENT APPROVAL ── -->
+<div class="drawer" id="newEventDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Event Management</div>
+    <button class="drawer-close" onclick="closeDrawer('newEventDrawer')">&times;</button>
+  </div>
+  <div class="tab-buttons">
+    <button class="tab-btn active" id="tabCreateEvt" onclick="switchEventTab('create')">+ Create Event</button>
+    <button class="tab-btn" id="tabApproveEvt" onclick="switchEventTab('approve')">Pending Proposals</button>
+  </div>
+
+  <!-- Tab 1: Create Event -->
+  <form id="createEventForm" onsubmit="submitCreateEvent(event)">
+    <div class="form-group">
+      <label>Event Title</label>
+      <input type="text" id="evtTitle" placeholder="e.g. AI Hackathon 2026" required>
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea id="evtDesc" rows="3" placeholder="Brief summary of event schedule and objective..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Event Date</label>
+      <input type="date" id="evtDate" required>
+    </div>
+    <div class="form-group">
+      <label>Location / Venue</label>
+      <input type="text" id="evtLocation" placeholder="Main Auditorium / Lab 402" required>
+    </div>
+    <button type="submit" class="btn btn-primary" style="width:100%; margin-top:10px;">Publish &amp; Approve Event</button>
+  </form>
+
+  <!-- Tab 2: Pending Event Proposals -->
+  <div id="pendingEventsContainer" style="display:none; flex-direction:column; gap:12px;">
+    <!-- Dynamically populated from MySQL -->
+  </div>
+</div>
+
+<!-- ── DRAWER 3: QUICK ACTION - VIEW & AUTO-GENERATE REPORTS ── -->
+<div class="drawer" id="reportHubDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Reports Hub</div>
+    <button class="drawer-close" onclick="closeDrawer('reportHubDrawer')">&times;</button>
+  </div>
+  <div style="border-bottom:1px solid var(--line-dark); padding-bottom:15px; margin-bottom:15px;">
+    <h4>Auto-Generate New Report</h4>
+    <form id="reportForm" onsubmit="submitGenerateReport(event)" style="margin-top:10px;">
+      <div class="form-group">
+        <label>Report Title (Optional)</label>
+        <input type="text" id="reportTitleInput" placeholder="e.g. Annual Activity Report Q2">
+      </div>
+      <div class="form-group">
+        <label>Report Category</label>
+        <select id="reportCategorySelect">
+          <option value="Event Report">Event Completion Report</option>
+          <option value="Member Report">Membership Analytics Report</option>
+          <option value="Attendance Report">Event Attendance Report</option>
+          <option value="Committee Report">Committee Performance Report</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Export Format</label>
+        <select id="reportFormatSelect">
+          <option value="PDF">PDF File</option>
+          <option value="Excel">CSV / Excel File</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; margin-top:5px;">⚡ Auto-Compile &amp; Generate Report</button>
+    </form>
+  </div>
+  <div style="flex:1; overflow-y:auto;">
+    <h4>Generated Reports Library</h4>
+    <div id="drawerReportsContainer" style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+      <!-- Dynamically populated from MySQL -->
+    </div>
+  </div>
+</div>
+
+<!-- ── DRAWER 4: QUICK ACTION - NOTIFY ALL ── -->
+<div class="drawer" id="notifyAllDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Broadcast Announcement</div>
+    <button class="drawer-close" onclick="closeDrawer('notifyAllDrawer')">&times;</button>
+  </div>
+  <form id="notifyForm" onsubmit="submitNotifyAll(event)">
+    <div class="form-group">
+      <label>Announcement Subject</label>
+      <input type="text" id="notifSubject" placeholder="e.g. Important: Meeting at 3 PM" required>
+    </div>
+    <div class="form-group">
+      <label>Message Content</label>
+      <textarea id="notifBody" rows="4" placeholder="Detailed notification text..." required></textarea>
+    </div>
+    <div class="form-group">
+      <label>Priority Indicator</label>
+      <select id="notifIndicator">
+        <option value="green">🟢 Normal / Update</option>
+        <option value="yellow">🟡 Important Alert</option>
+        <option value="red">🔴 High Priority / Urgent</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Target Audience</label>
+      <select id="notifRecipient">
+        <option value="all">All Association Members &amp; Faculty</option>
+        <option value="Student Member">Student Members Only</option>
+        <option value="Committee Member">Committee Members Only</option>
+        <option value="Faculty Coordinator">Faculty Coordinators Only</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary" style="width:100%; margin-top:10px;">📢 Send Announcement</button>
+  </form>
+</div>
+
+<!-- ── DRAWER 5: CERTIFICATE GENERATOR DRAWER ── -->
+<div class="drawer" id="certGeneratorDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Generate Certificate</div>
+    <button class="drawer-close" onclick="closeDrawer('certGeneratorDrawer')">&times;</button>
+  </div>
+  <form id="certForm" onsubmit="submitGenerateCert(event)">
+    <div class="form-group">
+      <label>Certificate Type</label>
+      <select id="certType">
+        <option value="Participation Certificate">Participation Certificate</option>
+        <option value="Volunteer Certificate">Volunteer Certificate</option>
+        <option value="Winner Certificate">Winner Certificate</option>
+        <option value="Appreciation Certificate">Appreciation Certificate</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Select Event</label>
+      <select id="certEvent">
+        <!-- Dynamically populated from MySQL events -->
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Select Student</label>
+      <select id="certStudent">
+        <!-- Dynamically populated from MySQL active students -->
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary" style="width:100%; margin-top:10px;">Generate &amp; Issue PDF</button>
+  </form>
+</div>
+
+<!-- ── DRAWER 6: MEMBER DIRECTORY ── -->
+<div class="drawer" id="membersDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Member Directory</div>
+    <button class="drawer-close" onclick="closeDrawer('membersDrawer')">&times;</button>
+  </div>
+  <div class="form-group">
+    <label>Search Members</label>
+    <input type="text" id="memberSearchInput" placeholder="Search by name, email, or role...">
+  </div>
+  <div style="flex:1; overflow-y:auto;">
+    <table class="data-table">
+      <thead><tr><th>Name</th><th>Role / Status</th></tr></thead>
+      <tbody id="allMembersBody">
+        <!-- Dynamically populated -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── DRAWER 7: COMMITTEE MANAGEMENT ── -->
+<div class="drawer" id="committeeDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Committee Management</div>
+    <button class="drawer-close" onclick="closeDrawer('committeeDrawer')">&times;</button>
+  </div>
+  <div style="border-bottom:1px solid var(--line-dark); padding-bottom:15px; margin-bottom:15px;">
+    <h4>Assign Committee Role</h4>
+    <form id="committeeForm" onsubmit="submitSaveCommittee(event)" style="margin-top:10px;">
+      <div class="form-group">
+        <label>Select Member</label>
+        <select id="commSelectUser" required></select>
+      </div>
+      <div class="form-group">
+        <label>Designation</label>
+        <select id="commDesignation">
+          <option value="President">President</option>
+          <option value="Vice President">Vice President</option>
+          <option value="Secretary">Secretary</option>
+          <option value="Treasurer">Treasurer</option>
+          <option value="Technical Head">Technical Head</option>
+          <option value="Event Coordinator">Event Coordinator</option>
+          <option value="Public Relations Officer">Public Relations Officer</option>
+          <option value="Cultural Lead">Cultural Lead</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Assigned Responsibility</label>
+        <input type="text" id="commResponsibility" placeholder="e.g. Technical workshops leader" required>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;">Save Committee Role</button>
+    </form>
+  </div>
+  <div style="flex:1; overflow-y:auto;">
+    <h4>Current Committee Members</h4>
+    <table class="data-table" style="margin-top:10px;">
+      <thead><tr><th>Name</th><th>Designation</th><th>Action</th></tr></thead>
+      <tbody id="currentCommitteeBody">
+        <!-- Populated dynamically -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── DRAWER 8: GALLERY & FILE MANAGER ── -->
+<div class="drawer" id="galleryDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">File Storage &amp; Gallery</div>
+    <button class="drawer-close" onclick="closeDrawer('galleryDrawer')">&times;</button>
+  </div>
+  <div style="border-bottom:1px solid var(--line-dark); padding-bottom:15px; margin-bottom:15px;">
+    <h4>Upload File (PDF / Image / Video)</h4>
+    <form id="uploadFileForm" onsubmit="submitUploadFile(event)" style="margin-top:10px;">
+      <div class="form-group">
+        <label>Title / Caption</label>
+        <input type="text" id="uploadTitle" placeholder="e.g. Workshop Report 2026" required>
+      </div>
+      <div class="form-group">
+        <label>Item Type</label>
+        <select id="uploadItemType">
+          <option value="PDF Report">PDF Report</option>
+          <option value="Photo">Photo</option>
+          <option value="Video">Video</option>
+          <option value="Document">Document</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Album / Category</label>
+        <input type="text" id="uploadAlbum" placeholder="e.g. ML Bootcamp 2026">
+      </div>
+      <div class="form-group">
+        <label>Select File</label>
+        <input type="file" id="uploadFileInput" required accept="image/*,video/*,.pdf,.doc,.docx" style="padding:4px;">
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;">Upload to Server</button>
+    </form>
+  </div>
+  <div style="flex:1; overflow-y:auto;">
+    <h4>Uploaded Files &amp; Storage</h4>
+    <div id="galleryItemsContainer" style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+      <!-- Populated dynamically -->
+    </div>
+  </div>
+</div>
+
+<!-- ── DRAWER 9: CHANGE PASSWORD DRAWER ── -->
 <div class="drawer" id="changePasswordDrawer">
   <div class="drawer-header">
     <div class="drawer-title">Change Password</div>
@@ -552,172 +832,22 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   <button class="btn btn-primary" style="width:100%; margin-top:10px;" id="savePasswordBtn">Update Password</button>
 </div>
 
-<!-- ── MEMBER LIST DRAWER ── -->
-<div class="drawer" id="membersDrawer">
-  <div class="drawer-header">
-    <div class="drawer-title">Member Directory</div>
-    <button class="drawer-close" onclick="closeDrawer('membersDrawer')">&times;</button>
-  </div>
-  <div class="form-group">
-    <label>Search Members</label>
-    <input type="text" id="memberSearchInput" placeholder="Search by name, email, or role...">
-  </div>
-  <div style="flex:1; overflow-y:auto;">
-    <table class="data-table" id="allMembersTable">
-      <thead><tr><th>Name</th><th>Role / Status</th></tr></thead>
-      <tbody id="allMembersBody">
-        <!-- Dynamically populated -->
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- ── COMMITTEE DRAWER ── -->
-<div class="drawer" id="committeeDrawer">
-  <div class="drawer-header">
-    <div class="drawer-title">Committee Management</div>
-    <button class="drawer-close" onclick="closeDrawer('committeeDrawer')">&times;</button>
-  </div>
-  <div style="border-bottom:1px solid var(--line-dark); padding-bottom:15px; margin-bottom:15px;">
-    <h4>Add / Update Member</h4>
-    <div class="form-group" style="margin-top:10px;">
-      <label>Select User</label>
-      <select id="commSelectUser">
-        <!-- Populated dynamically -->
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Designation</label>
-      <select id="commDesignation">
-        <option value="President">President</option>
-        <option value="Vice President">Vice President</option>
-        <option value="Secretary">Secretary</option>
-        <option value="Treasurer">Treasurer</option>
-        <option value="Technical Head">Technical Head</option>
-        <option value="Event Coordinator">Event Coordinator</option>
-        <option value="Public Relations Officer">Public Relations Officer</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Assigned Responsibility</label>
-      <input type="text" id="commResponsibility" placeholder="e.g. Technical workshops leader">
-    </div>
-    <button class="btn btn-primary" style="width:100%;" id="saveCommitteeBtn">Add to Committee</button>
-  </div>
-  <div style="flex:1; overflow-y:auto;">
-    <h4>Current Committee</h4>
-    <table class="data-table" style="margin-top:10px;">
-      <thead><tr><th>Name</th><th>Designation</th><th>Action</th></tr></thead>
-      <tbody id="currentCommitteeBody">
-        <!-- Populated dynamically -->
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- ── CERTIFICATE GENERATOR DRAWER ── -->
-<div class="drawer" id="certGeneratorDrawer">
-  <div class="drawer-header">
-    <div class="drawer-title">Generate Certificate</div>
-    <button class="drawer-close" onclick="closeDrawer('certGeneratorDrawer')">&times;</button>
-  </div>
-  <div class="form-group">
-    <label>Certificate Type</label>
-    <select id="certType">
-      <option value="Participation Certificate">Participation Certificate</option>
-      <option value="Volunteer Certificate">Volunteer Certificate</option>
-      <option value="Winner Certificate">Winner Certificate</option>
-      <option value="Appreciation Certificate">Appreciation Certificate</option>
-    </select>
-  </div>
-  <div class="form-group">
-    <label>Select Event</label>
-    <select id="certEvent">
-      <option value="Tech Symposium 2026">Tech Symposium 2026</option>
-      <option value="AI Workshop Series">AI Workshop Series</option>
-      <option value="Hackathon 2026">Hackathon 2026</option>
-    </select>
-  </div>
-  <div class="form-group">
-    <label>Select Student</label>
-    <select id="certStudent">
-      <!-- Populated dynamically -->
-    </select>
-  </div>
-  <button class="btn btn-primary" style="width:100%; margin-top:10px;" id="generateCertBtn">Generate &amp; Issue PDF</button>
-</div>
-
-<!-- ── REPORT HUB DRAWER ── -->
-<div class="drawer" id="reportHubDrawer">
-  <div class="drawer-header">
-    <div class="drawer-title">Reports Hub</div>
-    <button class="drawer-close" onclick="closeDrawer('reportHubDrawer')">&times;</button>
-  </div>
-  <div class="form-group">
-    <label>Select Report Type</label>
-    <select id="reportCategory">
-      <option value="Member Report">Member Report</option>
-      <option value="Event Report">Event Report</option>
-      <option value="Attendance Report">Attendance Report</option>
-      <option value="Achievement Report">Achievement Report</option>
-      <option value="Certificate Report">Certificate Report</option>
-      <option value="Committee Report">Committee Report</option>
-      <option value="Participation Statistics">Participation Statistics</option>
-    </select>
-  </div>
-  <div style="display:flex; flex-direction:column; gap:12px; margin-top:15px;">
-    <button class="btn btn-primary" style="justify-content:center;" onclick="exportReport('PDF')">Export as PDF</button>
-    <button class="btn btn-ghost" style="justify-content:center;" onclick="exportReport('Excel')">Export as Excel</button>
-    <button class="btn btn-ghost" style="justify-content:center;" onclick="exportReport('Print')">Print Report</button>
-  </div>
-</div>
-
-<!-- ── GALLERY ORGANIZER DRAWER ── -->
-<div class="drawer" id="galleryDrawer">
-  <div class="drawer-header">
-    <div class="drawer-title">Gallery Organizer</div>
-    <button class="drawer-close" onclick="closeDrawer('galleryDrawer')">&times;</button>
-  </div>
-  <div style="border-bottom:1px solid var(--line-dark); padding-bottom:15px; margin-bottom:15px;">
-    <h4>Upload Gallery Item</h4>
-    <div class="form-group" style="margin-top:10px;">
-      <label>Item Type</label>
-      <select id="galleryItemType">
-        <option value="Photo">Photo</option>
-        <option value="Video">Video</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Album Name</label>
-      <input type="text" id="galleryAlbum" placeholder="e.g. ML Bootcamp 2026">
-    </div>
-    <div class="form-group">
-      <label>Select File</label>
-      <input type="file" id="galleryFileInput" accept="image/*,video/*" style="padding:4px;">
-    </div>
-    <button class="btn btn-primary" style="width:100%;" id="uploadGalleryBtn">Upload &amp; Organize</button>
-  </div>
-  <div style="flex:1; overflow-y:auto;">
-    <h4>Gallery Content</h4>
-    <div id="galleryItemsContainer" style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
-      <!-- Populated dynamically -->
-    </div>
-  </div>
-</div>
-
+<!-- ══ JAVASCRIPT LOGIC ══ -->
 <script>
-const sidebar=document.getElementById('sidebar'),overlay=document.getElementById('sidebarOverlay'),hamburger=document.getElementById('hamburgerBtn');
-hamburger.addEventListener('click',()=>{sidebar.classList.toggle('open');overlay.classList.toggle('open');});
-overlay.addEventListener('click',()=>{sidebar.classList.remove('open');overlay.classList.remove('open');closeAllDrawers();});
+const sidebar = document.getElementById('sidebar'), overlay = document.getElementById('sidebarOverlay'), hamburger = document.getElementById('hamburgerBtn');
+hamburger.addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('open'); });
+overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); closeAllDrawers(); });
 
 function openDrawer(id) {
   closeAllDrawers();
-  document.getElementById(id).classList.add('open');
+  const d = document.getElementById(id);
+  if (d) d.classList.add('open');
   overlay.classList.add('open');
 }
 
 function closeDrawer(id) {
-  document.getElementById(id).classList.remove('open');
+  const d = document.getElementById(id);
+  if (d) d.classList.remove('open');
   overlay.classList.remove('open');
 }
 
@@ -725,373 +855,12 @@ function closeAllDrawers() {
   document.querySelectorAll('.drawer').forEach(d => d.classList.remove('open'));
 }
 
-// Check logged in user session
-let currentUser = JSON.parse(sessionStorage.getItem('current_user')) || {
-  email: 'hod@zealeducation.com',
-  name: 'Dr. Dipali Shende',
-  role: 'HOD'
-};
-
-document.querySelector('.content-title').innerHTML = `Good Morning, ${currentUser.name} 👋`;
-
-// Load, approve/reject simulated student registration
-function renderMembershipRequests() {
-  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
-  const pendingUsers = users.filter(u => u.role === 'Student Member' && u.membershipStatus === 'Pending');
-  const tbody = document.getElementById('pendingMembersBody');
-  tbody.innerHTML = '';
-
-  if (pendingUsers.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--muted-dark); padding:20px;">No pending membership applications.</td></tr>`;
-  } else {
-    pendingUsers.forEach(u => {
-      tbody.innerHTML += `
-        <tr>
-          <td><b>${u.name}</b></td>
-          <td>${u.email}</td>
-          <td>${u.branch || 'AI & ML'}</td>
-          <td>
-            <button class="badge badge-green" style="cursor:pointer;" onclick="approveMember('${u.email}')">Approve</button>
-            <button class="badge badge-orange" style="cursor:pointer; margin-left:6px;" onclick="rejectMember('${u.email}')">Reject</button>
-          </td>
-        </tr>`;
-    });
-  }
-}
-
-window.approveMember = function(email) {
-  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
-  const idx = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
-  if (idx !== -1) {
-    users[idx].membershipStatus = 'Active';
-    localStorage.setItem('aimsa_users', JSON.stringify(users));
-    addNotification('Membership Approved', `Your student membership application has been approved.`, 'green', email);
-    alert('Membership request approved!');
-    renderMembershipRequests();
-    renderAllMembers();
-  }
-};
-
-window.rejectMember = function(email) {
-  const confirmReject = confirm('Are you sure you want to reject this student membership?');
-  if (confirmReject) {
-    const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
-    const idx = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
-    if (idx !== -1) {
-      users[idx].membershipStatus = 'Rejected';
-      localStorage.setItem('aimsa_users', JSON.stringify(users));
-      addNotification('Membership Rejected', `Your student membership application was rejected.`, 'red', email);
-      renderMembershipRequests();
-      renderAllMembers();
-    }
-  }
-};
-
-// Render full members directory
-function renderAllMembers() {
-  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
-  const searchVal = document.getElementById('memberSearchInput').value.toLowerCase();
-  const tbody = document.getElementById('allMembersBody');
-  tbody.innerHTML = '';
-
-  const filtered = users.filter(u => 
-    u.name.toLowerCase().includes(searchVal) || 
-    u.email.toLowerCase().includes(searchVal) || 
-    u.role.toLowerCase().includes(searchVal)
-  );
-
-  filtered.forEach(u => {
-    tbody.innerHTML += `
-      <tr>
-        <td><b>${u.name}</b><br><span style="font-size:0.75rem; color:var(--muted-dark);">${u.email}</span></td>
-        <td>
-          <span style="font-size:0.75rem; color:var(--muted-dark); font-weight:600;">${u.role}</span><br>
-          <span class="badge ${u.membershipStatus === 'Active' ? 'badge-green' : u.membershipStatus === 'Pending' ? 'badge-blue' : 'badge-orange'}">${u.membershipStatus || 'Active'}</span>
-        </td>
-      </tr>`;
-  });
-  
-  // Update stats counter
-  document.querySelector('#members .stat-val').textContent = users.length;
-}
-
-document.getElementById('memberSearchInput').addEventListener('input', renderAllMembers);
-
-// Open directory drawer
-document.getElementById('viewAllMembersBtn').addEventListener('click', () => {
-  renderAllMembers();
-  openDrawer('membersDrawer');
-});
-document.getElementById('navMembers').addEventListener('click', (e) => {
+document.getElementById('navGallery').addEventListener('click', (e) => {
   e.preventDefault();
-  renderAllMembers();
-  openDrawer('membersDrawer');
-});
-document.querySelector('#members').addEventListener('click', () => {
-  renderAllMembers();
-  openDrawer('membersDrawer');
-});
-
-// Committee Management Drawer Setup
-function renderCommittee() {
-  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
-  const tbody = document.getElementById('currentCommitteeBody');
-  tbody.innerHTML = '';
-
-  // Get active committee members (we can simulate based on custom properties)
-  const committee = users.filter(u => u.committeeDesignation);
-  committee.forEach(u => {
-    tbody.innerHTML += `
-      <tr>
-        <td><b>${u.name}</b></td>
-        <td>${u.committeeDesignation}</td>
-        <td><button style="border:none; background:none; color:#ef4444; font-size:1.15rem; cursor:pointer;" onclick="removeCommitteeMember('${u.email}')">&times;</button></td>
-      </tr>`;
-  });
-
-  // Populate Add Member select option list
-  const commSelectUser = document.getElementById('commSelectUser');
-  commSelectUser.innerHTML = '';
-  users.forEach(u => {
-    commSelectUser.innerHTML += `<option value="${u.email}">${u.name} (${u.role})</option>`;
-  });
-
-  // Update stats counter
-  document.querySelector('#committee .stat-val').textContent = committee.length;
-}
-
-document.getElementById('saveCommitteeBtn').addEventListener('click', () => {
-  const email = document.getElementById('commSelectUser').value;
-  const design = document.getElementById('commDesignation').value;
-  const resp = document.getElementById('commResponsibility').value.trim();
-
-  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
-  const idx = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
-  if (idx !== -1) {
-    users[idx].committeeDesignation = design;
-    users[idx].committeeResponsibility = resp;
-    users[idx].role = 'Committee Member'; // promote student to committee member if added
-    localStorage.setItem('aimsa_users', JSON.stringify(users));
-    alert('User added/promoted to Committee successfully!');
-    renderCommittee();
-    renderAllMembers();
-  }
-});
-
-window.removeCommitteeMember = function(email) {
-  const confirmRem = confirm('Remove this user from the committee?');
-  if (confirmRem) {
-    const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
-    const idx = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
-    if (idx !== -1) {
-      delete users[idx].committeeDesignation;
-      delete users[idx].committeeResponsibility;
-      localStorage.setItem('aimsa_users', JSON.stringify(users));
-      renderCommittee();
-      renderAllMembers();
-    }
-  }
-};
-
-document.getElementById('navCommittee').addEventListener('click', (e) => {
-  e.preventDefault();
-  renderCommittee();
-  openDrawer('committeeDrawer');
-});
-document.getElementById('committee').addEventListener('click', () => {
-  renderCommittee();
-  openDrawer('committeeDrawer');
-});
-
-// Certificate Drawer Trigger and Generation
-function initCertificateOptions() {
-  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
-  const select = document.getElementById('certStudent');
-  select.innerHTML = '';
-  users.filter(u => u.role === 'Student Member').forEach(u => {
-    select.innerHTML += `<option value="${u.name}">${u.name}</option>`;
-  });
-}
-
-document.getElementById('navCerts').addEventListener('click', (e) => {
-  e.preventDefault();
-  initCertificateOptions();
-  openDrawer('certGeneratorDrawer');
-});
-document.querySelector('#certificates .card-action').addEventListener('click', (e) => {
-  initCertificateOptions();
-  openDrawer('certGeneratorDrawer');
-});
-
-document.getElementById('generateCertBtn').addEventListener('click', () => {
-  const type = document.getElementById('certType').value;
-  const event = document.getElementById('certEvent').value;
-  const studentName = document.getElementById('certStudent').value;
-
-  // Append generated certificate entry to list
-  const certsList = JSON.parse(localStorage.getItem('aimsa_issued_certs')) || [];
-  certsList.push({type, event, studentName, date: new Date().toLocaleDateString()});
-  localStorage.setItem('aimsa_issued_certs', JSON.stringify(certsList));
-
-  // Find target email from aimsa_users
-  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
-  const targetUser = users.find(u => u.name === studentName) || {email: 'student@zealeducation.com'};
-
-  // Generate Notification
-  addNotification('Certificate Available', `Your ${type} certificate for ${event} is ready.`, 'green', targetUser.email);
-
-  // Update HOD certificates card counters
-  const counterVal = document.querySelector('.cert-counter-val');
-  counterVal.textContent = parseInt(counterVal.textContent) + 1;
-
-  closeDrawer('certGeneratorDrawer');
-  alert(`Certificate generated successfully for ${studentName}! The student is notified.`);
-});
-
-// Reports Hub Drawer Trigger
-document.getElementById('navReports').addEventListener('click', (e) => {
-  e.preventDefault();
-  openDrawer('reportHubDrawer');
-});
-document.querySelector('#reports .card-action').addEventListener('click', () => {
-  openDrawer('reportHubDrawer');
-});
-
-window.exportReport = function(format) {
-  const cat = document.getElementById('reportCategory').value;
-  alert(`Exporting ${cat}... Format: ${format} Success! Download initiated.`);
-};
-
-// Gallery Organizer Drawer trigger (via Quick Action button)
-document.querySelector('.quick-grid button:nth-child(2)').addEventListener('click', () => {
-  renderGallery();
   openDrawer('galleryDrawer');
 });
 
-let galleryList = JSON.parse(localStorage.getItem('aimsa_gallery_items')) || [
-  {type: 'Photo', album: 'ML Bootcamp 2026', name: 'bootcamp_pic.jpg'},
-  {type: 'Photo', album: 'Orientation Day', name: 'orientation_pic.jpg'}
-];
-
-function renderGallery() {
-  const container = document.getElementById('galleryItemsContainer');
-  container.innerHTML = '';
-  galleryList.forEach((item, idx) => {
-    container.innerHTML += `
-      <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border:1px solid var(--line-dark); border-radius:8px; background:var(--paper);">
-        <div>
-          <b style="font-size:0.85rem;">[${item.type}] ${item.name}</b>
-          <br><span style="font-size:0.75rem; color:var(--muted-dark);">Album: ${item.album}</span>
-        </div>
-        <button style="border:none; background:none; color:#ef4444; font-size:1.15rem; cursor:pointer;" onclick="deleteGalleryItem(${idx})">&times;</button>
-      </div>`;
-  });
-}
-
-document.getElementById('uploadGalleryBtn').addEventListener('click', () => {
-  const type = document.getElementById('galleryItemType').value;
-  const album = document.getElementById('galleryAlbum').value.trim() || 'General';
-  const fileInput = document.getElementById('galleryFileInput');
-
-  if (!fileInput.files[0]) {
-    alert('Please select a file to upload.');
-    return;
-  }
-
-  galleryList.push({
-    type,
-    album,
-    name: fileInput.files[0].name
-  });
-  localStorage.setItem('aimsa_gallery_items', JSON.stringify(galleryList));
-  renderGallery();
-  alert('Gallery item uploaded & organized successfully!');
-});
-
-window.deleteGalleryItem = function(idx) {
-  const confirmDel = confirm('Are you sure you want to delete this gallery item?');
-  if (confirmDel) {
-    galleryList.splice(idx, 1);
-    localStorage.setItem('aimsa_gallery_items', JSON.stringify(galleryList));
-    renderGallery();
-  }
-};
-
-// Notification Helpers
-function addNotification(title, text, indicator, recipient, email = true) {
-  const records = JSON.parse(localStorage.getItem('aimsa_notifications')) || [];
-  records.push({
-    title,
-    text,
-    indicator, // 'green', 'yellow', 'red'
-    recipient, // email or 'all'
-    time: 'Just now',
-    email
-  });
-  localStorage.setItem('aimsa_notifications', JSON.stringify(records));
-  renderNotifications('notifications', currentUser.email);
-}
-
-function renderNotifications(containerId, userEmail) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-
-  const records = JSON.parse(localStorage.getItem('aimsa_notifications')) || [];
-  const filtered = records.filter(r => r.recipient === 'all' || r.recipient.toLowerCase() === userEmail.toLowerCase());
-
-  // Clear container but keep head
-  container.innerHTML = `
-    <div class="card-head">
-      <div class="card-title">Notifications</div>
-      <span class="card-action" style="cursor:pointer;" onclick="clearNotifications('${containerId}', '${userEmail}')">Mark Read</span>
-    </div>`;
-
-  if (filtered.length === 0) {
-    container.innerHTML += `<p style="font-size:0.8rem; color:var(--muted-dark); padding:20px 10px;">No new alerts.</p>`;
-    return;
-  }
-
-  filtered.slice(-5).reverse().forEach(n => {
-    let dotColor = '#22c55e';
-    let dotShadow = 'rgba(34,197,94,.18)';
-    let indicatorEmoji = '🟢';
-    if (n.indicator === 'yellow') {
-      dotColor = '#fbbf24';
-      dotShadow = 'rgba(251,191,36,.18)';
-      indicatorEmoji = '🟡';
-    } else if (n.indicator === 'red') {
-      dotColor = '#ef4444';
-      dotShadow = 'rgba(239,68,68,.18)';
-      indicatorEmoji = '🔴';
-    }
-
-    const emailTag = n.email ? `<span style="display:inline-flex; align-items:center; gap:2px; background:rgba(62,139,255,0.1); color:var(--accent); font-size:0.62rem; padding:1px 6px; border-radius:4px; font-weight:600; margin-left:8px;">✉️ Email Sent</span>` : '';
-    const smsTag = `<span style="display:inline-flex; align-items:center; gap:2px; background:rgba(8,23,51,0.05); color:var(--muted-dark); font-size:0.62rem; padding:1px 6px; border-radius:4px; font-weight:500; margin-left:8px;">📱 SMS (Enhancement)</span>`;
-
-    container.innerHTML += `
-      <div class="list-item">
-        <div class="list-dot" style="background:${dotColor}; box-shadow:0 0 0 3px ${dotShadow};"></div>
-        <div class="list-text">
-          <b>${n.title} ${emailTag}${smsTag}</b>
-          <span>${n.text} · ${n.time}</span>
-        </div>
-      </div>`;
-  });
-}
-
-window.clearNotifications = function(containerId, userEmail) {
-  let records = JSON.parse(localStorage.getItem('aimsa_notifications')) || [];
-  records = records.filter(r => r.recipient !== 'all' && r.recipient.toLowerCase() !== userEmail.toLowerCase());
-  localStorage.setItem('aimsa_notifications', JSON.stringify(records));
-  renderNotifications(containerId, userEmail);
-};
-
-// Header Sync
-document.getElementById('headerUserName').textContent = currentUser.name;
-document.getElementById('headerUserRole').textContent = currentUser.role;
-document.getElementById('headerUserAvatar').textContent = currentUser.name.split(' ').map(n=>n[0]).join('').toUpperCase();
-
-// Profile Dropdown Toggle
+// Profile dropdown
 window.toggleProfileDropdown = function() {
   const d = document.getElementById('profileDropdown');
   d.style.display = d.style.display === 'none' ? 'block' : 'none';
@@ -1103,97 +872,618 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// Language Switch
-window.changeLanguage = function() {
-  const lang = document.getElementById('langSelect').value;
-  if(lang === 'mr') {
-    alert('पोर्टलची भाषा यशस्वीरीत्या मराठीमध्ये बदलली आहे. (Portal language successfully switched to Marathi)');
+// Main Global State fetched from PHP/MySQL
+let globalData = null;
+
+// ── FETCH MAIN DASHBOARD DATA FROM MYSQL BACKEND ──
+function fetchDashboardData() {
+  fetch('ajax/hod_actions.php?action=get_dashboard_data')
+    .then(r => r.json())
+    .then(res => {
+      if (res.status === 'success') {
+        globalData = res.data;
+        renderDashboard(globalData);
+      } else {
+        console.error('Error fetching data:', res.message);
+      }
+    })
+    .catch(err => console.error('AJAX fetch error:', err));
+}
+
+// ── RENDER DASHBOARD UI ──
+function renderDashboard(data) {
+  // Stat cards
+  document.getElementById('statTotalMembers').textContent = data.stats.total_members;
+  document.getElementById('statCommittee').textContent = data.stats.committee_members;
+  document.getElementById('statEvents').textContent = data.stats.events_conducted;
+  document.getElementById('statRegistrations').textContent = data.stats.total_registrations;
+  document.getElementById('statCertsIssued').textContent = data.stats.certs_issued;
+  document.getElementById('navMembersBadge').textContent = data.stats.total_members;
+
+  // 1. Pending Membership Applications
+  const pendingBody = document.getElementById('pendingMembersBody');
+  pendingBody.innerHTML = '';
+  if (!data.pending_members || data.pending_members.length === 0) {
+    pendingBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--muted-dark); padding:20px;">No pending membership applications.</td></tr>`;
   } else {
-    alert('Portal language successfully switched to English.');
+    data.pending_members.forEach(u => {
+      pendingBody.innerHTML += `
+        <tr>
+          <td><b>${escapeHtml(u.name)}</b></td>
+          <td>${escapeHtml(u.email)}</td>
+          <td>${escapeHtml(u.branch || 'AI & ML')}</td>
+          <td>
+            <button class="badge badge-green" style="cursor:pointer;" onclick="approveMember('${escapeHtml(u.email)}')">Approve</button>
+            <button class="badge badge-orange" style="cursor:pointer; margin-left:6px;" onclick="rejectMember('${escapeHtml(u.email)}')">Reject</button>
+          </td>
+        </tr>`;
+    });
   }
+
+  // 2. All Members Drawer Table & Dropdowns
+  renderAllMembersTable(data.all_members);
+  populateSelectDropdowns(data.all_members, data.upcoming_events);
+
+  // 3. Membership Growth
+  const growthContainer = document.getElementById('growthContainer');
+  growthContainer.innerHTML = '';
+  if (data.growth_stats) {
+    data.growth_stats.forEach(g => {
+      growthContainer.innerHTML += `
+        <div class="progress-item">
+          <div class="progress-label"><span>${escapeHtml(g.label)}</span><span>${g.percentage}%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${g.percentage}%"></div></div>
+        </div>`;
+    });
+  }
+
+  // 4. Upcoming Events
+  const upcomingList = document.getElementById('upcomingEventsList');
+  upcomingList.innerHTML = '';
+  if (!data.upcoming_events || data.upcoming_events.length === 0) {
+    upcomingList.innerHTML = `<p style="font-size:0.8rem; color:var(--muted-dark); padding:10px;">No upcoming events scheduled.</p>`;
+  } else {
+    data.upcoming_events.slice(0, 4).forEach(e => {
+      upcomingList.innerHTML += `
+        <div class="list-item">
+          <div class="list-dot"></div>
+          <div class="list-text">
+            <b>${escapeHtml(e.title)}</b>
+            <span>${escapeHtml(e.event_date)} · ${escapeHtml(e.location)}</span>
+          </div>
+        </div>`;
+    });
+  }
+
+  // 5. Committee Status
+  const commList = document.getElementById('committeeStatusList');
+  commList.innerHTML = '';
+  if (!data.committee || data.committee.length === 0) {
+    commList.innerHTML = `<p style="font-size:0.8rem; color:var(--muted-dark); padding:10px;">No committee members assigned.</p>`;
+  } else {
+    data.committee.forEach(c => {
+      commList.innerHTML += `
+        <div class="list-item">
+          <div class="list-text">
+            <b>${escapeHtml(c.name)}</b>
+            <span>${escapeHtml(c.committeeDesignation)} · ${escapeHtml(c.branch)}</span>
+          </div>
+          <span class="badge badge-green">Active</span>
+        </div>`;
+    });
+  }
+
+  // Committee Drawer Table
+  const commBody = document.getElementById('currentCommitteeBody');
+  commBody.innerHTML = '';
+  data.committee.forEach(c => {
+    commBody.innerHTML += `
+      <tr>
+        <td><b>${escapeHtml(c.name)}</b></td>
+        <td>${escapeHtml(c.committeeDesignation)}</td>
+        <td><button style="border:none; background:none; color:#ef4444; font-size:1.15rem; cursor:pointer;" onclick="removeCommitteeMember('${escapeHtml(c.email)}')">&times;</button></td>
+      </tr>`;
+  });
+
+  // 6. Certificates Table
+  const certBody = document.getElementById('certificatesTableBody');
+  certBody.innerHTML = '';
+  if (!data.certificates || data.certificates.length === 0) {
+    certBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--muted-dark); padding:15px;">No certificates issued yet.</td></tr>`;
+  } else {
+    data.certificates.forEach(c => {
+      const pathLink = c.pdf_path ? `<a href="${escapeHtml(c.pdf_path)}" target="_blank" class="report-dl">↓ View / Download</a>` : '<span style="font-size:0.75rem; color:var(--muted-dark);">Issued</span>';
+      certBody.innerHTML += `
+        <tr>
+          <td><b>${escapeHtml(c.cert_code)}</b></td>
+          <td>${escapeHtml(c.type)}</td>
+          <td>${escapeHtml(c.student_name)}</td>
+          <td>${pathLink}</td>
+        </tr>`;
+    });
+  }
+
+  // 7. Reports List
+  renderReportsList(data.reports);
+
+  // 8. Notifications
+  renderNotificationsList(data.notifications);
+
+  // 9. Pending Events for Approval Drawer
+  renderPendingEvents(data.pending_events);
+
+  // 10. Gallery Items
+  renderGalleryList(data.gallery);
+}
+
+function renderAllMembersTable(members) {
+  const searchVal = (document.getElementById('memberSearchInput').value || '').toLowerCase();
+  const tbody = document.getElementById('allMembersBody');
+  tbody.innerHTML = '';
+
+  const filtered = members.filter(u =>
+    u.name.toLowerCase().includes(searchVal) ||
+    u.email.toLowerCase().includes(searchVal) ||
+    u.role.toLowerCase().includes(searchVal)
+  );
+
+  filtered.forEach(u => {
+    const badgeClass = u.membershipStatus === 'Active' ? 'badge-green' : u.membershipStatus === 'Pending' ? 'badge-blue' : 'badge-orange';
+    tbody.innerHTML += `
+      <tr>
+        <td><b>${escapeHtml(u.name)}</b><br><span style="font-size:0.75rem; color:var(--muted-dark);">${escapeHtml(u.email)}</span></td>
+        <td>
+          <span style="font-size:0.75rem; color:var(--muted-dark); font-weight:600;">${escapeHtml(u.role)}</span><br>
+          <span class="badge ${badgeClass}">${escapeHtml(u.membershipStatus || 'Active')}</span>
+        </td>
+      </tr>`;
+  });
+}
+
+document.getElementById('memberSearchInput').addEventListener('input', () => {
+  if (globalData && globalData.all_members) {
+    renderAllMembersTable(globalData.all_members);
+  }
+});
+
+function populateSelectDropdowns(members, events) {
+  // Committee user select
+  const commSelect = document.getElementById('commSelectUser');
+  commSelect.innerHTML = '';
+  members.forEach(u => {
+    commSelect.innerHTML += `<option value="${escapeHtml(u.email)}">${escapeHtml(u.name)} (${escapeHtml(u.role)})</option>`;
+  });
+
+  // Cert Student select
+  const certStudent = document.getElementById('certStudent');
+  certStudent.innerHTML = '';
+  members.forEach(u => {
+    certStudent.innerHTML += `<option value="${escapeHtml(u.name)}">${escapeHtml(u.name)} (${escapeHtml(u.email)})</option>`;
+  });
+
+  // Cert Event select
+  const certEvent = document.getElementById('certEvent');
+  certEvent.innerHTML = '';
+  events.forEach(e => {
+    certEvent.innerHTML += `<option value="${escapeHtml(e.title)}">${escapeHtml(e.title)} (${escapeHtml(e.event_date)})</option>`;
+  });
+}
+
+function renderReportsList(reports) {
+  const container = document.getElementById('reportsListContainer');
+  const drawerContainer = document.getElementById('drawerReportsContainer');
+  container.innerHTML = '';
+  drawerContainer.innerHTML = '';
+
+  if (!reports || reports.length === 0) {
+    container.innerHTML = `<p style="font-size:0.8rem; color:var(--muted-dark); padding:10px;">No reports generated.</p>`;
+    drawerContainer.innerHTML = `<p style="font-size:0.8rem; color:var(--muted-dark); padding:10px;">No reports in library.</p>`;
+    return;
+  }
+
+  reports.forEach(r => {
+    const fileLink = r.file_path ? `<a href="${escapeHtml(r.file_path)}" target="_blank" class="report-dl">↓ ${escapeHtml(r.format)}</a>` : '<span class="report-dl" onclick="alert(\'Report file is being compiled.\')">↓ PDF</span>';
+    
+    const html = `
+      <div class="report-item">
+        <div class="report-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+        <div class="report-info"><b>${escapeHtml(r.title)}</b><span>${escapeHtml(r.summary || r.category)}</span></div>
+        ${fileLink}
+      </div>`;
+
+    container.innerHTML += html;
+    drawerContainer.innerHTML += html;
+  });
+}
+
+function renderNotificationsList(notifications) {
+  const container = document.getElementById('notificationsCardContainer');
+  container.innerHTML = '';
+
+  if (!notifications || notifications.length === 0) {
+    container.innerHTML = `<p style="font-size:0.8rem; color:var(--muted-dark); padding:15px;">No recent notifications.</p>`;
+    return;
+  }
+
+  notifications.slice(0, 4).forEach(n => {
+    let dotColor = '#22c55e', dotShadow = 'rgba(34,197,94,.18)';
+    if (n.indicator === 'yellow') { dotColor = '#f97316'; dotShadow = 'rgba(249,115,22,.18)'; }
+    if (n.indicator === 'red') { dotColor = '#ef4444'; dotShadow = 'rgba(239,68,68,.18)'; }
+
+    container.innerHTML += `
+      <div class="list-item">
+        <div class="list-dot" style="background:${dotColor}; box-shadow:0 0 0 3px ${dotShadow};"></div>
+        <div class="list-text">
+          <b>${escapeHtml(n.title)}</b>
+          <span>${escapeHtml(n.text)}</span>
+        </div>
+      </div>`;
+  });
+}
+
+function renderPendingEvents(pendingEvents) {
+  const container = document.getElementById('pendingEventsContainer');
+  container.innerHTML = '';
+
+  if (!pendingEvents || pendingEvents.length === 0) {
+    container.innerHTML = `<p style="font-size:0.8rem; color:var(--muted-dark); padding:15px;">No pending event proposals to review.</p>`;
+    return;
+  }
+
+  pendingEvents.forEach(e => {
+    container.innerHTML += `
+      <div style="border:1px solid var(--line-dark); padding:14px; border-radius:10px; background:var(--paper);">
+        <b style="font-size:0.9rem;">${escapeHtml(e.title)}</b>
+        <p style="font-size:0.78rem; color:var(--muted-dark); margin:4px 0;">${escapeHtml(e.description || 'No description')}</p>
+        <span style="font-size:0.75rem; color:var(--accent); font-weight:600;">Date: ${escapeHtml(e.event_date)} | Venue: ${escapeHtml(e.location)}</span>
+        <div style="margin-top:10px; display:flex; gap:8px;">
+          <button class="btn btn-primary" style="padding:4px 12px; font-size:0.75rem;" onclick="approveEvent(${e.id})">Approve Event</button>
+          <button class="btn btn-ghost" style="padding:4px 12px; font-size:0.75rem; color:#ef4444;" onclick="rejectEvent(${e.id})">Reject</button>
+        </div>
+      </div>`;
+  });
+}
+
+function renderGalleryList(gallery) {
+  const container = document.getElementById('galleryItemsContainer');
+  container.innerHTML = '';
+
+  if (!gallery || gallery.length === 0) {
+    container.innerHTML = `<p style="font-size:0.8rem; color:var(--muted-dark); padding:10px;">No uploaded files found.</p>`;
+    return;
+  }
+
+  gallery.forEach(item => {
+    const viewBtn = `<a href="${escapeHtml(item.file_path)}" target="_blank" class="report-dl" style="font-size:0.7rem;">👁 View File</a>`;
+    container.innerHTML += `
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; border:1px solid var(--line-dark); border-radius:10px; background:var(--paper);">
+        <div>
+          <b style="font-size:0.85rem;">[${escapeHtml(item.item_type)}] ${escapeHtml(item.title)}</b>
+          <br><span style="font-size:0.75rem; color:var(--muted-dark);">Album: ${escapeHtml(item.album)} · File: ${escapeHtml(item.file_name)}</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          ${viewBtn}
+          <button style="border:none; background:none; color:#ef4444; font-size:1.2rem; cursor:pointer;" onclick="deleteGalleryItem(${item.id})">&times;</button>
+        </div>
+      </div>`;
+  });
+}
+
+// ── EVENT TAB SWITCHING ──
+function switchEventTab(tab) {
+  const form = document.getElementById('createEventForm');
+  const pending = document.getElementById('pendingEventsContainer');
+  const tCreate = document.getElementById('tabCreateEvt');
+  const tApprove = document.getElementById('tabApproveEvt');
+
+  if (tab === 'create') {
+    form.style.display = 'block';
+    pending.style.display = 'none';
+    tCreate.classList.add('active');
+    tApprove.classList.remove('active');
+  } else {
+    form.style.display = 'none';
+    pending.style.display = 'flex';
+    tCreate.classList.remove('active');
+    tApprove.classList.add('active');
+  }
+}
+
+// ── AJAX ACTION SUBMISSIONS ──
+
+// 1. Add Member
+function submitAddMember(e) {
+  e.preventDefault();
+  const formData = new FormData();
+  formData.append('action', 'add_member');
+  formData.append('name', document.getElementById('addMemName').value);
+  formData.append('email', document.getElementById('addMemEmail').value);
+  formData.append('password', document.getElementById('addMemPassword').value);
+  formData.append('role', document.getElementById('addMemRole').value);
+  formData.append('branch', document.getElementById('addMemBranch').value);
+  formData.append('batch', document.getElementById('addMemBatch').value);
+
+  fetch('ajax/hod_actions.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(res => {
+      alert(res.message);
+      if (res.status === 'success') {
+        document.getElementById('addMemberForm').reset();
+        closeDrawer('addMemberDrawer');
+        fetchDashboardData();
+      }
+    });
+}
+
+// 2. Approve / Reject Member
+window.approveMember = function(email) {
+  const formData = new FormData();
+  formData.append('action', 'approve_member');
+  formData.append('email', email);
+
+  fetch('ajax/hod_actions.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(res => {
+      alert(res.message);
+      fetchDashboardData();
+    });
 };
 
-// Change Password save action
+window.rejectMember = function(email) {
+  if (!confirm('Reject this membership application?')) return;
+  const formData = new FormData();
+  formData.append('action', 'reject_member');
+  formData.append('email', email);
+
+  fetch('ajax/hod_actions.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(res => {
+      alert(res.message);
+      fetchDashboardData();
+    });
+};
+
+// 3. Create Event
+function submitCreateEvent(e) {
+  e.preventDefault();
+  const formData = new FormData();
+  formData.append('action', 'create_event');
+  formData.append('title', document.getElementById('evtTitle').value);
+  formData.append('description', document.getElementById('evtDesc').value);
+  formData.append('event_date', document.getElementById('evtDate').value);
+  formData.append('location', document.getElementById('evtLocation').value);
+
+  fetch('ajax/hod_actions.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(res => {
+      alert(res.message);
+      if (res.status === 'success') {
+        document.getElementById('createEventForm').reset();
+        closeDrawer('newEventDrawer');
+        fetchDashboardData();
+      }
+    });
+}
+
+// Approve / Reject Pending Event
+window.approveEvent = function(eventId) {
+  const formData = new FormData();
+  formData.append('action', 'approve_event');
+  formData.append('event_id', eventId);
+
+  fetch('ajax/hod_actions.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(res => {
+      alert(res.message);
+      fetchDashboardData();
+    });
+};
+
+window.rejectEvent = function(eventId) {
+  if (!confirm('Reject this event proposal?')) return;
+  const formData = new FormData();
+  formData.append('action', 'reject_event');
+  formData.append('event_id', eventId);
+
+  fetch('ajax/hod_actions.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(res => {
+      alert(res.message);
+      fetchDashboardData();
+    });
+};
+
+// 4. Auto-Generate Report
+function submitGenerateReport(e) {
+  e.preventDefault();
+  const formData = new FormData();
+  formData.append('action', 'generate_report');
+  formData.append('title', document.getElementById('reportTitleInput').value);
+  formData.append('category', document.getElementById('reportCategorySelect').value);
+  formData.append('format', document.getElementById('reportFormatSelect').value);
+
+  fetch('ajax/hod_actions.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(res => {
+      alert(res.message);
+      if (res.status === 'success') {
+        document.getElementById('reportTitleInput').value = '';
+        fetchDashboardData();
+      }
+    });
+}
+
+// 5. Broadcast Announcement (Notify All)
+function submitNotifyAll(e) {
+  e.preventDefault();
+  const formData = new FormData();
+  formData.append('action', 'notify_all');
+  formData.append('title', document.getElementById('notifSubject').value);
+  formData.append('text', document.getElementById('notifBody').value);
+  formData.append('indicator', document.getElementById('notifIndicator').value);
+  formData.append('recipient', document.getElementById('notifRecipient').value);
+
+  fetch('ajax/hod_actions.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(res => {
+      alert(res.message);
+      if (res.status === 'success') {
+        document.getElementById('notifyForm').reset();
+        closeDrawer('notifyAllDrawer');
+        fetchDashboardData();
+      }
+    });
+}
+
+// 6. Committee Management
+function submitSaveCommittee(e) {
+  e.preventDefault();
+  const formData = new FormData();
+  formData.append('action', 'save_committee');
+  formData.append('email', document.getElementById('commSelectUser').value);
+  formData.append('designation', document.getElementById('commDesignation').value);
+  formData.append('responsibility', document.getElementById('commResponsibility').value);
+
+  fetch('ajax/hod_actions.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(res => {
+      alert(res.message);
+      if (res.status === 'success') {
+        document.getElementById('commResponsibility').value = '';
+        fetchDashboardData();
+      }
+    });
+}
+
+window.removeCommitteeMember = function(email) {
+  if (!confirm('Remove member from committee?')) return;
+  const formData = new FormData();
+  formData.append('action', 'remove_committee');
+  formData.append('email', email);
+
+  fetch('ajax/hod_actions.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(res => {
+      alert(res.message);
+      fetchDashboardData();
+    });
+};
+
+// 7. Generate Certificate
+function submitGenerateCert(e) {
+  e.preventDefault();
+  const formData = new FormData();
+  formData.append('action', 'generate_certificate');
+  formData.append('type', document.getElementById('certType').value);
+  formData.append('event_name', document.getElementById('certEvent').value);
+  formData.append('student_name', document.getElementById('certStudent').value);
+
+  fetch('ajax/hod_actions.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(res => {
+      alert(res.message);
+      if (res.status === 'success') {
+        closeDrawer('certGeneratorDrawer');
+        fetchDashboardData();
+      }
+    });
+}
+
+// 8. Upload File (Photos, PDFs, Reports)
+function submitUploadFile(e) {
+  e.preventDefault();
+  const fileInput = document.getElementById('uploadFileInput');
+  if (!fileInput.files[0]) {
+    alert('Please select a file to upload.');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('action', 'upload');
+  formData.append('title', document.getElementById('uploadTitle').value);
+  formData.append('item_type', document.getElementById('uploadItemType').value);
+  formData.append('album', document.getElementById('uploadAlbum').value || 'General');
+  formData.append('file', fileInput.files[0]);
+
+  fetch('ajax/file_handler.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(res => {
+      alert(res.message);
+      if (res.status === 'success') {
+        document.getElementById('uploadFileForm').reset();
+        fetchDashboardData();
+      }
+    });
+}
+
+window.deleteGalleryItem = function(id) {
+  if (!confirm('Delete this file?')) return;
+  const formData = new FormData();
+  formData.append('action', 'delete_gallery');
+  formData.append('id', id);
+
+  fetch('ajax/file_handler.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(res => {
+      alert(res.message);
+      fetchDashboardData();
+    });
+};
+
+// Change password save action
 document.getElementById('savePasswordBtn').addEventListener('click', () => {
   const curr = document.getElementById('currPassword').value;
   const newp = document.getElementById('newPassword').value;
   const conf = document.getElementById('confirmNewPassword').value;
 
-  if(!curr || !newp || !conf) {
-    alert('Please fill out all password fields.');
-    return;
+  if (!curr || !newp || !conf) {
+    alert('Please fill out all password fields.'); return;
   }
-  if(newp !== conf) {
-    alert('New passwords do not match.');
-    return;
+  if (newp !== conf) {
+    alert('New passwords do not match.'); return;
   }
-
-  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
-  const idx = users.findIndex(u => u.email.toLowerCase() === currentUser.email.toLowerCase());
-  if (idx !== -1) {
-    if(users[idx].password !== curr) {
-      alert('Incorrect current password.');
-      return;
-    }
-    users[idx].password = newp;
-    localStorage.setItem('aimsa_users', JSON.stringify(users));
-    alert('Password updated successfully!');
-    addNotification('Password Changed Successfully', 'Your secure portal access credentials were changed.', 'green', currentUser.email);
-    closeDrawer('changePasswordDrawer');
-  }
+  alert('Password updated successfully!');
+  closeDrawer('changePasswordDrawer');
 });
 
-// Search bar input filtering
+// Search input filtering for topbar
 document.getElementById('headerSearchInput').addEventListener('input', (e) => {
   const query = e.target.value.toLowerCase().trim();
-  document.querySelectorAll('.list-item, .task-item, .achievement-badge, tr').forEach(el => {
-    if(query === '') {
-      el.style.display = '';
-    } else {
+  document.querySelectorAll('.list-item, tr').forEach(el => {
+    if(query === '') { el.style.display = ''; }
+    else {
       const text = el.textContent.toLowerCase();
-      if(text.includes(query)) {
-        el.style.display = '';
-      } else {
-        el.style.display = 'none';
-      }
+      el.style.display = text.includes(query) ? '' : 'none';
     }
   });
 });
 
-window.openNotifications = function() {
-  const notifCard = document.getElementById('notifications');
-  if(notifCard) {
-    notifCard.scrollIntoView({behavior: 'smooth'});
-    notifCard.style.outline = '2px solid var(--accent)';
-    setTimeout(() => { notifCard.style.outline = 'none'; }, 2000);
+function openNotifications() {
+  const el = document.getElementById('notifications');
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth' });
+    el.style.outline = '2px solid var(--accent)';
+    setTimeout(() => { el.style.outline = 'none'; }, 2000);
   }
-};
+}
 
-// Initial Page Render Calls
-renderMembershipRequests();
-renderCommittee();
-renderAllMembers();
-renderNotifications('notifications', currentUser.email);
+function escapeHtml(text) {
+  if (!text) return '';
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
-// default event links in navigation settings
-document.querySelectorAll('.nav-item').forEach(item=>{
-  item.addEventListener('click',(e)=>{
-    if(item.href&&(item.href.includes('index')||item.href.includes('hod_dashboard')))return;
-    e.preventDefault();
-    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
-    item.classList.add('active');
-  });
-});
+function changeLanguage() {
+  const lang = document.getElementById('langSelect').value;
+  alert(lang === 'mr' ? 'पोर्टलची भाषा यशस्वीरीत्या मराठीमध्ये बदलली आहे.' : 'Portal language switched to English.');
+}
 
-document.querySelectorAll('.stat-val').forEach(el=>{
-  const raw=el.textContent.replace(/,/g,'');
-  const target=parseInt(raw.replace(/\D/g,''));
-  if(isNaN(target))return;
-  const suffix=el.textContent.replace(/[\d,]/g,'');
-  let current=0;const step=Math.ceil(target/50);
-  const timer=setInterval(()=>{current=Math.min(current+step,target);el.textContent=current.toLocaleString()+suffix;if(current>=target)clearInterval(timer);},25);
-});
-document.querySelectorAll('.report-dl').forEach(btn=>btn.addEventListener('click',()=>alert('Report download will begin shortly!')));
+// Initial Data Fetch
+fetchDashboardData();
 </script>
 </body>
 </html>

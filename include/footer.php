@@ -93,12 +93,12 @@
       <div id="signInSection" style="display:flex; flex-direction:column; gap:14px;">
         <div>
           <label>College Email ID</label>
-          <input type="email" id="loginEmail" placeholder="you@zealeducation.com">
+          <input type="email" id="loginEmail" placeholder="you@zealeducation.com" autocomplete="off">
         </div>
         <div>
           <label>Password</label>
           <div style="position:relative;">
-            <input type="password" id="loginPassword" placeholder="••••••••" style="padding-right:40px; width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
+            <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="new-password" style="padding-right:40px; width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
             <button type="button" class="toggle-password" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--muted-dark);" onclick="togglePasswordVisibility('loginPassword')">👁️</button>
           </div>
         </div>
@@ -113,20 +113,16 @@
       <div id="registerSection" style="display:none; flex-direction:column; gap:14px;">
         <div>
           <label>Full Name</label>
-          <input type="text" id="regName" placeholder="John Doe" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
-        </div>
-        <div>
-          <label>Student/Faculty ID</label>
-          <input type="text" id="regID" placeholder="ZES-AIML-2026-102" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
+          <input type="text" id="regName" placeholder="John Doe" autocomplete="off" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
         </div>
         <div>
           <label>College Email ID</label>
-          <input type="email" id="regEmail" placeholder="you@zealeducation.com" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
+          <input type="email" id="regEmail" placeholder="you@zealeducation.com" autocomplete="off" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
         </div>
         <div>
           <label>Password</label>
           <div style="position:relative;">
-            <input type="password" id="regPassword" placeholder="••••••••" style="padding-right:40px; width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
+            <input type="password" id="regPassword" placeholder="••••••••" autocomplete="new-password" style="padding-right:40px; width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
             <button type="button" class="toggle-password" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--muted-dark);" onclick="togglePasswordVisibility('regPassword')">👁️</button>
           </div>
           <div id="pwdStrengthWrapper" style="margin-top:6px;">
@@ -141,7 +137,7 @@
         </div>
         <div>
           <label>Confirm Password</label>
-          <input type="password" id="regConfirmPassword" placeholder="••••••••" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
+          <input type="password" id="regConfirmPassword" placeholder="••••••••" autocomplete="new-password" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
         </div>
         <button class="btn btn-primary" style="width:100%; margin-top:6px; padding:13px;" id="registerSubmitBtn">Create Account →</button>
       </div>
@@ -153,12 +149,23 @@
     <div id="forgotStep" style="display:none; flex-direction:column; gap:16px;">
       <span class="back-link" id="backToLogin" style="cursor:pointer; margin-bottom:8px;">← Back to sign in</span>
       <h3>Reset Password</h3>
-      <p class="sub">Enter your college email ID. We will send a secure password reset link.</p>
+      <p class="sub">Enter your college email ID and new password to update your credentials.</p>
       <div>
         <label>College Email ID</label>
-        <input type="email" id="forgotEmail" placeholder="you@zealeducation.com" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
+        <input type="email" id="forgotEmail" placeholder="you@zealeducation.com" autocomplete="off" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
       </div>
-      <button class="btn btn-primary" style="width:100%; padding:13px;" id="forgotSubmitBtn">Send Reset Link →</button>
+      <div>
+        <label>New Password</label>
+        <div style="position:relative;">
+          <input type="password" id="forgotNewPassword" placeholder="••••••••" autocomplete="new-password" style="padding-right:40px; width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
+          <button type="button" class="toggle-password" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--muted-dark);" onclick="togglePasswordVisibility('forgotNewPassword')">👁️</button>
+        </div>
+      </div>
+      <div>
+        <label>Confirm New Password</label>
+        <input type="password" id="forgotConfirmPassword" placeholder="••••••••" autocomplete="new-password" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
+      </div>
+      <button class="btn btn-primary" style="width:100%; padding:13px;" id="forgotSubmitBtn">Reset Password →</button>
     </div>
   </div>
 </div>

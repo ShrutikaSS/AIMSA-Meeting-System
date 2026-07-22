@@ -100,15 +100,28 @@ if (tabLogin && tabRegister) {
   });
 }
 
+function clearAuthInputs() {
+  ['loginEmail', 'loginPassword', 'regName', 'regEmail', 'regPassword', 'regConfirmPassword', 'forgotEmail', 'forgotNewPassword', 'forgotConfirmPassword'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+}
+
 function openModal(){ 
   if (overlay) {
+    clearAuthInputs();
     overlay.classList.add('show'); 
     roleStep.style.display='block'; 
     formStep.classList.remove('show'); 
     forgotStep.style.display='none';
   }
 }
-function closeModal(){ if (overlay) overlay.classList.remove('show'); }
+function closeModal(){ 
+  if (overlay) {
+    clearAuthInputs();
+    overlay.classList.remove('show'); 
+  }
+}
 
 const openLoginBtn2 = document.getElementById('openLoginBtn2');
 if (openLoginBtn2) openLoginBtn2.addEventListener('click', openModal);
@@ -125,6 +138,7 @@ if (overlay) {
 
 document.querySelectorAll('.role-card').forEach(card=>{
   card.addEventListener('click', ()=>{
+    clearAuthInputs();
     const role = card.getAttribute('data-role');
     roleChip.textContent = role;
     roleStep.style.display='none';
@@ -142,6 +156,7 @@ document.querySelectorAll('.role-card').forEach(card=>{
 const backToRoles = document.getElementById('backToRoles');
 if (backToRoles) {
   backToRoles.addEventListener('click', ()=>{
+    clearAuthInputs();
     formStep.classList.remove('show');
     roleStep.style.display='block';
   });
@@ -151,6 +166,7 @@ const forgotLink = document.getElementById('forgotLink');
 if (forgotLink) {
   forgotLink.addEventListener('click', (e) => {
     e.preventDefault();
+    clearAuthInputs();
     formStep.classList.remove('show');
     forgotStep.style.display = 'flex';
   });
@@ -159,6 +175,7 @@ if (forgotLink) {
 const backToLogin = document.getElementById('backToLogin');
 if (backToLogin) {
   backToLogin.addEventListener('click', () => {
+    clearAuthInputs();
     forgotStep.style.display = 'none';
     formStep.classList.add('show');
   });
@@ -173,30 +190,7 @@ const roleDashboards = {
   'Student Member': 'student_dashboard.php'
 };
 
-// Initial simulated users database
-localStorage.setItem('aimsa_users', JSON.stringify([
-    {email: 'hod@zealeducation.com', password: 'Password123', name: 'Dipali Shende', role: 'HOD'},
-    {email: 'faculty@zealeducation.com', password: 'Password123', name: 'Prof. Meera Nair', role: 'Faculty Coordinator'},
-    {email: 'president@zealeducation.com', password: 'Password123', name: 'Karan Mehta', role: 'Association President'},
-    {email: 'committee@zealeducation.com', password: 'Password123', name: 'Riya Desai', role: 'Committee Member'},
-    {email: 'student@zealeducation.com', password: 'Password123', name: 'Arjun Patil', role: 'Student Member'}
-  ]));
-
-// Initial simulated notifications database
-localStorage.setItem('aimsa_notifications', JSON.stringify([
-    {title: 'Membership Approved', text: 'Dipali Shende verified your credentials.', indicator: 'green', recipient: 'student@zealeducation.com', time: '1 hr ago', email: true},
-    {title: 'New Event Published', text: 'Prof. Meera Nair proposed: Tech Symposium 2026.', indicator: 'green', recipient: 'all', time: '2 hrs ago', email: true},
-    {title: 'Registration Successful', text: 'Successfully registered for Hackathon 2026.', indicator: 'green', recipient: 'student@zealeducation.com', time: '4 hrs ago', email: true},
-    {title: 'Event Reminder', text: 'Reminder: AI Workshop Series starts on Aug 3.', indicator: 'yellow', recipient: 'all', time: 'Yesterday', email: true},
-    {title: 'Attendance Confirmation', text: 'Marked Present for Tech Symposium 2025.', indicator: 'green', recipient: 'student@zealeducation.com', time: '2 days ago', email: true},
-    {title: 'Certificate Available', text: 'Volunteer Certificate for Hackathon 2025 generated.', indicator: 'green', recipient: 'student@zealeducation.com', time: '3 days ago', email: true},
-    {title: 'Achievement Approved', text: 'Research Paper submission approved by Faculty.', indicator: 'green', recipient: 'student@zealeducation.com', time: '1 week ago', email: true},
-    {title: 'New Announcement', text: 'Executive Committee applications are now open.', indicator: 'green', recipient: 'all', time: '1 week ago', email: true},
-    {title: 'Profile Updated', text: 'Successfully updated profile photograph & branch.', indicator: 'green', recipient: 'student@zealeducation.com', time: '2 weeks ago', email: true},
-    {title: 'Password Changed Successfully', text: 'Portal login password updated.', indicator: 'green', recipient: 'student@zealeducation.com', time: '2 weeks ago', email: true}
-  ]));
-
-// Login verification with session storage
+// Database authentication - Login verification
 const loginSubmitBtn = document.getElementById('loginSubmitBtn');
 if (loginSubmitBtn) {
   loginSubmitBtn.addEventListener('click', ()=>{
@@ -209,35 +203,54 @@ if (loginSubmitBtn) {
       return;
     }
 
-    const users = JSON.parse(localStorage.getItem('aimsa_users'));
-    const user = users.find(u => u.email.toLowerCase() === emailVal.toLowerCase() && u.password === pwdVal && u.role === selectedRole);
+    loginSubmitBtn.disabled = true;
+    loginSubmitBtn.textContent = 'Verifying Credentials...';
 
-    if(user) {
-      // Store user session
-      sessionStorage.setItem('current_user', JSON.stringify(user));
-      if(document.getElementById('keepSignedIn').checked) {
-        localStorage.setItem('keep_signed_in_user', JSON.stringify(user));
+    const formData = new FormData();
+    formData.append('action', 'login');
+    formData.append('email', emailVal);
+    formData.append('password', pwdVal);
+    formData.append('role', selectedRole);
+
+    fetch('ajax/auth.php', {
+      method: 'POST',
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      loginSubmitBtn.disabled = false;
+      loginSubmitBtn.textContent = 'Secure Login →';
+
+      if(data.status === 'success') {
+        sessionStorage.setItem('current_user', JSON.stringify(data.user));
+        if(document.getElementById('keepSignedIn').checked) {
+          localStorage.setItem('keep_signed_in_user', JSON.stringify(data.user));
+        }
+        window.location.href = data.redirect || roleDashboards[selectedRole];
+      } else {
+        alert(data.message || 'Login failed.');
       }
-      const target = roleDashboards[selectedRole];
-      if(target){ window.location.href = target; }
-    } else {
-      alert('Invalid Email ID or Password for the selected role. Please use the simulated default credentials (e.g. email: student@zealeducation.com, password: Password123).');
-    }
+    })
+    .catch(err => {
+      loginSubmitBtn.disabled = false;
+      loginSubmitBtn.textContent = 'Secure Login →';
+      alert('Server error during login. Please try again.');
+      console.error(err);
+    });
   });
 }
 
-// Registration Flow
+// Database authentication - Registration Flow
 const registerSubmitBtn = document.getElementById('registerSubmitBtn');
 if (registerSubmitBtn) {
   registerSubmitBtn.addEventListener('click', () => {
     const selectedRole = roleChip.textContent.trim();
     const nameVal = document.getElementById('regName').value.trim();
-    const idVal = document.getElementById('regID').value.trim();
     const emailVal = document.getElementById('regEmail').value.trim();
     const pwdVal = document.getElementById('regPassword').value;
     const confPwdVal = document.getElementById('regConfirmPassword').value;
 
-    if(!nameVal || !idVal || !emailVal || !pwdVal || !confPwdVal) {
+    if(!nameVal || !emailVal || !pwdVal || !confPwdVal) {
       alert('Please fill out all fields to register.');
       return;
     }
@@ -247,59 +260,92 @@ if (registerSubmitBtn) {
       return;
     }
 
-    const users = JSON.parse(localStorage.getItem('aimsa_users'));
-    if(users.some(u => u.email.toLowerCase() === emailVal.toLowerCase())) {
-      alert('A user with this Email ID already exists.');
-      return;
-    }
+    registerSubmitBtn.disabled = true;
+    registerSubmitBtn.textContent = 'Creating Account...';
 
-    // Create new user (Student)
-    const newUser = {
-      email: emailVal,
-      password: pwdVal,
-      name: nameVal,
-      role: selectedRole,
-      studentId: idVal,
-      membershipStatus: 'Pending',
-      membershipRenewed: false,
-      photograph: ''
-    };
+    const formData = new FormData();
+    formData.append('action', 'register');
+    formData.append('name', nameVal);
+    formData.append('email', emailVal);
+    formData.append('password', pwdVal);
+    formData.append('role', selectedRole);
 
-    users.push(newUser);
-    localStorage.setItem('aimsa_users', JSON.stringify(users));
+    fetch('ajax/auth.php', {
+      method: 'POST',
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      registerSubmitBtn.disabled = false;
+      registerSubmitBtn.textContent = 'Create Account →';
 
-    // Auto sign in simulation
-    sessionStorage.setItem('current_user', JSON.stringify(newUser));
-    alert('Registration successful! Click OK to go to your student dashboard.');
-    window.location.href = roleDashboards[selectedRole];
+      if(data.status === 'success') {
+        sessionStorage.setItem('current_user', JSON.stringify(data.user));
+        alert(data.message || 'Registration successful! Account is active.');
+        window.location.href = data.redirect || roleDashboards[selectedRole];
+      } else {
+        alert(data.message || 'Registration failed.');
+      }
+    })
+    .catch(err => {
+      registerSubmitBtn.disabled = false;
+      registerSubmitBtn.textContent = 'Create Account →';
+      alert('Server error during registration. Please try again.');
+      console.error(err);
+    });
   });
 }
 
-// Forgot Password Flow
+// Database authentication - Forgot Password Flow
 const forgotSubmitBtn = document.getElementById('forgotSubmitBtn');
 if (forgotSubmitBtn) {
   forgotSubmitBtn.addEventListener('click', () => {
     const emailVal = document.getElementById('forgotEmail').value.trim();
-    if(!emailVal) {
-      alert('Please enter your college email ID.');
+    const newPwdVal = document.getElementById('forgotNewPassword').value;
+    const confPwdVal = document.getElementById('forgotConfirmPassword').value;
+
+    if(!emailVal || !newPwdVal || !confPwdVal) {
+      alert('Please fill out your email and new password fields.');
       return;
     }
-    
-    // Push a password changed successfully notification
-    const records = JSON.parse(localStorage.getItem('aimsa_notifications')) || [];
-    records.push({
-      title: 'Password Changed Successfully',
-      text: 'Your secure portal access credentials were changed.',
-      indicator: 'green',
-      recipient: emailVal,
-      time: 'Just now',
-      email: true
-    });
-    localStorage.setItem('aimsa_notifications', JSON.stringify(records));
 
-    alert(`A secure password reset link has been successfully generated and sent to: ${emailVal}`);
-    forgotStep.style.display = 'none';
-    formStep.classList.add('show');
+    if(newPwdVal !== confPwdVal) {
+      alert('New passwords do not match.');
+      return;
+    }
+
+    forgotSubmitBtn.disabled = true;
+    forgotSubmitBtn.textContent = 'Resetting Password...';
+
+    const formData = new FormData();
+    formData.append('action', 'forgot_password');
+    formData.append('email', emailVal);
+    formData.append('new_password', newPwdVal);
+
+    fetch('ajax/auth.php', {
+      method: 'POST',
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      forgotSubmitBtn.disabled = false;
+      forgotSubmitBtn.textContent = 'Reset Password →';
+
+      if(data.status === 'success') {
+        alert(data.message);
+        clearAuthInputs();
+        forgotStep.style.display = 'none';
+        formStep.classList.add('show');
+      } else {
+        alert(data.message || 'Password reset failed.');
+      }
+    })
+    .catch(err => {
+      forgotSubmitBtn.disabled = false;
+      forgotSubmitBtn.textContent = 'Reset Password →';
+      alert('Server error during password reset. Please try again.');
+      console.error(err);
+    });
   });
 }
 

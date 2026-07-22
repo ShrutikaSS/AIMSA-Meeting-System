@@ -1,3 +1,11 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+require_once __DIR__ . '/include/dbConfig.php';
+
+$sessionUser = $_SESSION['user'] ?? null;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -619,15 +627,15 @@ function closeAllDrawers() {
 }
 
 // Check logged in user session
-let currentUser = JSON.parse(sessionStorage.getItem('current_user')) || {
+let currentUser = <?php echo json_encode($sessionUser); ?> || JSON.parse(sessionStorage.getItem('current_user')) || {
   email: 'student@zealeducation.com',
-  name: 'Arjun Patil',
+  name: 'Student Member',
   role: 'Student Member',
-  studentId: 'AIMSA-2024-0127',
+  studentId: 'AIMSA-2026-0101',
   membershipStatus: 'Active',
-  membershipRenewed: false,
+  membershipRenewed: true,
   photograph: '',
-  phone: '+91 98765 43210',
+  phone: '',
   year: '3rd Year',
   branch: 'AI & ML'
 };

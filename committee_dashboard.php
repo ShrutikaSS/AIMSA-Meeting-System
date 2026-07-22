@@ -1,3 +1,11 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+require_once __DIR__ . '/include/dbConfig.php';
+
+$sessionUser = $_SESSION['user'] ?? null;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -530,23 +538,31 @@ function closeAllDrawers() {
 }
 
 // Check logged in user session
-let currentUser = JSON.parse(sessionStorage.getItem('current_user')) || {
+let currentUser = <?php echo json_encode($sessionUser); ?> || JSON.parse(sessionStorage.getItem('current_user')) || {
   email: 'committee@zealeducation.com',
-  name: 'Riya Desai',
+  name: 'Committee Member',
   role: 'Committee Member'
 };
 
 document.querySelector('.content-title').innerHTML = `Hey, ${currentUser.name.split(' ')[0]}! 👋`;
 document.querySelector('.role-info b').textContent = currentUser.name;
 
-// Populate student select list
+// Populate student select list from database
 function initAttendanceOptions() {
-  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
-  const select = document.getElementById('attendStudentSelect');
-  select.innerHTML = '';
-  users.filter(u => u.role === 'Student Member').forEach(u => {
-    select.innerHTML += `<option value="${u.name}">${u.name}</option>`;
-  });
+  fetch('ajax/hod_actions.php?action=get_dashboard_data')
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'success' && data.data && data.data.all_members) {
+        const select = document.getElementById('attendStudentSelect');
+        if (select) {
+          select.innerHTML = '';
+          data.data.all_members.filter(u => u.role === 'Student Member').forEach(u => {
+            select.innerHTML += `<option value="${u.name}">${u.name}</option>`;
+          });
+        }
+      }
+    })
+    .catch(err => console.error('Error loading students for attendance:', err));
 }
 
 // Render marked attendance records
