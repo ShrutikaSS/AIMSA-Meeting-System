@@ -34,18 +34,26 @@ try {
                 exit;
             }
 
-            $stmt = $pdo->prepare("SELECT * FROM `users` WHERE LOWER(`email`) = LOWER(:email) AND `role` = :role");
-            $stmt->execute([':email' => $email, ':role' => $role]);
+            $roleAliases = [$role];
+            if ($role === 'Association President' || $role === 'President') {
+                $roleAliases = ['Association President', 'President', 'Vice President'];
+            }
+
+            $placeholders = implode(',', array_fill(0, count($roleAliases), '?'));
+            $params = array_merge([$email], $roleAliases);
+
+            $stmt = $pdo->prepare("SELECT * FROM `users` WHERE LOWER(`email`) = LOWER(?) AND `role` IN ($placeholders)");
+            $stmt->execute($params);
             $user = $stmt->fetch();
 
             if (!$user) {
                 // Try fallback search without role filter to give clearer error
-                $stmtAlt = $pdo->prepare("SELECT * FROM `users` WHERE LOWER(`email`) = LOWER(:email)");
-                $stmtAlt->execute([':email' => $email]);
+                $stmtAlt = $pdo->prepare("SELECT * FROM `users` WHERE LOWER(`email`) = LOWER(?)");
+                $stmtAlt->execute([$email]);
                 $altUser = $stmtAlt->fetch();
 
                 if ($altUser) {
-                    echo json_encode(['status' => 'error', 'message' => "This email belongs to role '{$altUser->role}'. Please select '{$altUser->role}' role card."]);
+                    echo json_encode(['status' => 'error', 'message' => "This email belongs to role '{$altUser->role}'. Please select the '{$altUser->role}' role card."]);
                 } else {
                     echo json_encode(['status' => 'error', 'message' => 'Invalid Email ID or Password for the selected role.']);
                 }

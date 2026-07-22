@@ -19,25 +19,33 @@ function setupDatabaseTables($pdo) {
             `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
-        // Seed initial HOD & Faculty & Students if users table is empty
-        $stmt = $pdo->query("SELECT COUNT(*) FROM `users`");
-        if ($stmt->fetchColumn() == 0) {
-            $defaultUsers = [
-                ['Dr. Dipali Shende', 'hod@zealeducation.com', 'hod123', 'HOD', 'AI & ML', 'Faculty', 'Active', 'Head of Department', 'Departmental Leadership & Guidance'],
-                ['Prof. Rahul Patil', 'faculty@zealeducation.com', 'faculty123', 'Faculty Coordinator', 'AI & ML', 'Faculty', 'Active', 'Faculty Advisor', 'Event Supervision'],
-                ['Aarav Sharma', 'aarav.sharma@zealeducation.com', 'president123', 'President', 'AI & ML', '2024', 'Active', 'President', 'Association Roadmap & Execution'],
-                ['Neha Verma', 'neha.verma@zealeducation.com', 'password123', 'Vice President', 'AI & ML', '2024', 'Active', 'Vice President', 'Cross-committee coordination'],
-                ['Rohan Kulkarni', 'rohan.k@zealeducation.com', 'committee123', 'Committee Member', 'AI & ML', '2025', 'Active', 'Technical Head', 'Technical Workshops Lead'],
-                ['Ananya Deshmukh', 'ananya.d@zealeducation.com', 'student123', 'Student Member', 'CS', '2025', 'Pending', NULL, NULL],
-                ['Priya Joshi', 'priya.j@zealeducation.com', 'student123', 'Student Member', 'DS', '2026', 'Pending', NULL, NULL],
-                ['Siddharth Pawar', 'siddharth.p@zealeducation.com', 'student123', 'Student Member', 'AI & ML', '2026', 'Pending', NULL, NULL],
-                ['Vikram Salunkhe', 'vikram.s@zealeducation.com', 'student123', 'Student Member', 'AI & ML', '2025', 'Active', NULL, NULL]
-            ];
+        // Seed / Update initial HOD, Faculty, President, Committee & Students according to exact role credentials
+        $defaultUsers = [
+            ['Dr. Dipali Shende', 'hod@zealeducation.com', 'hod123', 'HOD', 'AI & ML', 'Faculty', 'Active', 'Head of Department', 'Departmental Leadership & Guidance'],
+            ['Prof. Meera Nair', 'faculty@zealeducation.com', 'faculty123', 'Faculty Coordinator', 'AI & ML', 'Faculty', 'Active', 'Faculty Coordinator', 'Event Oversight & Advisory'],
+            ['Karan Mehta', 'president@zealeducation.com', 'president123', 'Association President', 'AI & ML', '2024', 'Active', 'President', 'Association Roadmap & Execution'],
+            ['Riya Desai', 'committee@zealeducation.com', 'committee123', 'Committee Member', 'AI & ML', '2025', 'Active', 'Technical Committee', 'Technical Event Organizer'],
+            ['Arjun Patil', 'student@zealeducation.com', 'student123', 'Student Member', 'AI & ML', '2026', 'Active', NULL, NULL],
+            ['Aarav Sharma', 'aarav.sharma@zealeducation.com', 'president123', 'Association President', 'AI & ML', '2024', 'Active', 'President', 'Association Roadmap & Execution'],
+            ['Neha Verma', 'neha.verma@zealeducation.com', 'password123', 'Association President', 'AI & ML', '2024', 'Active', 'Vice President', 'Cross-committee coordination'],
+            ['Rohan Kulkarni', 'rohan.k@zealeducation.com', 'committee123', 'Committee Member', 'AI & ML', '2025', 'Active', 'Technical Head', 'Technical Workshops Lead'],
+            ['Vikram Salunkhe', 'vikram.s@zealeducation.com', 'student123', 'Student Member', 'AI & ML', '2025', 'Active', NULL, NULL]
+        ];
 
-            $insertUser = $pdo->prepare("INSERT INTO `users` (`name`, `email`, `password`, `role`, `branch`, `batch`, `membershipStatus`, `committeeDesignation`, `committeeResponsibility`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            foreach ($defaultUsers as $u) {
-                $insertUser->execute($u);
-            }
+        $upsertUser = $pdo->prepare("INSERT INTO `users` (`name`, `email`, `password`, `role`, `branch`, `batch`, `membershipStatus`, `committeeDesignation`, `committeeResponsibility`) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE 
+            `name` = VALUES(`name`),
+            `password` = VALUES(`password`),
+            `role` = VALUES(`role`),
+            `branch` = VALUES(`branch`),
+            `batch` = VALUES(`batch`),
+            `membershipStatus` = VALUES(`membershipStatus`),
+            `committeeDesignation` = VALUES(`committeeDesignation`),
+            `committeeResponsibility` = VALUES(`committeeResponsibility`)");
+
+        foreach ($defaultUsers as $u) {
+            $upsertUser->execute($u);
         }
 
         // 2. Events Table

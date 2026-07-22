@@ -1,47 +1,80 @@
+// ---------- Dynamic Real-Time Date & Time Clock Engine ----------
+function updateLiveClock() {
+  const now = new Date();
+  
+  const optionsDate = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+  const dateStr = now.toLocaleDateString('en-US', optionsDate);
+  const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+  
+  const clockTextEls = document.querySelectorAll('.liveClockText');
+  clockTextEls.forEach(el => {
+    el.textContent = `${dateStr} · ${timeStr}`;
+  });
+
+  const liveDateEls = document.querySelectorAll('.liveDateText');
+  liveDateEls.forEach(el => {
+    el.textContent = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  });
+
+  const currentYearEls = document.querySelectorAll('.currentYearText');
+  currentYearEls.forEach(el => {
+    el.textContent = now.getFullYear();
+  });
+}
+
+// Start live clock engine immediately on load
+updateLiveClock();
+setInterval(updateLiveClock, 1000);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', updateLiveClock);
+}
+
 // Password show/hide helper
 function togglePasswordVisibility(fieldId) {
   const field = document.getElementById(fieldId);
-  if (field.type === "password") {
-    field.type = "text";
-  } else {
-    field.type = "password";
+  if (field) {
+    field.type = field.type === "password" ? "text" : "password";
   }
 }
 
 // Password strength meter logic
-document.getElementById('regPassword').addEventListener('input', (e) => {
-  const pwd = e.target.value;
-  let score = 0;
-  if (pwd.length > 5) score++;
-  if (/[A-Z]/.test(pwd)) score++;
-  if (/[0-9]/.test(pwd)) score++;
-  if (/[^A-Za-z0-9]/.test(pwd)) score++;
+const regPwdInput = document.getElementById('regPassword');
+if (regPwdInput) {
+  regPwdInput.addEventListener('input', (e) => {
+    const pwd = e.target.value;
+    let score = 0;
+    if (pwd.length > 5) score++;
+    if (/[A-Z]/.test(pwd)) score++;
+    if (/[0-9]/.test(pwd)) score++;
+    if (/[^A-Za-z0-9]/.test(pwd)) score++;
 
-  const bar = document.getElementById('pwdStrengthBar');
-  const label = document.getElementById('pwdStrengthLabel');
+    const bar = document.getElementById('pwdStrengthBar');
+    const label = document.getElementById('pwdStrengthLabel');
+    if (!bar || !label) return;
 
-  if (pwd.length === 0) {
-    bar.style.width = '0%';
-    bar.style.backgroundColor = '#dc2626';
-    label.textContent = 'Too Weak';
-  } else if (score <= 1) {
-    bar.style.width = '25%';
-    bar.style.backgroundColor = '#dc2626';
-    label.textContent = 'Weak';
-  } else if (score === 2) {
-    bar.style.width = '50%';
-    bar.style.backgroundColor = '#ea580c';
-    label.textContent = 'Medium';
-  } else if (score === 3) {
-    bar.style.width = '75%';
-    bar.style.backgroundColor = '#3E8BFF';
-    label.textContent = 'Strong';
-  } else {
-    bar.style.width = '100%';
-    bar.style.backgroundColor = '#22c55e';
-    label.textContent = 'Very Secure';
-  }
-});
+    if (pwd.length === 0) {
+      bar.style.width = '0%';
+      bar.style.backgroundColor = '#dc2626';
+      label.textContent = 'Too Weak';
+    } else if (score <= 1) {
+      bar.style.width = '25%';
+      bar.style.backgroundColor = '#dc2626';
+      label.textContent = 'Weak';
+    } else if (score === 2) {
+      bar.style.width = '50%';
+      bar.style.backgroundColor = '#ea580c';
+      label.textContent = 'Medium';
+    } else if (score === 3) {
+      bar.style.width = '75%';
+      bar.style.backgroundColor = '#3E8BFF';
+      label.textContent = 'Strong';
+    } else {
+      bar.style.width = '100%';
+      bar.style.backgroundColor = '#22c55e';
+      label.textContent = 'Very Secure';
+    }
+  });
+}
 
 // mobile nav toggle
 const hamburger = document.getElementById('hamburgerBtn');
