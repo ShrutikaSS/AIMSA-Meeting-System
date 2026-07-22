@@ -33,13 +33,13 @@
       </div>
     </div>
     <div class="footer-bottom" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; padding-top:20px; font-size:0.78rem; color:var(--muted); gap:12px;">
-      <span>© 2026 <b>Department of AIML</b>, Zeal College of Engineering and Research, Pune. All rights reserved.</span>
+      <span>© <span class="currentYearText"><?php echo date('Y'); ?></span> <b>Department of AIML</b>, Zeal College of Engineering and Research, Pune. All rights reserved.</span>
       <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
         <a href="#" onclick="alert('Privacy Policy: All membership data is kept strictly confidential within Zeal Society.')" style="color:inherit; text-decoration:none;">Privacy Policy</a>
         <a href="#" onclick="alert('Terms &amp; Conditions: AIMSA portal usage is governed by college guidelines.')" style="color:inherit; text-decoration:none;">Terms &amp; Conditions</a>
         <span style="color:var(--line);">|</span>
         <span>Version: <b>v2.1.0</b></span>
-        <span>Last Updated: <b>July 21, 2026</b></span>
+        <span>Last Updated: <b class="liveDateText"><?php echo date('F j, Y'); ?></b></span>
       </div>
     </div>
   </div>
@@ -145,27 +145,50 @@
       <div class="secure-note"><svg viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-4z"/></svg> Encrypted login · role-based access · auto session timeout</div>
     </div>
 
-    <!-- STEP 3: Forgot Password Form -->
+    <!-- STEP 3: Forgot Password Form (OTP Multi-Step) -->
     <div id="forgotStep" style="display:none; flex-direction:column; gap:16px;">
       <span class="back-link" id="backToLogin" style="cursor:pointer; margin-bottom:8px;">← Back to sign in</span>
       <h3>Reset Password</h3>
-      <p class="sub">Enter your college email ID and new password to update your credentials.</p>
-      <div>
-        <label>College Email ID</label>
-        <input type="email" id="forgotEmail" placeholder="you@zealeducation.com" autocomplete="off" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
-      </div>
-      <div>
-        <label>New Password</label>
-        <div style="position:relative;">
-          <input type="password" id="forgotNewPassword" placeholder="••••••••" autocomplete="new-password" style="padding-right:40px; width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
-          <button type="button" class="toggle-password" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--muted-dark);" onclick="togglePasswordVisibility('forgotNewPassword')">👁️</button>
+
+      <!-- Step 1: Send OTP -->
+      <div id="otpStep1" style="display:flex; flex-direction:column; gap:14px;">
+        <p class="sub">Enter your registered college email ID. We will send a 6-digit OTP code to verify your identity.</p>
+        <div>
+          <label>College Email ID</label>
+          <input type="email" id="forgotEmail" placeholder="you@zealeducation.com" autocomplete="off" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
         </div>
+        <button class="btn btn-primary" style="width:100%; padding:13px;" id="sendOtpBtn">Send OTP Code →</button>
       </div>
-      <div>
-        <label>Confirm New Password</label>
-        <input type="password" id="forgotConfirmPassword" placeholder="••••••••" autocomplete="new-password" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
+
+      <!-- Step 2: Verify OTP -->
+      <div id="otpStep2" style="display:none; flex-direction:column; gap:14px;">
+        <div id="otpNoticeBanner" style="background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.3); border-radius:10px; padding:10px 14px; font-size:0.82rem; color:#15803d; line-height:1.4;">
+          <strong>OTP Sent!</strong> Check your email for the 6-digit code.
+        </div>
+        <div>
+          <label>Enter 6-Digit OTP</label>
+          <input type="text" id="forgotOtpInput" maxlength="6" placeholder="e.g. 482910" autocomplete="off" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:1.1rem; letter-spacing:4px; text-align:center; font-family:var(--ff-mono);">
+        </div>
+        <button class="btn btn-primary" style="width:100%; padding:13px;" id="verifyOtpBtn">Verify OTP Code →</button>
+        <button type="button" style="background:none; border:none; color:var(--accent); font-size:0.8rem; cursor:pointer; text-decoration:underline;" id="resendOtpBtn">Didn't receive code? Resend OTP</button>
       </div>
-      <button class="btn btn-primary" style="width:100%; padding:13px;" id="forgotSubmitBtn">Reset Password →</button>
+
+      <!-- Step 3: Set New Password -->
+      <div id="otpStep3" style="display:none; flex-direction:column; gap:14px;">
+        <p class="sub">Identity verified! Please enter your new secure password below.</p>
+        <div>
+          <label>New Password</label>
+          <div style="position:relative;">
+            <input type="password" id="forgotNewPassword" placeholder="••••••••" autocomplete="new-password" style="padding-right:40px; width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
+            <button type="button" class="toggle-password" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--muted-dark);" onclick="togglePasswordVisibility('forgotNewPassword')">👁️</button>
+          </div>
+        </div>
+        <div>
+          <label>Confirm New Password</label>
+          <input type="password" id="forgotConfirmPassword" placeholder="••••••••" autocomplete="new-password" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
+        </div>
+        <button class="btn btn-primary" style="width:100%; padding:13px;" id="forgotSubmitBtn">Update Password →</button>
+      </div>
     </div>
   </div>
 </div>

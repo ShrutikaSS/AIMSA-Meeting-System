@@ -298,10 +298,16 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
     <!-- Center Search Bar -->
     <div class="header-search-bar">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted-dark)" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="headerSearchInput" placeholder="Search members, events...">
+      <input type="text" id="headerSearchInput" placeholder="Search members, events..." data-i18n-ph="dash.search_ph">
     </div>
 
     <div class="topbar-right">
+      <!-- Live clock badge -->
+      <div style="font-family:var(--ff-mono); font-size:0.72rem; color:var(--accent); background:rgba(62,139,255,0.1); padding:5px 12px; border-radius:999px; border:1px solid rgba(62,139,255,0.25); display:inline-flex; align-items:center; gap:6px; margin-right:10px;">
+        <span style="width:7px; height:7px; border-radius:50%; background:#22c55e; display:inline-block; box-shadow:0 0 8px #22c55e;"></span>
+        <span class="liveClockText">Loading live time...</span>
+      </div>
+
       <select id="langSelect" style="background:var(--paper); border:1.5px solid var(--line-dark); border-radius:8px; padding:6px 12px; font-size:0.75rem; font-weight:600; font-family:inherit; cursor:pointer;" onchange="changeLanguage()">
         <option value="en">English</option>
         <option value="mr">मराठी (Marathi)</option>
@@ -321,12 +327,12 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
         <div id="profileDropdown" style="display:none; position:absolute; right:0; top:42px; background:var(--white); border:1px solid var(--line-dark); border-radius:12px; box-shadow:0 10px 25px -5px rgba(0,0,0,0.1); width:180px; z-index:150; padding:6px 0;">
           <a href="#" onclick="openDrawer('changePasswordDrawer'); toggleProfileDropdown(); return false;" style="display:flex; align-items:center; gap:8px; padding:10px 16px; font-size:0.78rem; color:var(--navy-950); text-decoration:none; font-weight:500;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            Change Password
+            <span data-i18n="dash.change_password">Change Password</span>
           </a>
           <div style="border-top:1px solid var(--line-dark); margin:4px 0;"></div>
           <a href="index.php" style="display:flex; align-items:center; gap:8px; padding:10px 16px; font-size:0.78rem; color:#ef4444; text-decoration:none; font-weight:600;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
-            Logout
+            <span data-i18n="dash.logout">Logout</span>
           </a>
         </div>
       </div>
@@ -335,28 +341,28 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 
   <!-- CONTENT -->
   <div class="content">
-    <div class="section-eyebrow">HOD Overview</div>
+    <div class="section-eyebrow" data-i18n="dash.hod_eyebrow">HOD Overview</div>
     <div class="content-title">Good Morning, Dr. Shende 👋</div>
-    <div class="content-sub">Here's what's happening in AIMSA today — <?php echo date('F j, Y'); ?></div>
+    <div class="content-sub">Here's what's happening in AIMSA today — <span class="liveDateText"><?php echo date('F j, Y'); ?></span></div>
 
     <!-- STAT CARDS -->
     <div class="stats-grid" id="members">
       <div class="stat-card" onclick="openDrawer('membersDrawer')">
         <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2M10 11a4 4 0 100-8 4 4 0 000 8z"/></svg></div>
         <span class="stat-val" id="statTotalMembers">0</span>
-        <div class="stat-label">Total Members</div>
+        <div class="stat-label" data-i18n="stat.total_members">Total Members</div>
         <span class="stat-delta up">↑ Live Database</span>
       </div>
       <div class="stat-card" id="committee" onclick="openDrawer('committeeDrawer')">
         <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
         <span class="stat-val" id="statCommittee">0</span>
-        <div class="stat-label">Committee Members</div>
+        <div class="stat-label" data-i18n="stat.committee_members">Committee Members</div>
         <span class="stat-delta up">↑ Active Roles</span>
       </div>
       <div class="stat-card" id="events" onclick="openDrawer('newEventDrawer')">
         <div class="stat-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
         <span class="stat-val" id="statEvents">0</span>
-        <div class="stat-label">Events Conducted</div>
+        <div class="stat-label" data-i18n="stat.events_conducted">Events Conducted</div>
         <span class="stat-delta up">↑ Approved &amp; Live</span>
       </div>
       <div class="stat-card" id="registrations">
@@ -498,7 +504,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
     <!-- FOOTER -->
     <footer class="portal-footer" style="margin-top:40px; padding:24px 30px; background:var(--white); border-top:1px solid var(--line-dark); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
       <div style="font-size:0.78rem; color:var(--muted-dark);">
-        <span>© 2026 <b>Department of AIML</b>, Zeal College of Engineering and Research, Pune. All rights reserved.</span>
+        <span>© <span class="currentYearText"><?php echo date('Y'); ?></span> <b>Department of AIML</b>, Zeal College of Engineering and Research, Pune. All rights reserved.</span>
       </div>
       <div style="display:flex; align-items:center; gap:20px; font-size:0.75rem; color:var(--muted-dark);">
         <span>📧 Support: <a href="mailto:support.aimsa@zealeducation.com" style="color:var(--accent); text-decoration:none; font-weight:600;">support.aimsa@zealeducation.com</a></span>
@@ -1477,13 +1483,9 @@ function escapeHtml(text) {
     .replace(/'/g, "&#039;");
 }
 
-function changeLanguage() {
-  const lang = document.getElementById('langSelect').value;
-  alert(lang === 'mr' ? 'पोर्टलची भाषा यशस्वीरीत्या मराठीमध्ये बदलली आहे.' : 'Portal language switched to English.');
-}
-
 // Initial Data Fetch
 fetchDashboardData();
 </script>
+<script src="assets/js/landing.js"></script>
 </body>
 </html>

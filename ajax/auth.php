@@ -132,12 +132,110 @@ try {
             ]);
             break;
 
+        case 'send_otp':
+            $email = trim($_POST['email'] ?? '');
+
+            if (empty($email)) {
+                echo json_encode(['status' => 'error', 'message' => 'Please enter your college email ID.']);
+                exit;
+            }
+
+            $stmt = $pdo->prepare("SELECT * FROM `users` WHERE LOWER(`email`) = LOWER(:email)");
+            $stmt->execute([':email' => $email]);
+            $user = $stmt->fetch();
+
+            if (!$user) {
+                echo json_encode(['status' => 'error', 'message' => 'No registered account found with that email address.']);
+                exit;
+            }
+
+            $otp = sprintf("%06d", rand(100000, 999999));
+            $_SESSION['forgot_otp'] = [
+                'email' => strtolower($email),
+                'otp' => $otp,
+                'expires' => time() + 300 // 5 minutes validity
+            ];
+
+            // Dispatch OTP email to user's registered email
+            $subject = "AIMSA Portal - Password Reset OTP Code";
+            $message = "Hello {$user->name},\n\nYour 6-digit OTP code to reset your AIMSA Portal password is: {$otp}\n\nThis code is valid for 5 minutes.\nIf you did not request a password reset, please ignore this email.\n\nDepartment of AIML\nZeal College of Engineering and Research, Pune";
+            $headers = "From: AIMSA Helpdesk <aimsa.helpdesk@zealeducation.com>\r\n" .
+                       "Reply-To: support.aimsa@zealeducation.com\r\n" .
+                       "X-Mailer: PHP/" . phpversion() . "\r\n" .
+                       "Content-Type: text/plain; charset=UTF-8";
+
+            @mail($user->email, $subject, $message, $headers);
+
+            // Log email dispatch in notifications table
+            try {
+                $notifStmt = $pdo->prepare("INSERT INTO `notifications` (`title`, `text`, `indicator`, `recipient`, `email_sent`) VALUES (?, ?, 'green', ?, 1)");
+                $notifStmt->execute(['Password Reset OTP', "A 6-digit verification code was sent to {$user->email}.", $user->email]);
+            } catch (Exception $e) {
+                // Ignore database logging exceptions if schema differs
+            }
+
+            // Create masked email string for user feedback (e.g. ad***h@zealeducation.com)
+            $emailParts = explode('@', $user->email);
+            $uname = $emailParts[0];
+            $domain = $emailParts[1] ?? 'zealeducation.com';
+            $maskedName = strlen($uname) > 2 ? substr($uname, 0, 2) . '***' . substr($uname, -1) : $uname . '***';
+            $maskedEmail = $maskedName . '@' . $domain;
+
+            echo json_encode([
+                'status' => 'success',
+                'message' => "OTP sent successfully to {$maskedEmail}",
+                'masked_email' => $maskedEmail
+            ]);
+            break;
+
+        case 'verify_otp':
+            $email = trim($_POST['email'] ?? '');
+            $otp = trim($_POST['otp'] ?? '');
+
+            if (empty($email) || empty($otp)) {
+                echo json_encode(['status' => 'error', 'message' => 'Please enter the 6-digit OTP sent to your email.']);
+                exit;
+            }
+
+            if (!isset($_SESSION['forgot_otp']) || strtolower($_SESSION['forgot_otp']['email']) !== strtolower($email)) {
+                echo json_encode(['status' => 'error', 'message' => 'No OTP request found for this email. Please request a new OTP.']);
+                exit;
+            }
+
+            if (time() > $_SESSION['forgot_otp']['expires']) {
+                echo json_encode(['status' => 'error', 'message' => 'OTP has expired (valid for 5 minutes). Please request a new OTP.']);
+                exit;
+            }
+
+            if ($_SESSION['forgot_otp']['otp'] !== $otp) {
+                echo json_encode(['status' => 'error', 'message' => 'Invalid OTP code. Please enter the correct 6-digit OTP.']);
+                exit;
+            }
+
+            // Mark OTP verified for this session
+            $_SESSION['forgot_otp_verified'] = [
+                'email' => strtolower($email),
+                'verified_at' => time()
+            ];
+
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'OTP verified successfully! You can now set your new password.'
+            ]);
+            break;
+
         case 'forgot_password':
             $email = trim($_POST['email'] ?? '');
             $newPassword = $_POST['new_password'] ?? '';
 
             if (empty($email) || empty($newPassword)) {
-                echo json_encode(['status' => 'error', 'message' => 'Please enter your email and new password.']);
+                echo json_encode(['status' => 'error', 'message' => 'Please fill out all required fields.']);
+                exit;
+            }
+
+            // Require OTP verification before allowing password reset
+            if (!isset($_SESSION['forgot_otp_verified']) || strtolower($_SESSION['forgot_otp_verified']['email']) !== strtolower($email)) {
+                echo json_encode(['status' => 'error', 'message' => 'OTP verification required before resetting password.']);
                 exit;
             }
 
@@ -152,6 +250,10 @@ try {
 
             $update = $pdo->prepare("UPDATE `users` SET `password` = :password WHERE `id` = :id");
             $update->execute([':password' => $newPassword, ':id' => $user->id]);
+
+            // Clear OTP session variables
+            unset($_SESSION['forgot_otp']);
+            unset($_SESSION['forgot_otp_verified']);
 
             echo json_encode([
                 'status' => 'success',

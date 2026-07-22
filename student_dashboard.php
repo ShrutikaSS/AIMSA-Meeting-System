@@ -294,6 +294,12 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
     </div>
 
     <div class="topbar-right" style="display:flex; align-items:center; gap:20px;">
+      <!-- Live clock badge -->
+      <div style="font-family:var(--ff-mono); font-size:0.72rem; color:var(--accent); background:rgba(62,139,255,0.1); padding:5px 12px; border-radius:999px; border:1px solid rgba(62,139,255,0.25); display:inline-flex; align-items:center; gap:6px;">
+        <span style="width:7px; height:7px; border-radius:50%; background:#22c55e; display:inline-block; box-shadow:0 0 8px #22c55e;"></span>
+        <span class="liveClockText">Loading live time...</span>
+      </div>
+
       <!-- Language selection dropdown -->
       <select id="langSelect" style="background:var(--paper); border:1.5px solid var(--line-dark); border-radius:8px; padding:6px 12px; font-size:0.75rem; font-weight:600; font-family:inherit; cursor:pointer;" onchange="changeLanguage()">
         <option value="en">English</option>
@@ -316,12 +322,12 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
         <div id="profileDropdown" style="display:none; position:absolute; right:0; top:42px; background:var(--white); border:1px solid var(--line-dark); border-radius:12px; box-shadow:0 10px 25px -5px rgba(0,0,0,0.1); width:180px; z-index:150; padding:6px 0;">
           <a href="#" onclick="openDrawer('changePasswordDrawer'); toggleProfileDropdown(); return false;" style="display:flex; align-items:center; gap:8px; padding:10px 16px; font-size:0.78rem; color:var(--navy-950); text-decoration:none; font-weight:500;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            Change Password
+            <span data-i18n="dash.change_password">Change Password</span>
           </a>
           <div style="border-top:1px solid var(--line-dark); margin:4px 0;"></div>
           <a href="index.php" onclick="sessionStorage.removeItem('current_user');" style="display:flex; align-items:center; gap:8px; padding:10px 16px; font-size:0.78rem; color:#ef4444; text-decoration:none; font-weight:600;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
-            Logout
+            <span data-i18n="dash.logout">Logout</span>
           </a>
         </div>
       </div>
@@ -329,9 +335,9 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   </div>
 
   <div class="content">
-    <div class="section-eyebrow">Student Member</div>
+    <div class="section-eyebrow" data-i18n="dash.student_eyebrow">Student Member</div>
     <div class="content-title">Hey, Arjun! 👋</div>
-    <div class="content-sub">Your AIMSA journey at a glance — July 21, 2026</div>
+    <div class="content-sub">Your AIMSA journey at a glance — <span class="liveDateText"><?php echo date('F j, Y'); ?></span></div>
 
     <!-- Membership Card -->
     <div class="membership-card" id="membership">
@@ -487,7 +493,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
     <!-- consistent footer -->
     <footer class="portal-footer" style="margin-top:40px; padding:24px 30px; background:var(--white); border-top:1px solid var(--line-dark); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
       <div style="font-size:0.78rem; color:var(--muted-dark);">
-        <span>© 2026 <b>Department of AIML</b>, Zeal College of Engineering and Research, Pune. All rights reserved.</span>
+        <span>© <span class="currentYearText"><?php echo date('Y'); ?></span> <b>Department of AIML</b>, Zeal College of Engineering and Research, Pune. All rights reserved.</span>
       </div>
       <div style="display:flex; align-items:center; gap:20px; font-size:0.75rem; color:var(--muted-dark);">
         <span>📧 Support: <a href="mailto:support.aimsa@zealeducation.com" style="color:var(--accent); text-decoration:none; font-weight:600;">support.aimsa@zealeducation.com</a></span>
@@ -497,7 +503,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
         <a href="#" onclick="alert('Terms &amp; Conditions: AIMSA portal usage is governed by college guidelines.')" style="color:inherit; text-decoration:none; font-weight:600;">Terms &amp; Conditions</a>
         <span style="color:var(--line-dark);">|</span>
         <span>Version: <b>v2.1.0</b></span>
-        <span>Last Updated: <b>July 21, 2026</b></span>
+        <span>Last Updated: <b class="liveDateText"><?php echo date('F j, Y'); ?></b></span>
       </div>
     </footer>
 
@@ -1062,5 +1068,6 @@ document.querySelectorAll('.cal-day:not(.cal-header):not(.cal-empty)').forEach(d
   });
 });
 </script>
+<script src="assets/js/landing.js"></script>
 </body>
 </html>

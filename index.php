@@ -16,18 +16,18 @@ include_once __DIR__ . '/navbar.php';
         <img src="images/aimsa_logo.jpg" alt="AIMSA Association">
       </div>
     </div>
-    <span class="tagline">ZEAL EDUCATION SOCIETY — DEPT. OF AI &amp; ML</span>
-    <h1>Welcome to the AIMSA Student Portal</h1>
-    <p class="lead">One home for every student, committee member, faculty coordinator and administrator of the AI &amp; ML Student Association — meetings, achievements, announcements and more, all in one place.</p>
+    <span class="tagline" data-i18n="hero.tagline">ZEAL EDUCATION SOCIETY — DEPT. OF AI &amp; ML</span>
+    <h1 data-i18n="hero.title">Welcome to the AIMSA Student Portal</h1>
+    <p class="lead" data-i18n="hero.lead">One home for every student, committee member, faculty coordinator and administrator of the AI &amp; ML Student Association — meetings, achievements, announcements and more, all in one place.</p>
     <div class="hero-ctas">
-      <button class="btn btn-primary" id="openLoginBtn2">Login to Portal →</button>
-      <a href="#about" class="btn btn-ghost">Explore the Association</a>
+      <button class="btn btn-primary" id="openLoginBtn2" data-i18n="hero.login_btn">Login to Portal →</button>
+      <a href="#about" class="btn btn-ghost" data-i18n="hero.explore_btn">Explore the Association</a>
     </div>
     <div class="hero-stats">
-      <div class="stat"><b>120+</b><span>Active Members</span></div>
-      <div class="stat"><b>18</b><span>Events Hosted</span></div>
-      <div class="stat"><b>9</b><span>Committee Roles</span></div>
-      <div class="stat"><b>1996</b><span>Institute Est.</span></div>
+      <div class="stat"><b>120+</b><span data-i18n="hero.stat.members">Active Members</span></div>
+      <div class="stat"><b>18</b><span data-i18n="hero.stat.events">Events Hosted</span></div>
+      <div class="stat"><b>9</b><span data-i18n="hero.stat.roles">Committee Roles</span></div>
+      <div class="stat"><b>1996</b><span data-i18n="hero.stat.est">Institute Est.</span></div>
     </div>
   </div>
 </section>
@@ -135,22 +135,22 @@ include_once __DIR__ . '/navbar.php';
     </div>
     <div class="meet-list reveal">
       <div class="meet-row">
-        <div class="meet-date"><span class="d">24</span><span class="m">Jul · Fri</span></div>
+        <div class="meet-date"><span class="d"><?php echo date('d', strtotime('+2 days')); ?></span><span class="m"><?php echo date('M · D', strtotime('+2 days')); ?></span></div>
         <div class="meet-info"><h4>General Body Meeting — Semester Kickoff</h4><span>4:00 PM · AIML Seminar Hall</span></div>
         <span class="meet-badge">All Members</span>
       </div>
       <div class="meet-row">
-        <div class="meet-date"><span class="d">29</span><span class="m">Jul · Wed</span></div>
+        <div class="meet-date"><span class="d"><?php echo date('d', strtotime('+7 days')); ?></span><span class="m"><?php echo date('M · D', strtotime('+7 days')); ?></span></div>
         <div class="meet-info"><h4>Executive Committee Sync</h4><span>2:30 PM · Faculty Coordination Room</span></div>
         <span class="meet-badge">Committee Only</span>
       </div>
       <div class="meet-row">
-        <div class="meet-date"><span class="d">05</span><span class="m">Aug · Wed</span></div>
+        <div class="meet-date"><span class="d"><?php echo date('d', strtotime('+14 days')); ?></span><span class="m"><?php echo date('M · D', strtotime('+14 days')); ?></span></div>
         <div class="meet-info"><h4>Workshop Planning — ML Bootcamp</h4><span>11:00 AM · Lab 3, AIML Block</span></div>
         <span class="meet-badge">Technical Team</span>
       </div>
       <div class="meet-row">
-        <div class="meet-date"><span class="d">12</span><span class="m">Aug · Wed</span></div>
+        <div class="meet-date"><span class="d"><?php echo date('d', strtotime('+21 days')); ?></span><span class="m"><?php echo date('M · D', strtotime('+21 days')); ?></span></div>
         <div class="meet-info"><h4>Budget Review with Faculty Coordinator</h4><span>1:00 PM · HOD Office</span></div>
         <span class="meet-badge">Core Team</span>
       </div>
