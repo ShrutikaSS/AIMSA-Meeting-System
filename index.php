@@ -5,6 +5,8 @@ include_once __DIR__ . '/navbar.php';
 
 <!-- ============ HERO ============ -->
 <section class="hero">
+  <div class="glow-sphere glow-sphere-1"></div>
+  <div class="glow-sphere glow-sphere-2"></div>
   <div class="node-field" id="nodeField"></div>
   <div class="container hero-inner">
     <div class="hero-logos">
@@ -17,17 +19,17 @@ include_once __DIR__ . '/navbar.php';
       </div>
     </div>
     <span class="tagline" data-i18n="hero.tagline">ZEAL EDUCATION SOCIETY — DEPT. OF AI &amp; ML</span>
-    <h1 data-i18n="hero.title">Welcome to the AIMSA Student Portal</h1>
+    <h1 class="shimmer-text" data-i18n="hero.title">Welcome to the AIMSA Student Portal</h1>
     <p class="lead" data-i18n="hero.lead">One home for every student, committee member, faculty coordinator and administrator of the AI &amp; ML Student Association — meetings, achievements, announcements and more, all in one place.</p>
     <div class="hero-ctas">
       <button class="btn btn-primary" id="openLoginBtn2" data-i18n="hero.login_btn">Login to Portal →</button>
       <a href="#about" class="btn btn-ghost" data-i18n="hero.explore_btn">Explore the Association</a>
     </div>
-    <div class="hero-stats">
-      <div class="stat"><b>120+</b><span data-i18n="hero.stat.members">Active Members</span></div>
-      <div class="stat"><b>18</b><span data-i18n="hero.stat.events">Events Hosted</span></div>
-      <div class="stat"><b>9</b><span data-i18n="hero.stat.roles">Committee Roles</span></div>
-      <div class="stat"><b>1996</b><span data-i18n="hero.stat.est">Institute Est.</span></div>
+    <div class="hero-stats reveal-zoom">
+      <div class="stat"><b class="counter-num" data-target="120">0</b><b>+</b><span data-i18n="hero.stat.members">Active Members</span></div>
+      <div class="stat"><b class="counter-num" data-target="18">0</b><span data-i18n="hero.stat.events">Events Hosted</span></div>
+      <div class="stat"><b class="counter-num" data-target="9">0</b><span data-i18n="hero.stat.roles">Committee Roles</span></div>
+      <div class="stat"><b class="counter-num" data-target="1996">0</b><span data-i18n="hero.stat.est">Institute Est.</span></div>
     </div>
   </div>
 </section>
@@ -36,14 +38,14 @@ include_once __DIR__ . '/navbar.php';
 <section class="about" id="about">
   <div class="container">
     <div class="about-grid">
-      <div class="about-text reveal">
+      <div class="about-text reveal-left">
         <span class="section-tag">About Us</span>
         <h2 style="margin-bottom:20px; color:var(--navy-950);">Who We Are</h2>
         <p>The Artificial Intelligence &amp; Machine Learning Student Association (AIMSA) is the official student body of the AIML Department, bringing together students, faculty coordinators and industry mentors to build a thriving technical community on campus.</p>
         <p>From workshops and hackathons to research circles and industry meet-ups, AIMSA exists to turn curiosity about intelligent systems into real skill, real projects and real impact — for our students and for society.</p>
         <a href="#contact" class="btn btn-dark" style="margin-top:10px;">Get in touch</a>
       </div>
-      <div class="vm-stack reveal">
+      <div class="vm-stack reveal-right">
         <div class="vm-card">
           <span class="mark">Vision</span>
           <p>To be a premier institute in technical education by imparting academic excellence, research, social, and entrepreneurial attitude.</p>
@@ -59,6 +61,7 @@ include_once __DIR__ . '/navbar.php';
 
 <!-- ============ EXECUTIVE COMMITTEE ============ -->
 <section class="section-dark" id="committee">
+  <div class="glow-sphere glow-sphere-3"></div>
   <div class="node-field" id="nodeField2"></div>
   <div class="container">
     <div class="section-head on-dark reveal">
@@ -160,6 +163,7 @@ include_once __DIR__ . '/navbar.php';
 
 <!-- ============ ACHIEVEMENTS ============ -->
 <section class="achievements" id="achievements">
+  <div class="glow-sphere glow-sphere-4"></div>
   <div class="container">
     <div class="section-head on-dark reveal">
       <span class="section-tag on-dark">Recent Achievements</span>

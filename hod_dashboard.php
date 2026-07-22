@@ -168,7 +168,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 .header-search-bar input { background: transparent; border: none; font-size: 0.8rem; font-family: inherit; color: var(--navy-950); outline: none; width: 100%; }
 
 .drawer{
-  position:fixed; top:0; right:-480px; width:min(480px, 100%); height:100vh;
+  position:fixed; top:0; right:-700px; width:min(580px, 100%); height:100vh;
   background:var(--white); border-left:1px solid var(--line-dark); z-index:200;
   transition:right 0.3s cubic-bezier(0.16, 1, 0.3, 1); padding:30px;
   display:flex; flex-direction:column; gap:16px; overflow-y:auto;
@@ -677,7 +677,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   <!-- Action Footer inside Drawer -->
   <div style="border-top:1px solid var(--line-dark); padding-top:12px; margin-top:auto; display:flex; justify-content:space-between; align-items:center;">
     <span style="font-size:0.75rem; color:var(--muted-dark);">Live analytics updated from database</span>
-    <button class="btn btn-primary" style="padding:6px 14px; font-size:0.8rem;" onclick="closeDrawer('growthAnalyticsDrawer'); openDrawer('reportHubDrawer');">⚡ Create Report File</button>
+    <button class="btn btn-ghost" style="padding:6px 14px; font-size:0.8rem;" onclick="closeDrawer('growthAnalyticsDrawer')">Close</button>
   </div>
 </div>
 
@@ -938,6 +938,22 @@ function closeAllDrawers() {
   document.querySelectorAll('.drawer').forEach(d => d.classList.remove('open'));
 }
 
+function switchGrowthTab(tab) {
+  const btnBranch = document.getElementById('tabBranchGrowth');
+  const btnBatch = document.getElementById('tabBatchGrowth');
+  const btnMatrix = document.getElementById('tabMatrixGrowth');
+  if (btnBranch) btnBranch.classList.toggle('active', tab === 'branch');
+  if (btnBatch) btnBatch.classList.toggle('active', tab === 'batch');
+  if (btnMatrix) btnMatrix.classList.toggle('active', tab === 'matrix');
+
+  const cBranch = document.getElementById('branchGrowthContainer');
+  const cBatch = document.getElementById('batchGrowthContainer');
+  const cMatrix = document.getElementById('matrixGrowthContainer');
+  if (cBranch) cBranch.style.display = tab === 'branch' ? 'flex' : 'none';
+  if (cBatch) cBatch.style.display = tab === 'batch' ? 'flex' : 'none';
+  if (cMatrix) cMatrix.style.display = tab === 'matrix' ? 'flex' : 'none';
+}
+
 document.getElementById('navGallery').addEventListener('click', (e) => {
   e.preventDefault();
   openDrawer('galleryDrawer');
@@ -1019,6 +1035,7 @@ function renderDashboard(data) {
         </div>`;
     });
   }
+  renderGrowthAnalytics(data.growth_analytics);
 
   // 4. Upcoming Events
   const upcomingList = document.getElementById('upcomingEventsList');
@@ -1128,6 +1145,114 @@ document.getElementById('memberSearchInput').addEventListener('input', () => {
     renderAllMembersTable(globalData.all_members);
   }
 });
+
+function renderGrowthAnalytics(ga) {
+  if (!ga) return;
+
+  // 1. Summary Cards
+  const activeRatioEl = document.getElementById('analyticsActiveRatio');
+  if (activeRatioEl) activeRatioEl.textContent = ga.active_ratio || '100%';
+
+  let topBranch = 'AI & ML';
+  let maxBranchCount = -1;
+  if (ga.branch_analytics) {
+    ga.branch_analytics.forEach(b => {
+      if (b.total > maxBranchCount) {
+        maxBranchCount = b.total;
+        topBranch = b.branch;
+      }
+    });
+  }
+  const topBranchEl = document.getElementById('analyticsTopBranch');
+  if (topBranchEl) topBranchEl.textContent = topBranch;
+
+  let topBatch = '2024';
+  let maxBatchCount = -1;
+  if (ga.batch_analytics) {
+    ga.batch_analytics.forEach(bt => {
+      if (bt.total > maxBatchCount) {
+        maxBatchCount = bt.total;
+        topBatch = bt.batch_year || bt.batch;
+      }
+    });
+  }
+  const topBatchEl = document.getElementById('analyticsTopBatch');
+  if (topBatchEl) topBatchEl.textContent = 'Batch ' + topBatch;
+
+  // 2. Branch-Wise Comparison
+  const branchContainer = document.getElementById('branchGrowthContainer');
+  if (branchContainer && ga.branch_analytics) {
+    branchContainer.innerHTML = '';
+    ga.branch_analytics.forEach(b => {
+      const activePct = b.total > 0 ? Math.round((b.active / b.total) * 100) : 0;
+      branchContainer.innerHTML += `
+        <div style="background:var(--paper); border:1px solid var(--line-dark); border-radius:12px; padding:14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <b style="font-size:0.92rem; color:var(--navy-950);">${escapeHtml(b.branch)} Branch</b>
+            <span class="badge badge-green">${escapeHtml(b.trend)}</span>
+          </div>
+          <div style="display:flex; gap:15px; font-size:0.78rem; color:var(--muted-dark); margin-bottom:10px; font-family:var(--ff-mono);">
+            <span>Active: <b style="color:var(--navy-950);">${b.active}</b></span>
+            <span>Pending: <b style="color:var(--navy-950);">${b.pending}</b></span>
+            <span>Total Enrolled: <b style="color:var(--navy-950);">${b.total}</b></span>
+          </div>
+          <div class="progress-item" style="margin-bottom:0;">
+            <div class="progress-label">
+              <span>Conversion / Active Rate</span>
+              <span>${activePct}%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:${Math.max(10, activePct)}%"></div></div>
+          </div>
+        </div>`;
+    });
+  }
+
+  // 3. Batch-Wise Comparison
+  const batchContainer = document.getElementById('batchGrowthContainer');
+  if (batchContainer && ga.batch_analytics) {
+    batchContainer.innerHTML = '';
+    ga.batch_analytics.forEach(bt => {
+      const activePct = bt.total > 0 ? Math.round((bt.active / bt.total) * 100) : 0;
+      batchContainer.innerHTML += `
+        <div style="background:var(--paper); border:1px solid var(--line-dark); border-radius:12px; padding:14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <b style="font-size:0.92rem; color:var(--navy-950);">${escapeHtml(bt.batch)}</b>
+            <span class="badge badge-blue">${escapeHtml(bt.trend)}</span>
+          </div>
+          <div style="display:flex; gap:15px; font-size:0.78rem; color:var(--muted-dark); margin-bottom:10px; font-family:var(--ff-mono);">
+            <span>Active: <b style="color:var(--navy-950);">${bt.active}</b></span>
+            <span>Pending: <b style="color:var(--navy-950);">${bt.pending}</b></span>
+            <span>Total: <b style="color:var(--navy-950);">${bt.total}</b></span>
+          </div>
+          <div class="progress-item" style="margin-bottom:0;">
+            <div class="progress-label">
+              <span>Batch Share</span>
+              <span>${bt.percentage}%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:${Math.max(10, bt.percentage)}%; background:linear-gradient(90deg, #10b981, #34d399);"></div></div>
+          </div>
+        </div>`;
+    });
+  }
+
+  // 4. Matrix Table
+  const matrixBody = document.getElementById('matrixGrowthTableBody');
+  if (matrixBody && ga.comparison_matrix) {
+    matrixBody.innerHTML = '';
+    ga.comparison_matrix.forEach(m => {
+      const badgeClass = m.status_badge === 'Top Performer' ? 'badge-green' : m.status_badge === 'Growing' ? 'badge-blue' : 'badge-gray';
+      matrixBody.innerHTML += `
+        <tr>
+          <td><b>${escapeHtml(m.segment)}</b></td>
+          <td><span style="color:#16a34a; font-weight:600;">${m.active}</span></td>
+          <td><span style="color:#ea580c;">${m.pending}</span></td>
+          <td><b>${m.total}</b></td>
+          <td>${escapeHtml(m.share)}</td>
+          <td><span class="badge ${badgeClass}">${escapeHtml(m.status_badge)}</span></td>
+        </tr>`;
+    });
+  }
+}
 
 function populateSelectDropdowns(members, events) {
   // Committee user select

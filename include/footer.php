@@ -41,9 +41,13 @@
         <span>Version: <b>v2.1.0</b></span>
         <span>Last Updated: <b class="liveDateText"><?php echo date('F j, Y'); ?></b></span>
       </div>
-    </div>
   </div>
 </footer>
+
+<!-- ============ SCROLL TO TOP FLOATING BUTTON ============ -->
+<button id="scrollToTopBtn" aria-label="Scroll to top" style="position:fixed; bottom:28px; right:28px; width:48px; height:48px; border-radius:50%; background:linear-gradient(135deg, #081733, #123163); border:1.5px solid #3E8BFF; color:#ffffff; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 24px rgba(62,139,255,0.35); z-index:999; cursor:pointer; opacity:0; visibility:hidden; transform:translateY(10px); transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1);" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7fb0ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.2s;"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+</button>
 
 <!-- ============ LOGIN MODAL ============ -->
 <div class="modal-overlay" id="modalOverlay">
@@ -120,6 +124,10 @@
           <input type="email" id="regEmail" placeholder="you@zealeducation.com" autocomplete="off" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
         </div>
         <div>
+          <label>Unique Student ZPRN</label>
+          <input type="text" id="regZprn" placeholder="e.g. 125UAM1234" autocomplete="off" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem; text-transform:uppercase;">
+        </div>
+        <div>
           <label>Password</label>
           <div style="position:relative;">
             <input type="password" id="regPassword" placeholder="••••••••" autocomplete="new-password" style="padding-right:40px; width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
@@ -145,37 +153,30 @@
       <div class="secure-note"><svg viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-4z"/></svg> Encrypted login · role-based access · auto session timeout</div>
     </div>
 
-    <!-- STEP 3: Forgot Password Form (OTP Multi-Step) -->
+    <!-- STEP 3: Forgot Password Form (Security Question: ZPRN Verification) -->
     <div id="forgotStep" style="display:none; flex-direction:column; gap:16px;">
       <span class="back-link" id="backToLogin" style="cursor:pointer; margin-bottom:8px;">← Back to sign in</span>
       <h3>Reset Password</h3>
 
-      <!-- Step 1: Send OTP -->
-      <div id="otpStep1" style="display:flex; flex-direction:column; gap:14px;">
-        <p class="sub">Enter your registered college email ID. We will send a 6-digit OTP code to verify your identity.</p>
+      <!-- Step 1: Security Question Verification (ZPRN) -->
+      <div id="zprnSecurityStep" style="display:flex; flex-direction:column; gap:14px;">
+        <p class="sub">Verify your identity using your registered Email ID and unique Student ZPRN security question.</p>
         <div>
           <label>College Email ID</label>
           <input type="email" id="forgotEmail" placeholder="you@zealeducation.com" autocomplete="off" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
         </div>
-        <button class="btn btn-primary" style="width:100%; padding:13px;" id="sendOtpBtn">Send OTP Code →</button>
-      </div>
-
-      <!-- Step 2: Verify OTP -->
-      <div id="otpStep2" style="display:none; flex-direction:column; gap:14px;">
-        <div id="otpNoticeBanner" style="background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.3); border-radius:10px; padding:10px 14px; font-size:0.82rem; color:#15803d; line-height:1.4;">
-          <strong>OTP Sent!</strong> Check your email for the 6-digit code.
-        </div>
         <div>
-          <label>Enter 6-Digit OTP</label>
-          <input type="text" id="forgotOtpInput" maxlength="6" placeholder="e.g. 482910" autocomplete="off" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:1.1rem; letter-spacing:4px; text-align:center; font-family:var(--ff-mono);">
+          <label>Security Question: Enter Your Unique ZPRN</label>
+          <input type="text" id="forgotZprn" placeholder="e.g. 125UAM1234" autocomplete="off" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem; text-transform:uppercase;">
         </div>
-        <button class="btn btn-primary" style="width:100%; padding:13px;" id="verifyOtpBtn">Verify OTP Code →</button>
-        <button type="button" style="background:none; border:none; color:var(--accent); font-size:0.8rem; cursor:pointer; text-decoration:underline;" id="resendOtpBtn">Didn't receive code? Resend OTP</button>
+        <button type="button" class="btn btn-primary" style="width:100%; padding:13px;" id="verifyZprnBtn">Verify Security Answer →</button>
       </div>
 
-      <!-- Step 3: Set New Password -->
-      <div id="otpStep3" style="display:none; flex-direction:column; gap:14px;">
-        <p class="sub">Identity verified! Please enter your new secure password below.</p>
+      <!-- Step 2: Set New Password -->
+      <div id="resetPasswordStep" style="display:none; flex-direction:column; gap:14px;">
+        <div id="zprnSuccessBanner" style="background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.3); border-radius:10px; padding:10px 14px; font-size:0.82rem; color:#15803d; line-height:1.4;">
+          <strong>✅ Identity Verified!</strong> Security Question (ZPRN) match confirmed. Enter your new password below.
+        </div>
         <div>
           <label>New Password</label>
           <div style="position:relative;">
@@ -187,7 +188,7 @@
           <label>Confirm New Password</label>
           <input type="password" id="forgotConfirmPassword" placeholder="••••••••" autocomplete="new-password" style="width:100%; border:1.5px solid var(--line-dark); border-radius:10px; padding:12px 14px; font-size:.92rem;">
         </div>
-        <button class="btn btn-primary" style="width:100%; padding:13px;" id="forgotSubmitBtn">Update Password →</button>
+        <button type="button" class="btn btn-primary" style="width:100%; padding:13px;" id="forgotSubmitBtn">Save &amp; Update Password →</button>
       </div>
     </div>
   </div>

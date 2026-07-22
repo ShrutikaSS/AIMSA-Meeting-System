@@ -173,11 +173,11 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 
 /* Drawer Panel styles */
 .drawer{
-  position:fixed; top:0; right:-450px; width:min(420px, 100%); height:100vh;
+  position:fixed; top:0; right:-700px; width:min(580px, 100%); height:100vh;
   background:var(--white); border-left:1px solid var(--line-dark); z-index:200;
-  transition:right 0.3s cubic-bezier(0.16, 1, 0.3, 1); padding:30px;
+  transition:right 0.35s cubic-bezier(0.16, 1, 0.3, 1); padding:30px;
   display:flex; flex-direction:column; gap:20px; overflow-y:auto;
-  box-shadow: -10px 0 30px -10px rgba(0,0,0,0.15);
+  box-shadow: -10px 0 30px -10px rgba(0,0,0,0.2);
 }
 .drawer.open{right:0;}
 .drawer-header{display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line-dark); padding-bottom:15px; margin-bottom:10px;}
@@ -207,13 +207,13 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
     </div>
     <div class="brand-info"><b>AIMSA Portal</b><span>Faculty Access</span></div>
   </div>
-  <div class="sidebar-role">
-    <div class="role-avatar"><div class="in">FC</div></div>
-    <div class="role-info"><b>Prof. Meera Nair</b><span>Faculty Coordinator</span></div>
+  <div class="sidebar-role" style="cursor:pointer;" onclick="openDrawer('viewProfileDrawer')">
+    <div class="role-avatar"><div class="in" id="sidebarAvatar">FC</div></div>
+    <div class="role-info"><b id="sidebarUserName">Prof. Meera Nair</b><span>Faculty Coordinator</span></div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-section-label">Main</div>
-    <a class="nav-item active" href="faculty_dashboard.html">
+    <a class="nav-item active" href="faculty_dashboard.php">
       <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard
     </a>
     <div class="nav-section-label">Events</div>
@@ -240,7 +240,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
       <span class="nav-badge">5</span>
     </a>
     <div class="nav-section-label">Account</div>
-    <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/></svg>Profile</a>
+    <a class="nav-item" id="navProfileLink" href="#" onclick="openDrawer('viewProfileDrawer'); return false;"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/></svg>Profile</a>
   </nav>
   <div class="sidebar-footer">
     <a class="nav-item" href="index.php"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>Logout</a>
@@ -296,6 +296,10 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
         <div id="profileDropdown" style="display:none; position:absolute; right:0; top:42px; background:var(--white); border:1px solid var(--line-dark); border-radius:12px; box-shadow:0 10px 25px -5px rgba(0,0,0,0.1); width:180px; z-index:150; padding:6px 0;">
+          <a href="#" onclick="openDrawer('viewProfileDrawer'); toggleProfileDropdown(); return false;" style="display:flex; align-items:center; gap:8px; padding:10px 16px; font-size:0.78rem; color:var(--navy-950); text-decoration:none; font-weight:500;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/></svg>
+            <span>Profile Overview</span>
+          </a>
           <a href="#" onclick="openDrawer('changePasswordDrawer'); toggleProfileDropdown(); return false;" style="display:flex; align-items:center; gap:8px; padding:10px 16px; font-size:0.78rem; color:var(--navy-950); text-decoration:none; font-weight:500;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             <span data-i18n="dash.change_password">Change Password</span>
@@ -406,7 +410,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
     <div class="dash-grid-3">
       <!-- Attendance Summary -->
       <div class="card">
-        <div class="card-head"><div class="card-title">Attendance Summary</div><span class="card-action">Full Log</span></div>
+        <div class="card-head"><div class="card-title">Attendance Summary</div><span class="card-action" id="btnFullLogAttendance">Full Log</span></div>
         <div class="attend-summary">
           <div class="attend-box present"><span class="attend-box-val">89%</span><div class="attend-box-label">Present Rate</div></div>
           <div class="attend-box absent"><span class="attend-box-val">11%</span><div class="attend-box-label">Absent Rate</div></div>
@@ -420,7 +424,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 
       <!-- Member Statistics -->
       <div class="card">
-        <div class="card-head"><div class="card-title">Member Statistics</div><span class="card-action">Detail View</span></div>
+        <div class="card-head"><div class="card-title">Member Statistics</div><span class="card-action" id="btnDetailViewMemberStats">Detail View</span></div>
         <div class="progress-item"><div class="progress-label"><span>AIML 3rd Year</span><span>87 students</span></div><div class="progress-bar"><div class="progress-fill" style="width:87%"></div></div></div>
         <div class="progress-item"><div class="progress-label"><span>AIML 2nd Year</span><span>72 students</span></div><div class="progress-bar"><div class="progress-fill" style="width:72%"></div></div></div>
         <div class="progress-item"><div class="progress-label"><span>CS Students</span><span>54 students</span></div><div class="progress-bar"><div class="progress-fill" style="width:54%"></div></div></div>
@@ -433,7 +437,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 
       <!-- Student Achievements -->
       <div class="card" id="achievements">
-        <div class="card-head"><div class="card-title">Student Achievements</div><span class="card-action">Nominate</span></div>
+        <div class="card-head"><div class="card-title">Student Achievements</div><span class="card-action" id="btnNominateAchievement">Nominate</span></div>
         <div class="ach-item">
           <div class="ach-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
           <div class="ach-info"><b>Arjun Patil — 1st Place Hackathon</b><span>AIML 3rd Year · Hackathon 2026</span></div>
@@ -492,6 +496,139 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
     <input type="password" id="confirmNewPassword" placeholder="••••••••">
   </div>
   <button class="btn btn-primary" style="width:100%; margin-top:10px;" id="savePasswordBtn">Update Password</button>
+</div>
+
+<!-- ── FACULTY PROFILE DRAWER ── -->
+<div class="drawer" id="viewProfileDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Faculty Profile Overview</div>
+    <button class="drawer-close" onclick="closeDrawer('viewProfileDrawer')">&times;</button>
+  </div>
+  <div style="text-align:center; padding:15px 0; border-bottom:1px solid var(--line-dark);">
+    <div style="width:70px; height:70px; border-radius:50%; background:conic-gradient(from 180deg,var(--accent),var(--navy-700),var(--accent)); padding:3px; margin:0 auto 10px;">
+      <div style="width:100%; height:100%; border-radius:50%; background:var(--navy-800); display:flex; align-items:center; justify-content:center; font-family:var(--ff-display); font-weight:700; color:var(--white); font-size:1.4rem;" id="profDrawerAvatar">FC</div>
+    </div>
+    <b style="font-size:1.1rem; color:var(--navy-950); display:block;" id="profDrawerName">Prof. Meera Nair</b>
+    <span style="font-family:var(--ff-mono); font-size:0.72rem; color:var(--accent); letter-spacing:0.1em; text-transform:uppercase;">Faculty Coordinator — Dept. of AI &amp; ML</span>
+  </div>
+  <div class="form-group" style="margin-top:10px;">
+    <label>Full Name</label>
+    <input type="text" id="profNameInput" value="Prof. Meera Nair">
+  </div>
+  <div class="form-group">
+    <label>College Email ID</label>
+    <input type="email" id="profEmailInput" value="faculty@zealeducation.com">
+  </div>
+  <div class="form-group">
+    <label>Unique ZPRN</label>
+    <input type="text" id="profZprnInput" value="125UAM1002">
+  </div>
+  <div class="form-group">
+    <label>Faculty Staff ID</label>
+    <input type="text" id="profStaffIdInput" value="FC-AIML-2024">
+  </div>
+  <div class="form-group">
+    <label>Mobile Number</label>
+    <input type="text" id="profPhoneInput" value="+91 98765 43210">
+  </div>
+  <div class="form-group">
+    <label>Department / Designation</label>
+    <input type="text" id="profDeptInput" value="AI &amp; ML Department · Assistant Professor" readonly style="background:var(--paper-dim);">
+  </div>
+  <button class="btn btn-primary" style="width:100%; margin-top:10px;" id="saveProfileBtn">Save Profile Changes</button>
+</div>
+
+<!-- ── APPROVED EVENTS DRAWER ── -->
+<div class="drawer" id="approvedEventsDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Approved Events Overview</div>
+    <button class="drawer-close" onclick="closeDrawer('approvedEventsDrawer')">&times;</button>
+  </div>
+  <p style="font-size:0.85rem; color:var(--muted-dark); line-height:1.5;">List of all official AIMSA department events approved and verified by Faculty Coordinator.</p>
+  <div style="display:flex; gap:10px; margin-bottom:12px;">
+    <input type="text" id="searchApprovedEvtInput" placeholder="Search approved events..." style="flex:1; padding:8px 12px; border-radius:8px; border:1px solid var(--line-dark); font-size:0.82rem;">
+    <button class="btn btn-primary" style="padding:8px 14px; font-size:0.78rem;" onclick="openDrawer('createEventDrawer')">+ Propose Event</button>
+  </div>
+  <div style="flex:1; overflow-y:auto;">
+    <table class="data-table">
+      <thead><tr><th>Event Title</th><th>Date</th><th>Registrations</th><th>Status</th></tr></thead>
+      <tbody id="drawerApprovedEventsBody">
+        <!-- Dynamically populated -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── MEMBER STATISTICS DRAWER ── -->
+<div class="drawer" id="memberStatsDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Department Member Statistics</div>
+    <button class="drawer-close" onclick="closeDrawer('memberStatsDrawer')">&times;</button>
+  </div>
+  <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:12px;">
+    <div style="background:rgba(62,139,255,0.06); border:1px solid rgba(62,139,255,0.2); padding:12px; border-radius:10px; text-align:center;">
+      <b style="font-family:var(--ff-display); font-size:1.4rem; color:var(--accent); display:block;" id="statTotalMemVal">247</b>
+      <span style="font-size:0.65rem; color:var(--muted-dark); font-family:var(--ff-mono); text-transform:uppercase;">Total Enrolled</span>
+    </div>
+    <div style="background:rgba(34,197,94,0.06); border:1px solid rgba(34,197,94,0.2); padding:12px; border-radius:10px; text-align:center;">
+      <b style="font-family:var(--ff-display); font-size:1.4rem; color:#16a34a; display:block;" id="statActiveRatioVal">92%</b>
+      <span style="font-size:0.65rem; color:var(--muted-dark); font-family:var(--ff-mono); text-transform:uppercase;">Active Ratio</span>
+    </div>
+    <div style="background:rgba(249,115,22,0.06); border:1px solid rgba(249,115,22,0.2); padding:12px; border-radius:10px; text-align:center;">
+      <b style="font-family:var(--ff-display); font-size:1.4rem; color:#ea580c; display:block;" id="statTopBranchVal">AI &amp; ML</b>
+      <span style="font-size:0.65rem; color:var(--muted-dark); font-family:var(--ff-mono); text-transform:uppercase;">Top Department</span>
+    </div>
+  </div>
+  <div style="font-weight:700; font-size:0.9rem; margin:10px 0 6px;">Branch Breakdown</div>
+  <div id="drawerBranchStats"></div>
+  
+  <div style="font-weight:700; font-size:0.9rem; margin:14px 0 6px;">Batch / Year Distribution</div>
+  <div id="drawerBatchStats"></div>
+
+  <div style="font-weight:700; font-size:0.9rem; margin:16px 0 6px;">Student Directory</div>
+  <input type="text" id="searchMemberInput" placeholder="Search members by name, email, ZPRN..." style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--line-dark); font-size:0.82rem; margin-bottom:10px;">
+  <div style="flex:1; overflow-y:auto;">
+    <table class="data-table">
+      <thead><tr><th>Name</th><th>Email / ZPRN</th><th>Branch</th><th>Role</th></tr></thead>
+      <tbody id="drawerMembersDirectoryBody">
+        <!-- Dynamically populated -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── ATTENDANCE SUMMARY DRAWER ── -->
+<div class="drawer" id="attendanceSummaryDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Student Attendance Summary</div>
+    <button class="drawer-close" onclick="closeDrawer('attendanceSummaryDrawer')">&times;</button>
+  </div>
+  <div class="attend-summary" style="margin-bottom:12px;">
+    <div class="attend-box present"><span class="attend-box-val" id="drawerAvgAttRate">89%</span><div class="attend-box-label">Avg Attendance</div></div>
+    <div class="attend-box total"><span class="attend-box-val" id="drawerTotalEventsCount">24</span><div class="attend-box-label">Events &amp; Syncs</div></div>
+    <div class="attend-box present"><span class="attend-box-val" id="drawerVerifiedStatus">Verified</span><div class="attend-box-label">Faculty Sign-off</div></div>
+  </div>
+
+  <div style="font-weight:700; font-size:0.9rem; margin:10px 0 6px;">Event &amp; Meeting Attendance Breakdown</div>
+  <div style="max-height:180px; overflow-y:auto; margin-bottom:14px;">
+    <table class="data-table">
+      <thead><tr><th>Event / Meeting</th><th>Date</th><th>Present / Total</th><th>Rate</th><th>Action</th></tr></thead>
+      <tbody id="drawerMeetingsAttBody">
+        <!-- Dynamically populated -->
+      </tbody>
+    </table>
+  </div>
+
+  <div style="font-weight:700; font-size:0.9rem; margin:10px 0 6px;">All Students Attendance Roster</div>
+  <input type="text" id="searchRosterInput" placeholder="Filter student roster by name, ZPRN, status..." style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--line-dark); font-size:0.82rem; margin-bottom:8px;">
+  <div style="flex:1; overflow-y:auto;">
+    <table class="data-table">
+      <thead><tr><th>Student Name</th><th>Email / ZPRN</th><th>Event</th><th>Status</th></tr></thead>
+      <tbody id="drawerStudentsRosterBody">
+        <!-- Dynamically populated -->
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <!-- ── CREATE EVENT DRAWER ── -->
@@ -574,11 +711,79 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 <!-- ── APPROVE ACHIEVEMENTS DRAWER ── -->
 <div class="drawer" id="approveAchievementsDrawer">
   <div class="drawer-header">
-    <div class="drawer-title">Approve Achievements</div>
+    <div class="drawer-title">Student Achievements &amp; Nominations</div>
     <button class="drawer-close" onclick="closeDrawer('approveAchievementsDrawer')">&times;</button>
   </div>
-  <div id="pendingAchievementsContainer" style="display:flex; flex-direction:column; gap:12px; overflow-y:auto; flex:1;">
-    <!-- Dynamically populated -->
+  
+  <!-- Navigation Sub-tabs -->
+  <div style="display:flex; gap:8px; margin-bottom:14px; background:var(--paper-dim); padding:4px; border-radius:10px; border:1px solid var(--line-dark);">
+    <button class="btn" id="tabBtnReviewNom" style="flex:1; font-size:0.78rem; padding:8px; border-radius:8px; background:var(--white); color:var(--navy-950); box-shadow:0 2px 8px rgba(0,0,0,0.06);" onclick="switchNominationTab('review')">Review Nominations</button>
+    <button class="btn" id="tabBtnCreateNom" style="flex:1; font-size:0.78rem; padding:8px; border-radius:8px; background:transparent; color:var(--muted-dark);" onclick="switchNominationTab('create')">+ Nominate Student</button>
+  </div>
+
+  <!-- ── REVIEW NOMINATIONS SECTION ── -->
+  <div id="reviewNominationsSection">
+    <!-- Review KPI Summary -->
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px;">
+      <div style="background:rgba(249,115,22,0.06); border:1px solid rgba(249,115,22,0.2); padding:10px; border-radius:10px; text-align:center;">
+        <b style="font-family:var(--ff-display); font-size:1.3rem; color:#ea580c; display:block;" id="kpiPendingNomCount">2</b>
+        <span style="font-size:0.62rem; color:var(--muted-dark); font-family:var(--ff-mono); text-transform:uppercase;">Pending Review</span>
+      </div>
+      <div style="background:rgba(34,197,94,0.06); border:1px solid rgba(34,197,94,0.2); padding:10px; border-radius:10px; text-align:center;">
+        <b style="font-family:var(--ff-display); font-size:1.3rem; color:#16a34a; display:block;" id="kpiApprovedNomCount">2</b>
+        <span style="font-size:0.62rem; color:var(--muted-dark); font-family:var(--ff-mono); text-transform:uppercase;">Approved</span>
+      </div>
+      <div style="background:rgba(62,139,255,0.06); border:1px solid rgba(62,139,255,0.2); padding:10px; border-radius:10px; text-align:center;">
+        <b style="font-family:var(--ff-display); font-size:1.3rem; color:var(--accent); display:block;" id="kpiTotalNomCount">4</b>
+        <span style="font-size:0.62rem; color:var(--muted-dark); font-family:var(--ff-mono); text-transform:uppercase;">Total Submitted</span>
+      </div>
+    </div>
+
+    <!-- Search & Filter Controls -->
+    <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px;">
+      <input type="text" id="searchNominationInput" placeholder="Search nominations by student, title, category..." style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--line-dark); font-size:0.82rem;">
+      <div style="display:flex; gap:6px; overflow-x:auto; padding-bottom:2px;">
+        <button class="btn btn-ghost nom-filter-pill active" data-status="all" style="padding:4px 10px; font-size:0.7rem; border-radius:99px;" onclick="filterNominationList('all', this)">All</button>
+        <button class="btn btn-ghost nom-filter-pill" data-status="Pending" style="padding:4px 10px; font-size:0.7rem; border-radius:99px;" onclick="filterNominationList('Pending', this)">Pending</button>
+        <button class="btn btn-ghost nom-filter-pill" data-status="Approved" style="padding:4px 10px; font-size:0.7rem; border-radius:99px;" onclick="filterNominationList('Approved', this)">Approved</button>
+        <button class="btn btn-ghost nom-filter-pill" data-status="Rejected" style="padding:4px 10px; font-size:0.7rem; border-radius:99px;" onclick="filterNominationList('Rejected', this)">Rejected</button>
+      </div>
+    </div>
+
+    <div id="pendingAchievementsContainer" style="display:flex; flex-direction:column; gap:12px; overflow-y:auto; flex:1; max-height:420px;">
+      <!-- Dynamically populated -->
+    </div>
+  </div>
+
+  <!-- ── SUBMIT NEW NOMINATION SECTION (Form) ── -->
+  <div id="newNominationFormSection" style="display:none; border:1.5px solid var(--accent); border-radius:12px; padding:16px; background:var(--paper); margin-bottom:14px;">
+    <b style="font-size:0.9rem; color:var(--navy-950); display:block; margin-bottom:10px;">Submit Student Achievement Nomination</b>
+    <div class="form-group">
+      <label>Student Name</label>
+      <input type="text" id="nomStudentName" placeholder="e.g. Arjun Patil">
+    </div>
+    <div class="form-group">
+      <label>Student Email ID</label>
+      <input type="email" id="nomStudentEmail" placeholder="e.g. student@zealeducation.com">
+    </div>
+    <div class="form-group">
+      <label>Achievement Title</label>
+      <input type="text" id="nomTitle" placeholder="e.g. 1st Place National Hackathon 2026">
+    </div>
+    <div class="form-group">
+      <label>Category</label>
+      <select id="nomCategory">
+        <option value="Hackathon Winner">Hackathon Winner</option>
+        <option value="Academic Excellence">Academic Excellence</option>
+        <option value="Research Paper">Research Paper Published</option>
+        <option value="Leadership & Organizing">Leadership &amp; Organizing</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Description / Remarks</label>
+      <textarea id="nomDescription" rows="3" placeholder="Details about student achievement..."></textarea>
+    </div>
+    <button class="btn btn-primary" style="width:100%; margin-top:6px;" onclick="submitNewNomination()">Submit &amp; Approve Nomination</button>
   </div>
 </div>
 
@@ -860,99 +1065,457 @@ if (quickNotifyBtn) {
   });
 }
 
+// ---------- APPROVED EVENTS DRAWER & LOGIC ----------
+async function loadApprovedEventsDrawer() {
+  try {
+    const res = await fetch('ajax/eventActions.php?action=getApprovedEvents');
+    const data = await res.json();
+    const body = document.getElementById('drawerApprovedEventsBody');
+    if (!body) return;
+
+    if (data.status === 'success' && data.events.length > 0) {
+      body.innerHTML = data.events.map(evt => `
+        <tr>
+          <td><b>${escapeHtml(evt.name)}</b><br><span style="font-size:0.72rem; color:var(--muted-dark);">${escapeHtml(evt.venue || 'Campus')}</span></td>
+          <td>${formatDate(evt.date)}</td>
+          <td>${evt.max_participants || 0} enrolled</td>
+          <td><span class="badge badge-green">Approved</span></td>
+        </tr>`).join('');
+    } else {
+      body.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--muted-dark); padding:20px;">No approved events found.</td></tr>`;
+    }
+  } catch (e) {
+    console.error('Failed to load approved events for drawer:', e);
+  }
+}
+
 const navEvEl = document.getElementById('navEvents');
 if (navEvEl) {
   navEvEl.addEventListener('click', (e) => {
     e.preventDefault();
-    openDrawer('createEventDrawer');
+    loadApprovedEventsDrawer();
+    openDrawer('approvedEventsDrawer');
   });
 }
 const apprEl = document.getElementById('approved');
 if (apprEl) {
   apprEl.addEventListener('click', () => {
-    openDrawer('createEventDrawer');
+    loadApprovedEventsDrawer();
+    openDrawer('approvedEventsDrawer');
   });
 }
 
-// Verify Attendance Trigger
+// ---------- MEMBER STATISTICS DRAWER & LOGIC ----------
+async function loadMemberStatsFromDB() {
+  try {
+    const res = await fetch('ajax/faculty_actions.php?action=get_member_statistics');
+    const data = await res.json();
+    if (data.status === 'success') {
+      const totalCount = data.members ? data.members.length : 247;
+      if (document.getElementById('statTotalMemVal')) document.getElementById('statTotalMemVal').textContent = totalCount;
+
+      const branchDiv = document.getElementById('drawerBranchStats');
+      const batchDiv = document.getElementById('drawerBatchStats');
+      const membersBody = document.getElementById('drawerMembersDirectoryBody');
+
+      if (branchDiv) {
+        branchDiv.innerHTML = data.branch_breakdown.map(b => `
+          <div class="progress-item">
+            <div class="progress-label"><span>${escapeHtml(b.branch)}</span><span>${b.count} members</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(100, Math.round((b.count / totalCount) * 100))}%"></div></div>
+          </div>`).join('');
+      }
+
+      if (batchDiv) {
+        batchDiv.innerHTML = data.batch_breakdown.map(b => `
+          <div class="progress-item">
+            <div class="progress-label"><span>Batch ${escapeHtml(b.batch)}</span><span>${b.count} members</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(100, Math.round((b.count / totalCount) * 100))}%"></div></div>
+          </div>`).join('');
+      }
+
+      if (membersBody) {
+        membersBody.innerHTML = data.members.map(m => `
+          <tr>
+            <td><b>${escapeHtml(m.name)}</b></td>
+            <td><span style="font-size:0.75rem; color:var(--muted-dark);">${escapeHtml(m.email)}</span><br><span class="badge badge-gray">${escapeHtml(m.zprn || 'N/A')}</span></td>
+            <td>${escapeHtml(m.branch || 'AI & ML')}</td>
+            <td><span class="badge ${m.role === 'Student Member' ? 'badge-blue' : 'badge-green'}">${escapeHtml(m.role)}</span></td>
+          </tr>`).join('');
+      }
+    }
+  } catch (e) {
+    console.error('Failed to load member statistics:', e);
+  }
+}
+
+const navMemStatsEl = document.getElementById('navMemberStats');
+if (navMemStatsEl) {
+  navMemStatsEl.addEventListener('click', (e) => {
+    e.preventDefault();
+    loadMemberStatsFromDB();
+    openDrawer('memberStatsDrawer');
+  });
+}
+const memStatsCardEl = document.getElementById('memberstats');
+if (memStatsCardEl) {
+  memStatsCardEl.addEventListener('click', () => {
+    loadMemberStatsFromDB();
+    openDrawer('memberStatsDrawer');
+  });
+}
+
+// ---------- ATTENDANCE SUMMARY DRAWER & LOGIC ----------
+async function loadAttendanceSummaryFromDB() {
+  try {
+    const res = await fetch('ajax/faculty_actions.php?action=get_attendance_summary');
+    const data = await res.json();
+    if (data.status === 'success') {
+      if (document.getElementById('drawerAvgAttRate')) document.getElementById('drawerAvgAttRate').textContent = data.overall_rate;
+      if (document.getElementById('drawerTotalEventsCount')) document.getElementById('drawerTotalEventsCount').textContent = data.total_meetings;
+
+      const meetingsBody = document.getElementById('drawerMeetingsAttBody');
+      if (meetingsBody) {
+        meetingsBody.innerHTML = data.meetings.map(m => {
+          const total = m.present_count + m.absent_count;
+          const rate = total > 0 ? Math.round((m.present_count / total) * 100) : 100;
+          return `
+            <tr>
+              <td><b>${escapeHtml(m.title)}</b></td>
+              <td>${formatDate(m.meeting_date)}</td>
+              <td>${m.present_count} / ${total}</td>
+              <td><span class="badge badge-green">${rate}%</span></td>
+              <td><button class="btn btn-primary" style="padding:3px 8px; font-size:0.68rem;" onclick="verifyMeetingAttendance(${m.id})">${m.verified_by ? 'Verified ✓' : 'Sign-off'}</button></td>
+            </tr>`;
+        }).join('');
+      }
+
+      const rosterBody = document.getElementById('drawerStudentsRosterBody');
+      if (rosterBody) {
+        rosterBody.innerHTML = data.roster.map(r => `
+          <tr>
+            <td><b>${escapeHtml(r.student_name)}</b></td>
+            <td><span style="font-size:0.75rem; color:var(--muted-dark);">${escapeHtml(r.student_email)}</span><br><span class="badge badge-gray">${escapeHtml(r.zprn || 'N/A')}</span></td>
+            <td>${escapeHtml(r.event_name || 'General Body Sync')}</td>
+            <td><span class="badge ${r.status === 'Present' ? 'badge-green' : 'badge-orange'}">${escapeHtml(r.status)}</span></td>
+          </tr>`).join('');
+      }
+    }
+  } catch (e) {
+    console.error('Failed to load attendance summary:', e);
+  }
+}
+
+window.verifyMeetingAttendance = async function(meetingId) {
+  const formData = new FormData();
+  formData.append('action', 'verify_meeting_attendance');
+  formData.append('meeting_id', meetingId);
+  formData.append('verified_by', currentUser.name);
+
+  try {
+    const res = await fetch('ajax/faculty_actions.php', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.status === 'success') {
+      alert(data.message);
+      await loadAttendanceSummaryFromDB();
+    }
+  } catch (e) {
+    alert('Error verifying attendance: ' + e.message);
+  }
+};
+
 const attEl = document.getElementById('attendance');
 if (attEl) {
   attEl.addEventListener('click', () => {
-    openDrawer('verifyAttendanceDrawer');
+    loadAttendanceSummaryFromDB();
+    openDrawer('attendanceSummaryDrawer');
   });
 }
 const navAttEl2 = document.getElementById('navAttendance');
 if (navAttEl2) {
   navAttEl2.addEventListener('click', (e) => {
     e.preventDefault();
-    openDrawer('verifyAttendanceDrawer');
+    loadAttendanceSummaryFromDB();
+    openDrawer('attendanceSummaryDrawer');
   });
 }
 
-document.getElementById('verifyAttendBtn').addEventListener('click', () => {
-  const event = document.getElementById('verifyAttendEvent').value;
-  alert(`Attendance verified successfully for: ${event}. Sign-off logged.`);
-  closeDrawer('verifyAttendanceDrawer');
+// Explicit listeners for Full Log, Detail View, and Nominate card action buttons
+document.getElementById('btnFullLogAttendance')?.addEventListener('click', (e) => {
+  e.stopPropagation();
+  loadAttendanceSummaryFromDB();
+  openDrawer('attendanceSummaryDrawer');
 });
 
-// Approve Achievements Drawer and Logic
-function renderPendingAchievements() {
-  const container = document.getElementById('pendingAchievementsContainer');
-  container.innerHTML = '';
-  const achievements = JSON.parse(localStorage.getItem('aimsa_achievements')) || [];
-  const pending = achievements.filter(a => a.status === 'Pending');
+document.getElementById('btnDetailViewMemberStats')?.addEventListener('click', (e) => {
+  e.stopPropagation();
+  loadMemberStatsFromDB();
+  openDrawer('memberStatsDrawer');
+});
 
-  if (pending.length === 0) {
-    container.innerHTML = `<p style="text-align:center; color:var(--muted-dark); padding:20px;">No pending achievements to approve.</p>`;
+// ---------- STUDENT ACHIEVEMENTS & NOMINATIONS LOGIC ----------
+let currentNominationFilter = 'all';
+
+window.switchNominationTab = function(tab) {
+  const reviewSec = document.getElementById('reviewNominationsSection');
+  const createSec = document.getElementById('newNominationFormSection');
+  const btnReview = document.getElementById('tabBtnReviewNom');
+  const btnCreate = document.getElementById('tabBtnCreateNom');
+
+  if (tab === 'review') {
+    if (reviewSec) reviewSec.style.display = 'block';
+    if (createSec) createSec.style.display = 'none';
+    if (btnReview) { btnReview.style.background = 'var(--white)'; btnReview.style.color = 'var(--navy-950)'; }
+    if (btnCreate) { btnCreate.style.background = 'transparent'; btnCreate.style.color = 'var(--muted-dark)'; }
+    renderPendingAchievements(currentNominationFilter);
   } else {
-    pending.forEach((a, idx) => {
-      container.innerHTML += `
-        <div style="border:1px solid var(--line-dark); border-radius:12px; padding:16px; background:var(--paper); display:flex; flex-direction:column; gap:8px;">
-          <b style="font-size:0.9rem;">${a.title}</b>
-          <span style="font-size:0.75rem; color:var(--muted-dark); font-family:var(--ff-mono);">${a.category} · ${a.student}</span>
-          <p style="font-size:0.8rem; color:var(--navy-950);">${a.description}</p>
-          <div style="display:flex; gap:10px; margin-top:8px;">
-            <button class="btn btn-primary" style="flex:1; padding:6px; font-size:0.78rem;" onclick="approveAchievement(${idx})">Approve</button>
-            <button class="btn btn-ghost" style="flex:1; padding:6px; font-size:0.78rem; border-color:#f87171; color:#ef4444;" onclick="rejectAchievement(${idx})">Reject</button>
-          </div>
-        </div>`;
-    });
+    if (reviewSec) reviewSec.style.display = 'none';
+    if (createSec) createSec.style.display = 'block';
+    if (btnCreate) { btnCreate.style.background = 'var(--white)'; btnCreate.style.color = 'var(--navy-950)'; }
+    if (btnReview) { btnReview.style.background = 'transparent'; btnReview.style.color = 'var(--muted-dark)'; }
   }
-}
+};
+
+window.filterNominationList = function(status, pillEl) {
+  currentNominationFilter = status;
+  document.querySelectorAll('.nom-filter-pill').forEach(el => {
+    el.style.background = 'transparent';
+    el.style.borderColor = 'var(--line-dark)';
+    el.style.color = 'var(--navy-800)';
+  });
+  if (pillEl) {
+    pillEl.style.background = 'var(--accent)';
+    pillEl.style.borderColor = 'var(--accent)';
+    pillEl.style.color = 'var(--white)';
+  }
+  const query = document.getElementById('searchNominationInput')?.value.trim() || '';
+  renderPendingAchievements(status, query);
+};
+
+window.renderPendingAchievements = function(filterStatus = 'all', searchQuery = '') {
+  const container = document.getElementById('pendingAchievementsContainer');
+  if (!container) return;
+
+  let achievements = JSON.parse(localStorage.getItem('aimsa_achievements'));
+  if (!achievements || achievements.length === 0) {
+    achievements = [
+      { student: 'Arjun Patil', email: 'student@zealeducation.com', title: '1st Place Hackathon 2026', category: 'Hackathon Winner', description: 'Won 1st prize in AIMSA AI Hackathon 2026.', status: 'Approved', nominated_by: 'Tech Committee', date: '2026-07-20' },
+      { student: 'Riya Desai', email: 'committee@zealeducation.com', title: 'Best Organiser Award', category: 'Leadership & Organizing', description: 'Exemplary leadership during Tech Symposium 2026.', status: 'Approved', nominated_by: 'Technical Committee', date: '2026-07-21' },
+      { student: 'Sneha Rao', email: 'sneha.rao@zealeducation.com', title: 'IEEE Research Paper Published', category: 'Research Paper', description: 'Published research paper on AI models in healthcare.', status: 'Pending', nominated_by: 'Dr. Dipali Shende', date: '2026-07-22' },
+      { student: 'Aman Kulkarni', email: 'aman.k@zealeducation.com', title: 'Top Performer - 100% Attendance', category: 'Academic Excellence', description: 'Maintained perfect attendance for Semester II.', status: 'Pending', nominated_by: 'Prof. Rahul Patil', date: '2026-07-22' }
+    ];
+    localStorage.setItem('aimsa_achievements', JSON.stringify(achievements));
+  }
+
+  // Update KPI counters
+  const pendingCount = achievements.filter(a => a.status === 'Pending').length;
+  const approvedCount = achievements.filter(a => a.status === 'Approved').length;
+  const totalCount = achievements.length;
+
+  if (document.getElementById('kpiPendingNomCount')) document.getElementById('kpiPendingNomCount').textContent = pendingCount;
+  if (document.getElementById('kpiApprovedNomCount')) document.getElementById('kpiApprovedNomCount').textContent = approvedCount;
+  if (document.getElementById('kpiTotalNomCount')) document.getElementById('kpiTotalNomCount').textContent = totalCount;
+
+  // Filter achievements
+  let list = achievements;
+  if (filterStatus !== 'all') {
+    list = list.filter(a => (a.status || 'Pending').toLowerCase() === filterStatus.toLowerCase());
+  }
+
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    list = list.filter(a => (a.student || '').toLowerCase().includes(q) || (a.title || '').toLowerCase().includes(q) || (a.category || '').toLowerCase().includes(q));
+  }
+
+  if (list.length === 0) {
+    container.innerHTML = `<p style="text-align:center; color:var(--muted-dark); padding:30px 10px; font-size:0.85rem;">No nomination records found.</p>`;
+    return;
+  }
+
+  container.innerHTML = list.map((a, idx) => {
+    const originalIndex = achievements.findIndex(item => item.title === a.title && item.student === a.student);
+    const targetIdx = originalIndex !== -1 ? originalIndex : idx;
+
+    let badgeHtml = '<span class="badge badge-orange">Pending Review</span>';
+    let actionsHtml = `
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <button class="btn btn-primary" style="flex:1; padding:6px 10px; font-size:0.75rem;" onclick="approveAchievement(${targetIdx})">✓ Approve</button>
+        <button class="btn btn-ghost" style="flex:1; padding:6px 10px; font-size:0.75rem; border-color:#f87171; color:#ef4444;" onclick="rejectAchievement(${targetIdx})">✕ Reject</button>
+        <button class="btn btn-ghost" style="padding:6px 10px; font-size:0.75rem;" onclick="requestNominationDetails(${targetIdx})">💬 Details</button>
+      </div>`;
+
+    if (a.status === 'Approved') {
+      badgeHtml = '<span class="badge badge-green">Approved ✓</span>';
+      actionsHtml = `
+        <div style="display:flex; gap:8px; margin-top:8px;">
+          <button class="btn btn-ghost" style="flex:1; padding:5px 8px; font-size:0.72rem; border-color:var(--accent); color:var(--accent);" onclick="issueNominationCert('${escapeHtml(a.student)}', '${escapeHtml(a.title)}')">📜 Issue Certificate</button>
+        </div>`;
+    } else if (a.status === 'Rejected') {
+      badgeHtml = '<span class="badge badge-gray" style="color:#ef4444; border-color:#f87171;">Rejected</span>';
+      actionsHtml = `
+        <div style="display:flex; gap:8px; margin-top:8px;">
+          <button class="btn btn-ghost" style="padding:4px 8px; font-size:0.72rem;" onclick="approveAchievement(${targetIdx})">Re-evaluate &amp; Approve</button>
+        </div>`;
+    }
+
+    return `
+      <div style="border:1px solid var(--line-dark); border-radius:12px; padding:14px; background:var(--paper); display:flex; flex-direction:column; gap:6px; transition:border-color 0.2s;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
+            <b style="font-size:0.9rem; color:var(--navy-950); display:block;">${escapeHtml(a.title)}</b>
+            <span style="font-size:0.75rem; color:var(--accent); font-family:var(--ff-mono); font-weight:600;">${escapeHtml(a.student)}</span>
+          </div>
+          ${badgeHtml}
+        </div>
+        <div style="font-size:0.72rem; color:var(--muted-dark); font-family:var(--ff-mono);">Category: ${escapeHtml(a.category)} · Nominated by: ${escapeHtml(a.nominated_by || 'Faculty')} · ${a.date || 'Today'}</div>
+        <p style="font-size:0.8rem; color:var(--navy-900); margin:4px 0; background:var(--white); padding:8px 10px; border-radius:6px; border:1px solid rgba(8,23,51,0.06);">${escapeHtml(a.description || 'No description provided.')}</p>
+        ${actionsHtml}
+      </div>`;
+  }).join('');
+};
 
 window.approveAchievement = function(idx) {
   const achievements = JSON.parse(localStorage.getItem('aimsa_achievements')) || [];
-  achievements[idx].status = 'Approved';
-  localStorage.setItem('aimsa_achievements', JSON.stringify(achievements));
-  addNotification('Achievement Approved', `Your achievement nomination "${achievements[idx].title}" was approved.`, 'green', achievements[idx].email);
-  alert('Achievement approved!');
-  renderPendingAchievements();
+  if (achievements[idx]) {
+    achievements[idx].status = 'Approved';
+    localStorage.setItem('aimsa_achievements', JSON.stringify(achievements));
+    addNotification('Achievement Approved', `Achievement nomination "${achievements[idx].title}" was approved.`, 'green', achievements[idx].email || 'all');
+    alert('Achievement approved successfully!');
+    renderPendingAchievements(currentNominationFilter);
+  }
 };
 
 window.rejectAchievement = function(idx) {
   const achievements = JSON.parse(localStorage.getItem('aimsa_achievements')) || [];
-  achievements[idx].status = 'Rejected';
+  if (achievements[idx]) {
+    achievements[idx].status = 'Rejected';
+    localStorage.setItem('aimsa_achievements', JSON.stringify(achievements));
+    addNotification('Achievement Rejected', `Achievement nomination "${achievements[idx].title}" was rejected.`, 'red', achievements[idx].email || 'all');
+    alert('Achievement rejected.');
+    renderPendingAchievements(currentNominationFilter);
+  }
+};
+
+window.requestNominationDetails = function(idx) {
+  const achievements = JSON.parse(localStorage.getItem('aimsa_achievements')) || [];
+  if (achievements[idx]) {
+    alert(`Clarification Request sent to nominator (${achievements[idx].nominated_by}) for nomination: "${achievements[idx].title}".`);
+  }
+};
+
+window.issueNominationCert = function(student, title) {
+  alert(`Certificate of Achievement issued for ${student} (${title})! Certificate record logged.`);
+};
+
+document.getElementById('btnNominateAchievement')?.addEventListener('click', (e) => {
+  e.stopPropagation();
+  renderPendingAchievements();
+  openDrawer('approveAchievementsDrawer');
+});
+
+const navAchEl = document.getElementById('navAchievements');
+if (navAchEl) {
+  navAchEl.addEventListener('click', (e) => {
+    e.preventDefault();
+    renderPendingAchievements();
+    openDrawer('approveAchievementsDrawer');
+  });
+}
+
+const achCardEl = document.getElementById('achievements');
+if (achCardEl) {
+  achCardEl.addEventListener('click', (e) => {
+    renderPendingAchievements();
+    openDrawer('approveAchievementsDrawer');
+  });
+}
+
+window.toggleNominationForm = function(show) {
+  const form = document.getElementById('newNominationFormSection');
+  if (form) form.style.display = show ? 'block' : 'none';
+};
+
+window.submitNewNomination = function() {
+  const name = document.getElementById('nomStudentName').value.trim();
+  const email = document.getElementById('nomStudentEmail').value.trim();
+  const title = document.getElementById('nomTitle').value.trim();
+  const cat = document.getElementById('nomCategory').value;
+  const desc = document.getElementById('nomDescription').value.trim();
+
+  if (!name || !email || !title) {
+    alert('Please enter Student Name, Email, and Achievement Title.');
+    return;
+  }
+
+  const achievements = JSON.parse(localStorage.getItem('aimsa_achievements')) || [];
+  achievements.unshift({
+    student: name,
+    email: email,
+    title: title,
+    category: cat,
+    description: desc,
+    status: 'Approved',
+    nominated_by: currentUser.name || 'Faculty Coordinator',
+    date: new Date().toLocaleDateString()
+  });
   localStorage.setItem('aimsa_achievements', JSON.stringify(achievements));
-  addNotification('Achievement Rejected', `Your achievement nomination "${achievements[idx].title}" was rejected.`, 'red', achievements[idx].email);
-  alert('Achievement rejected.');
+
+  addNotification('New Student Achievement Nominated', `${name} nominated for: ${title}`, 'green', 'all');
+  alert(`Student nomination for ${name} submitted successfully!`);
+  
+  document.getElementById('nomStudentName').value = '';
+  document.getElementById('nomStudentEmail').value = '';
+  document.getElementById('nomTitle').value = '';
+  document.getElementById('nomDescription').value = '';
+  toggleNominationForm(false);
   renderPendingAchievements();
 };
 
-document.getElementById('navAchievements').addEventListener('click', (e) => {
-  e.preventDefault();
-  renderPendingAchievements();
-  openDrawer('approveAchievementsDrawer');
-});
-document.getElementById('achievements').addEventListener('click', () => {
-  renderPendingAchievements();
-  openDrawer('approveAchievementsDrawer');
-});
+// ---------- PROFILE UPDATE LOGIC ----------
+const saveProfileBtn = document.getElementById('saveProfileBtn');
+if (saveProfileBtn) {
+  saveProfileBtn.addEventListener('click', async () => {
+    const name = document.getElementById('profNameInput').value.trim();
+    const email = document.getElementById('profEmailInput').value.trim();
+    const zprn = document.getElementById('profZprnInput').value.trim();
+    const phone = document.getElementById('profPhoneInput').value.trim();
+    const staffId = document.getElementById('profStaffIdInput').value.trim();
 
-// Reports Hub Trigger
-document.getElementById('navMemberStats').addEventListener('click', (e) => {
-  e.preventDefault();
-  openDrawer('reportHubDrawer');
-});
+    if (!name || !email) {
+      alert('Name and Email are required.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('action', 'update_faculty_profile');
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('zprn', zprn);
+    formData.append('phone', phone);
+    formData.append('staff_id', staffId);
+
+    try {
+      const res = await fetch('ajax/faculty_actions.php', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.status === 'success') {
+        alert(data.message);
+        currentUser.name = name;
+        currentUser.email = email;
+        currentUser.zprn = zprn;
+        sessionStorage.setItem('current_user', JSON.stringify(currentUser));
+        if (document.getElementById('headerUserName')) document.getElementById('headerUserName').textContent = name;
+        if (document.getElementById('sidebarUserName')) document.getElementById('sidebarUserName').textContent = name;
+        if (document.getElementById('profDrawerName')) document.getElementById('profDrawerName').textContent = name;
+        document.querySelector('.content-title').innerHTML = `Welcome, ${name} 👋`;
+        closeDrawer('viewProfileDrawer');
+      } else {
+        alert(data.message || 'Failed to update profile.');
+      }
+    } catch (e) {
+      alert('Error updating profile: ' + e.message);
+    }
+  });
+}
 
 window.exportReport = function(format) {
   const cat = document.getElementById('reportCategory').value;
@@ -1180,6 +1743,28 @@ document.getElementById('headerSearchInput').addEventListener('input', (e) => {
         el.style.display = 'none';
       }
     }
+  });
+});
+
+// Drawer table search filters
+document.getElementById('searchApprovedEvtInput')?.addEventListener('input', (e) => {
+  const query = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#drawerApprovedEventsBody tr').forEach(tr => {
+    tr.style.display = tr.textContent.toLowerCase().includes(query) ? '' : 'none';
+  });
+});
+
+document.getElementById('searchMemberInput')?.addEventListener('input', (e) => {
+  const query = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#drawerMembersDirectoryBody tr').forEach(tr => {
+    tr.style.display = tr.textContent.toLowerCase().includes(query) ? '' : 'none';
+  });
+});
+
+document.getElementById('searchRosterInput')?.addEventListener('input', (e) => {
+  const query = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#drawerStudentsRosterBody tr').forEach(tr => {
+    tr.style.display = tr.textContent.toLowerCase().includes(query) ? '' : 'none';
   });
 });
 

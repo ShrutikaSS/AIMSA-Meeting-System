@@ -134,17 +134,15 @@ if (tabLogin && tabRegister) {
 }
 
 function clearAuthInputs() {
-  ['loginEmail', 'loginPassword', 'regName', 'regEmail', 'regPassword', 'regConfirmPassword', 'forgotEmail', 'forgotOtpInput', 'forgotNewPassword', 'forgotConfirmPassword'].forEach(id => {
+  ['loginEmail', 'loginPassword', 'regName', 'regEmail', 'regZprn', 'regPassword', 'regConfirmPassword', 'forgotEmail', 'forgotZprn', 'forgotNewPassword', 'forgotConfirmPassword'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
 
-  const step1 = document.getElementById('otpStep1');
-  const step2 = document.getElementById('otpStep2');
-  const step3 = document.getElementById('otpStep3');
+  const step1 = document.getElementById('zprnSecurityStep');
+  const step2 = document.getElementById('resetPasswordStep');
   if (step1) step1.style.display = 'flex';
   if (step2) step2.style.display = 'none';
-  if (step3) step3.style.display = 'none';
 }
 
 function openModal(){ 
@@ -206,7 +204,11 @@ const forgotLink = document.getElementById('forgotLink');
 if (forgotLink) {
   forgotLink.addEventListener('click', (e) => {
     e.preventDefault();
+    const loginEmailVal = document.getElementById('loginEmail') ? document.getElementById('loginEmail').value.trim() : '';
     clearAuthInputs();
+    if (loginEmailVal) {
+      document.getElementById('forgotEmail').value = loginEmailVal;
+    }
     formStep.classList.remove('show');
     forgotStep.style.display = 'flex';
   });
@@ -287,11 +289,12 @@ if (registerSubmitBtn) {
     const selectedRole = roleChip.textContent.trim();
     const nameVal = document.getElementById('regName').value.trim();
     const emailVal = document.getElementById('regEmail').value.trim();
+    const zprnVal = document.getElementById('regZprn') ? document.getElementById('regZprn').value.trim() : '';
     const pwdVal = document.getElementById('regPassword').value;
     const confPwdVal = document.getElementById('regConfirmPassword').value;
 
-    if(!nameVal || !emailVal || !pwdVal || !confPwdVal) {
-      alert('Please fill out all fields to register.');
+    if(!nameVal || !emailVal || !zprnVal || !pwdVal || !confPwdVal) {
+      alert('Please fill out all fields including your unique Student ZPRN.');
       return;
     }
 
@@ -307,6 +310,7 @@ if (registerSubmitBtn) {
     formData.append('action', 'register');
     formData.append('name', nameVal);
     formData.append('email', emailVal);
+    formData.append('zprn', zprnVal);
     formData.append('password', pwdVal);
     formData.append('role', selectedRole);
 
@@ -336,22 +340,25 @@ if (registerSubmitBtn) {
   });
 }
 
-// Database authentication - Forgot Password OTP Multi-Step Flow
-const sendOtpBtn = document.getElementById('sendOtpBtn');
-if (sendOtpBtn) {
-  sendOtpBtn.addEventListener('click', () => {
+// Database authentication - Forgot Password Security Question (ZPRN) Flow
+const verifyZprnBtn = document.getElementById('verifyZprnBtn');
+if (verifyZprnBtn) {
+  const doVerifyZprn = () => {
     const emailVal = document.getElementById('forgotEmail').value.trim();
-    if(!emailVal) {
-      alert('Please enter your college email ID.');
+    const zprnVal = document.getElementById('forgotZprn').value.trim();
+
+    if(!emailVal && !zprnVal) {
+      alert('Please enter your College Email ID and/or ZPRN.');
       return;
     }
 
-    sendOtpBtn.disabled = true;
-    sendOtpBtn.textContent = 'Sending OTP...';
+    verifyZprnBtn.disabled = true;
+    verifyZprnBtn.textContent = 'Verifying ZPRN...';
 
     const formData = new FormData();
-    formData.append('action', 'send_otp');
+    formData.append('action', 'verify_zprn');
     formData.append('email', emailVal);
+    formData.append('zprn', zprnVal);
 
     fetch('ajax/auth.php', {
       method: 'POST',
@@ -359,99 +366,58 @@ if (sendOtpBtn) {
     })
     .then(res => res.json())
     .then(data => {
-      sendOtpBtn.disabled = false;
-      sendOtpBtn.textContent = 'Send OTP Code →';
+      verifyZprnBtn.disabled = false;
+      verifyZprnBtn.textContent = 'Verify Security Answer →';
 
       if(data.status === 'success') {
-        const banner = document.getElementById('otpNoticeBanner');
-        if(banner) {
-          banner.innerHTML = `<strong>OTP Sent!</strong> A 6-digit verification code has been dispatched to <b>${data.masked_email}</b>. Please check your inbox and spam folder (valid for 5 minutes).`;
+        if (data.email) {
+          document.getElementById('forgotEmail').value = data.email;
         }
-        document.getElementById('otpStep1').style.display = 'none';
-        document.getElementById('otpStep2').style.display = 'flex';
+        document.getElementById('zprnSecurityStep').style.display = 'none';
+        document.getElementById('resetPasswordStep').style.display = 'flex';
+        const newPwdEl = document.getElementById('forgotNewPassword');
+        if (newPwdEl) newPwdEl.focus();
       } else {
-        alert(data.message || 'Failed to send OTP.');
+        alert(data.message || 'ZPRN verification failed.');
       }
     })
     .catch(err => {
-      sendOtpBtn.disabled = false;
-      sendOtpBtn.textContent = 'Send OTP Code →';
-      alert('Server error while sending OTP. Please try again.');
+      verifyZprnBtn.disabled = false;
+      verifyZprnBtn.textContent = 'Verify Security Answer →';
+      alert('Server error during ZPRN verification. Please try again.');
       console.error(err);
     });
-  });
-}
+  };
 
-const verifyOtpBtn = document.getElementById('verifyOtpBtn');
-if (verifyOtpBtn) {
-  verifyOtpBtn.addEventListener('click', () => {
-    const emailVal = document.getElementById('forgotEmail').value.trim();
-    const otpVal = document.getElementById('forgotOtpInput').value.trim();
+  verifyZprnBtn.addEventListener('click', doVerifyZprn);
 
-    if(!otpVal || otpVal.length !== 6) {
-      alert('Please enter the 6-digit OTP code.');
-      return;
-    }
-
-    verifyOtpBtn.disabled = true;
-    verifyOtpBtn.textContent = 'Verifying...';
-
-    const formData = new FormData();
-    formData.append('action', 'verify_otp');
-    formData.append('email', emailVal);
-    formData.append('otp', otpVal);
-
-    fetch('ajax/auth.php', {
-      method: 'POST',
-      body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
-      verifyOtpBtn.disabled = false;
-      verifyOtpBtn.textContent = 'Verify OTP Code →';
-
-      if(data.status === 'success') {
-        document.getElementById('otpStep2').style.display = 'none';
-        document.getElementById('otpStep3').style.display = 'flex';
-      } else {
-        alert(data.message || 'OTP verification failed.');
-      }
-    })
-    .catch(err => {
-      verifyOtpBtn.disabled = false;
-      verifyOtpBtn.textContent = 'Verify OTP Code →';
-      alert('Server error during OTP verification. Please try again.');
-      console.error(err);
+  const zprnInput = document.getElementById('forgotZprn');
+  if (zprnInput) {
+    zprnInput.addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') doVerifyZprn();
     });
-  });
-}
-
-const resendOtpBtn = document.getElementById('resendOtpBtn');
-if (resendOtpBtn) {
-  resendOtpBtn.addEventListener('click', () => {
-    if (sendOtpBtn) sendOtpBtn.click();
-  });
+  }
 }
 
 const forgotSubmitBtn = document.getElementById('forgotSubmitBtn');
 if (forgotSubmitBtn) {
-  forgotSubmitBtn.addEventListener('click', () => {
+  const doSubmitNewPassword = () => {
     const emailVal = document.getElementById('forgotEmail').value.trim();
     const newPwdVal = document.getElementById('forgotNewPassword').value;
     const confPwdVal = document.getElementById('forgotConfirmPassword').value;
 
-    if(!emailVal || !newPwdVal || !confPwdVal) {
-      alert('Please fill out your new password fields.');
+    if(!newPwdVal || !confPwdVal) {
+      alert('Please enter and confirm your new password.');
       return;
     }
 
     if(newPwdVal !== confPwdVal) {
-      alert('New passwords do not match.');
+      alert('New passwords do not match. Please re-enter.');
       return;
     }
 
     forgotSubmitBtn.disabled = true;
-    forgotSubmitBtn.textContent = 'Updating Password...';
+    forgotSubmitBtn.textContent = 'Saving New Password...';
 
     const formData = new FormData();
     formData.append('action', 'forgot_password');
@@ -465,7 +431,7 @@ if (forgotSubmitBtn) {
     .then(res => res.json())
     .then(data => {
       forgotSubmitBtn.disabled = false;
-      forgotSubmitBtn.textContent = 'Update Password →';
+      forgotSubmitBtn.textContent = 'Save & Update Password →';
 
       if(data.status === 'success') {
         alert(data.message);
@@ -478,11 +444,20 @@ if (forgotSubmitBtn) {
     })
     .catch(err => {
       forgotSubmitBtn.disabled = false;
-      forgotSubmitBtn.textContent = 'Update Password →';
+      forgotSubmitBtn.textContent = 'Save & Update Password →';
       alert('Server error during password update. Please try again.');
       console.error(err);
     });
-  });
+  };
+
+  forgotSubmitBtn.addEventListener('click', doSubmitNewPassword);
+
+  const confPwdInput = document.getElementById('forgotConfirmPassword');
+  if (confPwdInput) {
+    confPwdInput.addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') doSubmitNewPassword();
+    });
+  }
 }
 
 // generative node field background for hero + committee section
@@ -513,34 +488,100 @@ function buildNodeField(id, count){
 buildNodeField('nodeField', 26);
 buildNodeField('nodeField2', 18);
 
-// ---------- subtle 3D interactions (cursor tilt + scroll depth) ----------
+// ---------- Scroll Progress Bar ----------
+window.addEventListener('scroll', () => {
+  const scrollBar = document.getElementById('scrollProgressBar');
+  if (scrollBar) {
+    const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0;
+    scrollBar.style.width = `${progress}%`;
+  }
+}, { passive: true });
+
+// ---------- Animated Number Counter Count-Up ----------
+function animateCounters() {
+  const counters = document.querySelectorAll('.counter-num');
+  counters.forEach(counter => {
+    if (counter.classList.contains('counted')) return;
+    const target = parseInt(counter.getAttribute('data-target') || '0', 10);
+    if (target === 0) return;
+    counter.classList.add('counted');
+    let current = 0;
+    const duration = 1800; // ms
+    const stepTime = 20;
+    const totalSteps = duration / stepTime;
+    const increment = target / totalSteps;
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= target) {
+        counter.textContent = target;
+        clearInterval(timer);
+      } else {
+        counter.textContent = Math.floor(current);
+      }
+    }, stepTime);
+  });
+}
+
+// ---------- IntersectionObserver for Multi-Stage Visual Reveals ----------
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('in');
+      if (entry.target.querySelector('.counter-num') || entry.target.classList.contains('counter-num')) {
+        animateCounters();
+      }
+    }
+  });
+}, { threshold: 0.12 });
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-zoom').forEach(el => {
+      revealObserver.observe(el);
+    });
+  });
+} else {
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-zoom').forEach(el => {
+    revealObserver.observe(el);
+  });
+}
+
+// ---------- subtle 3D interactions (cursor tilt + cursor spotlight) ----------
 const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 if(canHover && !reduceMotion){
 
-  // gentle cursor-tilt on cards — small angles, kept subtle for a professional feel
-  function attachTilt(selector, maxDeg){
-    document.querySelectorAll(selector).forEach(card=>{
-      card.addEventListener('mousemove', (e)=>{
+  // Cursor-tilt & dynamic spotlight follow on cards
+  function attachTiltAndSpotlight(selector, maxDeg){
+    document.querySelectorAll(selector).forEach(card => {
+      card.addEventListener('mousemove', (e) => {
         const r = card.getBoundingClientRect();
-        const px = (e.clientX - r.left) / r.width - 0.5;
-        const py = (e.clientY - r.top) / r.height - 0.5;
+        const x = e.clientX - r.left;
+        const y = e.clientY - r.top;
+        const px = x / r.width - 0.5;
+        const py = y / r.height - 0.5;
         const rotY = (px * maxDeg).toFixed(2);
         const rotX = (-py * maxDeg).toFixed(2);
-        card.style.transform = `translateY(-6px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+        
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+        card.style.transform = `translateY(-8px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.02)`;
       });
-      card.addEventListener('mouseleave', ()=>{ card.style.transform = ''; });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+      });
     });
   }
-  attachTilt('.pop-card', 6);
-  attachTilt('.ach-card', 6);
-  attachTilt('.contact-card', 4);
-  attachTilt('.vm-card', 4);
-  attachTilt('.role-card', 4);
-  attachTilt('.gal-tile', 4);
+  attachTiltAndSpotlight('.pop-card', 7);
+  attachTiltAndSpotlight('.ach-card', 7);
+  attachTiltAndSpotlight('.contact-card', 5);
+  attachTiltAndSpotlight('.vm-card', 5);
+  attachTiltAndSpotlight('.role-card', 5);
+  attachTiltAndSpotlight('.gal-tile', 5);
 
-  // gentle scroll-driven depth on the hero — logos and background drift at different rates
+  // Gentle scroll-driven depth on the hero
   const heroEl = document.querySelector('.hero');
   const heroInner = document.querySelector('.hero-inner');
   const heroLogos = document.querySelector('.hero-logos');
@@ -1021,6 +1062,47 @@ if (document.readyState === 'loading') {
 } else {
   applyLanguage('en');
 }
+
+// ---------- SCROLL TO TOP FLOATING BUTTON CONTROLLER ----------
+(function initScrollToTop() {
+  function bindScrollBtn() {
+    const btn = document.getElementById('scrollToTopBtn');
+    if (!btn) return;
+
+    btn.addEventListener('mouseenter', () => {
+      btn.style.transform = 'translateY(-4px) scale(1.1)';
+      btn.style.background = 'linear-gradient(135deg, #3E8BFF, #2563eb)';
+      btn.style.boxShadow = '0 12px 30px rgba(62, 139, 255, 0.65)';
+      const svg = btn.querySelector('svg');
+      if (svg) svg.style.stroke = '#ffffff';
+    });
+
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transform = 'translateY(0) scale(1)';
+      btn.style.background = 'linear-gradient(135deg, #081733, #123163)';
+      btn.style.boxShadow = '0 8px 24px rgba(62, 139, 255, 0.35)';
+      const svg = btn.querySelector('svg');
+      if (svg) svg.style.stroke = '#7fb0ff';
+    });
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 220) {
+        btn.style.opacity = '1';
+        btn.style.visibility = 'visible';
+      } else {
+        btn.style.opacity = '0';
+        btn.style.visibility = 'hidden';
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindScrollBtn);
+  } else {
+    bindScrollBtn();
+  }
+})();
+
 
 
 

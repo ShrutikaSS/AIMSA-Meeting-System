@@ -16,24 +16,32 @@ function setupDatabaseTables($pdo) {
             `membershipStatus` VARCHAR(50) DEFAULT 'Active',
             `committeeDesignation` VARCHAR(150) NULL,
             `committeeResponsibility` TEXT NULL,
+            `zprn` VARCHAR(100) NULL,
             `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
-        // Seed / Update initial HOD, Faculty, President, Committee & Students according to exact role credentials
+        try {
+            $pdo->exec("ALTER TABLE `users` ADD COLUMN `zprn` VARCHAR(100) NULL AFTER `committeeResponsibility`;");
+        } catch (Exception $e) {
+            // Column already exists
+        }
+
+        // Seed / Update initial HOD, Faculty, President, Committee & Students according to exact role credentials and ZPRNs
         $defaultUsers = [
-            ['Dr. Dipali Shende', 'hod@zealeducation.com', 'hod123', 'HOD', 'AI & ML', 'Faculty', 'Active', 'Head of Department', 'Departmental Leadership & Guidance'],
-            ['Prof. Meera Nair', 'faculty@zealeducation.com', 'faculty123', 'Faculty Coordinator', 'AI & ML', 'Faculty', 'Active', 'Faculty Coordinator', 'Event Oversight & Advisory'],
-            ['Karan Mehta', 'president@zealeducation.com', 'president123', 'Association President', 'AI & ML', '2024', 'Active', 'President', 'Association Roadmap & Execution'],
-            ['Riya Desai', 'committee@zealeducation.com', 'committee123', 'Committee Member', 'AI & ML', '2025', 'Active', 'Technical Committee', 'Technical Event Organizer'],
-            ['Arjun Patil', 'student@zealeducation.com', 'student123', 'Student Member', 'AI & ML', '2026', 'Active', NULL, NULL],
-            ['Aarav Sharma', 'aarav.sharma@zealeducation.com', 'president123', 'Association President', 'AI & ML', '2024', 'Active', 'President', 'Association Roadmap & Execution'],
-            ['Neha Verma', 'neha.verma@zealeducation.com', 'password123', 'Association President', 'AI & ML', '2024', 'Active', 'Vice President', 'Cross-committee coordination'],
-            ['Rohan Kulkarni', 'rohan.k@zealeducation.com', 'committee123', 'Committee Member', 'AI & ML', '2025', 'Active', 'Technical Head', 'Technical Workshops Lead'],
-            ['Vikram Salunkhe', 'vikram.s@zealeducation.com', 'student123', 'Student Member', 'AI & ML', '2025', 'Active', NULL, NULL]
+            ['Dr. Dipali Shende', 'hod@zealeducation.com', 'hod123', 'HOD', 'AI & ML', 'Faculty', 'Active', 'Head of Department', 'Departmental Leadership & Guidance', '125UAM1001'],
+            ['Prof. Meera Nair', 'faculty@zealeducation.com', 'faculty123', 'Faculty Coordinator', 'AI & ML', 'Faculty', 'Active', 'Faculty Coordinator', 'Event Oversight & Advisory', '125UAM1002'],
+            ['Karan Mehta', 'president@zealeducation.com', 'president123', 'Association President', 'AI & ML', '2024', 'Active', 'President', 'Association Roadmap & Execution', '125UAM1003'],
+            ['Riya Desai', 'committee@zealeducation.com', 'committee123', 'Committee Member', 'AI & ML', '2025', 'Active', 'Technical Committee', 'Technical Event Organizer', '125UAM1004'],
+            ['Piyush Sharma', 'piyush@zealeducation.com', 'student123', 'Student Member', 'AI & ML', '2026', 'Active', NULL, NULL, '125UAM1137'],
+            ['Arjun Patil', 'student@zealeducation.com', 'student123', 'Student Member', 'AI & ML', '2026', 'Active', NULL, NULL, '125UAM1005'],
+            ['Aarav Sharma', 'aarav.sharma@zealeducation.com', 'president123', 'Association President', 'AI & ML', '2024', 'Active', 'President', 'Association Roadmap & Execution', '125UAM1006'],
+            ['Neha Verma', 'neha.verma@zealeducation.com', 'password123', 'Association President', 'AI & ML', '2024', 'Active', 'Vice President', 'Cross-committee coordination', '125UAM1007'],
+            ['Rohan Kulkarni', 'rohan.k@zealeducation.com', 'committee123', 'Committee Member', 'AI & ML', '2025', 'Active', 'Technical Head', 'Technical Workshops Lead', '125UAM1008'],
+            ['Vikram Salunkhe', 'vikram.s@zealeducation.com', 'student123', 'Student Member', 'AI & ML', '2025', 'Active', NULL, NULL, '125UAM1009']
         ];
 
-        $upsertUser = $pdo->prepare("INSERT INTO `users` (`name`, `email`, `password`, `role`, `branch`, `batch`, `membershipStatus`, `committeeDesignation`, `committeeResponsibility`) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        $upsertUser = $pdo->prepare("INSERT INTO `users` (`name`, `email`, `password`, `role`, `branch`, `batch`, `membershipStatus`, `committeeDesignation`, `committeeResponsibility`, `zprn`) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON DUPLICATE KEY UPDATE 
             `name` = VALUES(`name`),
             `password` = VALUES(`password`),
@@ -42,10 +50,29 @@ function setupDatabaseTables($pdo) {
             `batch` = VALUES(`batch`),
             `membershipStatus` = VALUES(`membershipStatus`),
             `committeeDesignation` = VALUES(`committeeDesignation`),
-            `committeeResponsibility` = VALUES(`committeeResponsibility`)");
+            `committeeResponsibility` = VALUES(`committeeResponsibility`),
+            `zprn` = VALUES(`zprn`)");
 
         foreach ($defaultUsers as $u) {
             $upsertUser->execute($u);
+        }
+
+        // Auto-assign ZPRN to any existing users without a ZPRN
+        $unassignedUsers = $pdo->query("SELECT `id`, `name`, `branch` FROM `users` WHERE `zprn` IS NULL OR `zprn` = ''")->fetchAll();
+        if ($unassignedUsers) {
+            $updateZprn = $pdo->prepare("UPDATE `users` SET `zprn` = ? WHERE `id` = ?");
+            foreach ($unassignedUsers as $row) {
+                if (stripos($row->name, 'piyush') !== false) {
+                    $zprnVal = '125UAM1137';
+                } else {
+                    $prefix = '125UAM';
+                    if (strpos($row->branch, 'CS') !== false) $prefix = '125UCS';
+                    else if (strpos($row->branch, 'DS') !== false) $prefix = '125UDS';
+                    else if (strpos($row->branch, 'IT') !== false) $prefix = '125UIT';
+                    $zprnVal = $prefix . sprintf('%04d', 1000 + (int)$row->id);
+                }
+                $updateZprn->execute([$zprnVal, $row->id]);
+            }
         }
 
         // 2. Events Table
@@ -178,6 +205,98 @@ function setupDatabaseTables($pdo) {
             $insertGal = $pdo->prepare("INSERT INTO `gallery` (`title`, `item_type`, `album`, `file_path`, `file_name`, `file_size`) VALUES (?, ?, ?, ?, ?, ?)");
             foreach ($defaultGallery as $g) {
                 $insertGal->execute($g);
+            }
+        }
+
+        // 7. Meetings Table
+        $pdo->exec("CREATE TABLE IF NOT EXISTS `meetings` (
+            `id` INT AUTO_INCREMENT PRIMARY KEY,
+            `title` VARCHAR(255) NOT NULL,
+            `meeting_date` DATE NOT NULL,
+            `meeting_time` VARCHAR(100) DEFAULT '10:00 AM',
+            `venue` VARCHAR(255) DEFAULT 'AIML Seminar Hall',
+            `category` VARCHAR(100) DEFAULT 'General Body',
+            `target_audience` VARCHAR(100) DEFAULT 'All Members',
+            `status` VARCHAR(50) DEFAULT 'Completed',
+            `present_count` INT DEFAULT 0,
+            `absent_count` INT DEFAULT 0,
+            `verified_by` VARCHAR(255) NULL,
+            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+        $stmt = $pdo->query("SELECT COUNT(*) FROM `meetings`");
+        if ($stmt->fetchColumn() == 0) {
+            $defaultMeetings = [
+                ['Tech Symposium 2026', '2026-07-28', '09:30 AM', 'Main Auditorium', 'Event', 'All Members', 'Completed', 148, 12, 'Prof. Meera Nair'],
+                ['AI Workshop Series', '2026-08-03', '11:00 AM', 'Lab 402', 'Workshop', 'Technical Team', 'Completed', 86, 8, 'Prof. Meera Nair'],
+                ['Semester Kickoff General Body Sync', '2026-08-10', '03:30 PM', 'Seminar Hall', 'General Body', 'All Members', 'Completed', 210, 22, 'Prof. Meera Nair'],
+                ['Executive Committee Planning Sync', '2026-08-18', '02:00 PM', 'Faculty Coordination Room', 'Committee Sync', 'Committee Only', 'Scheduled', 18, 2, NULL]
+            ];
+
+            $insertMeet = $pdo->prepare("INSERT INTO `meetings` (`title`, `meeting_date`, `meeting_time`, `venue`, `category`, `target_audience`, `status`, `present_count`, `absent_count`, `verified_by`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            foreach ($defaultMeetings as $m) {
+                $insertMeet->execute($m);
+            }
+        }
+
+        // 8. Attendance Roster Table
+        $pdo->exec("CREATE TABLE IF NOT EXISTS `attendance` (
+            `id` INT AUTO_INCREMENT PRIMARY KEY,
+            `meeting_id` INT NOT NULL,
+            `user_id` INT NOT NULL,
+            `student_name` VARCHAR(255) NOT NULL,
+            `student_email` VARCHAR(255) NOT NULL,
+            `zprn` VARCHAR(100) NULL,
+            `branch` VARCHAR(100) DEFAULT 'AI & ML',
+            `batch` VARCHAR(50) DEFAULT '2026',
+            `status` VARCHAR(50) NOT NULL DEFAULT 'Present',
+            `marked_by` VARCHAR(255) DEFAULT 'Faculty Coordinator',
+            `marked_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+        $stmt = $pdo->query("SELECT COUNT(*) FROM `attendance`");
+        if ($stmt->fetchColumn() == 0) {
+            $defaultAtt = [
+                [1, 5, 'Piyush Sharma', 'piyush@zealeducation.com', '125UAM1137', 'AI & ML', '2026', 'Present', 'Prof. Meera Nair'],
+                [1, 6, 'Arjun Patil', 'student@zealeducation.com', '125UAM1005', 'AI & ML', '2026', 'Present', 'Prof. Meera Nair'],
+                [1, 9, 'Vikram Salunkhe', 'vikram.s@zealeducation.com', '125UAM1009', 'AI & ML', '2025', 'Present', 'Prof. Meera Nair'],
+                [1, 8, 'Siddharth Pawar', 'siddharth.p@zealeducation.com', '125UAM1008', 'AI & ML', '2025', 'Absent', 'Prof. Meera Nair'],
+                [2, 5, 'Piyush Sharma', 'piyush@zealeducation.com', '125UAM1137', 'AI & ML', '2026', 'Present', 'Prof. Meera Nair'],
+                [2, 6, 'Arjun Patil', 'student@zealeducation.com', '125UAM1005', 'AI & ML', '2026', 'Present', 'Prof. Meera Nair'],
+                [2, 9, 'Vikram Salunkhe', 'vikram.s@zealeducation.com', '125UAM1009', 'AI & ML', '2025', 'Absent', 'Prof. Meera Nair']
+            ];
+
+            $insertAtt = $pdo->prepare("INSERT INTO `attendance` (`meeting_id`, `user_id`, `student_name`, `student_email`, `zprn`, `branch`, `batch`, `status`, `marked_by`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            foreach ($defaultAtt as $a) {
+                $insertAtt->execute($a);
+            }
+        }
+
+        // 9. Announcements Table
+        $pdo->exec("CREATE TABLE IF NOT EXISTS `announcements` (
+            `id` INT AUTO_INCREMENT PRIMARY KEY,
+            `title` VARCHAR(255) NOT NULL,
+            `content` TEXT NOT NULL,
+            `priority` VARCHAR(50) DEFAULT 'Normal',
+            `posted_by` VARCHAR(255) DEFAULT 'Association President',
+            `target_audience` VARCHAR(100) DEFAULT 'All Members',
+            `views_count` INT DEFAULT 0,
+            `pinned` TINYINT(1) DEFAULT 0,
+            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+        $stmt = $pdo->query("SELECT COUNT(*) FROM `announcements`");
+        if ($stmt->fetchColumn() == 0) {
+            $defaultAnn = [
+                ['🏆 Hackathon 2026 registrations open!', 'Official registration portal is now live for all AI & ML department students.', 'Normal', 'Karan Mehta (President)', 'All Members', 203, 0],
+                ['⚡ Deadline: Club fee payment — Jul 31', 'All committee members and active members are requested to complete dues.', 'Urgent', 'Finance Committee', 'All Members', 312, 1],
+                ['✅ Tech Symposium venue confirmed', 'Main Auditorium and Lab 402 reserved for July 28 event.', 'Important', 'Karan Mehta (President)', 'All Members', 187, 0],
+                ['📢 New committee vacancies — Apply now', 'Applications open for Finance & Outreach committee positions.', 'Normal', 'Outreach Committee', 'Students', 92, 0]
+            ];
+
+            $insertAnn = $pdo->prepare("INSERT INTO `announcements` (`title`, `content`, `priority`, `posted_by`, `target_audience`, `views_count`, `pinned`) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            foreach ($defaultAnn as $an) {
+                $insertAnn->execute($an);
             }
         }
 

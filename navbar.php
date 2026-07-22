@@ -1,4 +1,5 @@
 <!-- ============ NAV ============ -->
+<div class="scroll-progress-bar" id="scrollProgressBar"></div>
 <header class="nav">
   <div class="container nav-inner" style="display:flex; align-items:center; justify-content:space-between; gap:16px;">
     <div class="brand" style="flex-shrink:0;">

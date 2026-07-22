@@ -81,7 +81,8 @@ try {
                 'branch' => $user->branch,
                 'batch' => $user->batch,
                 'membershipStatus' => $user->membershipStatus,
-                'committeeDesignation' => $user->committeeDesignation
+                'committeeDesignation' => $user->committeeDesignation,
+                'zprn' => $user->zprn ?? ''
             ];
 
             // Add login-time notification for the user (avoid duplicates within last 1 hour)
@@ -117,14 +118,15 @@ try {
             $name = trim($_POST['name'] ?? '');
             $email = trim($_POST['email'] ?? '');
             $password = $_POST['password'] ?? '';
+            $zprn = trim($_POST['zprn'] ?? '');
             $role = trim($_POST['role'] ?? 'Student Member');
 
-            if (empty($name) || empty($email) || empty($password)) {
-                echo json_encode(['status' => 'error', 'message' => 'Please fill out all required fields.']);
+            if (empty($name) || empty($email) || empty($password) || empty($zprn)) {
+                echo json_encode(['status' => 'error', 'message' => 'Please fill out all required fields including your unique Student ZPRN.']);
                 exit;
             }
 
-            // Check if user already exists
+            // Check if email already exists
             $stmt = $pdo->prepare("SELECT COUNT(*) FROM `users` WHERE LOWER(`email`) = LOWER(:email)");
             $stmt->execute([':email' => $email]);
             if ($stmt->fetchColumn() > 0) {
@@ -132,9 +134,17 @@ try {
                 exit;
             }
 
+            // Check if ZPRN already exists
+            $stmtZ = $pdo->prepare("SELECT COUNT(*) FROM `users` WHERE LOWER(`zprn`) = LOWER(:zprn)");
+            $stmtZ->execute([':zprn' => $zprn]);
+            if ($stmtZ->fetchColumn() > 0) {
+                echo json_encode(['status' => 'error', 'message' => 'A user with this ZPRN (Student ID) is already registered.']);
+                exit;
+            }
+
             // Insert new user into DB as Active
-            $insert = $pdo->prepare("INSERT INTO `users` (`name`, `email`, `password`, `role`, `branch`, `batch`, `membershipStatus`) VALUES (?, ?, ?, ?, 'AI & ML', '2026', 'Active')");
-            $insert->execute([$name, $email, $password, $role]);
+            $insert = $pdo->prepare("INSERT INTO `users` (`name`, `email`, `password`, `role`, `branch`, `batch`, `membershipStatus`, `zprn`) VALUES (?, ?, ?, ?, 'AI & ML', '2026', 'Active', ?)");
+            $insert->execute([$name, $email, $password, $role, $zprn]);
             $newId = $pdo->lastInsertId();
 
             $newUser = [
@@ -145,7 +155,8 @@ try {
                 'branch' => 'AI & ML',
                 'batch' => '2026',
                 'membershipStatus' => 'Active',
-                'committeeDesignation' => NULL
+                'committeeDesignation' => NULL,
+                'zprn' => $zprn
             ];
 
             $_SESSION['user'] = $newUser;
@@ -159,95 +170,52 @@ try {
             ]);
             break;
 
-        case 'send_otp':
+        case 'verify_zprn':
             $email = trim($_POST['email'] ?? '');
+            $zprn = trim($_POST['zprn'] ?? '');
 
-            if (empty($email)) {
-                echo json_encode(['status' => 'error', 'message' => 'Please enter your college email ID.']);
+            if (empty($email) && empty($zprn)) {
+                echo json_encode(['status' => 'error', 'message' => 'Please enter your registered College Email ID and/or ZPRN.']);
                 exit;
             }
 
-            $stmt = $pdo->prepare("SELECT * FROM `users` WHERE LOWER(`email`) = LOWER(:email)");
-            $stmt->execute([':email' => $email]);
-            $user = $stmt->fetch();
+            // Flexible query to find user record
+            $user = null;
+            if (!empty($email) && !empty($zprn)) {
+                $stmt = $pdo->prepare("SELECT * FROM `users` WHERE LOWER(`email`) = LOWER(:email) OR LOWER(`zprn`) = LOWER(:zprn)");
+                $stmt->execute([':email' => $email, ':zprn' => $zprn]);
+                $user = $stmt->fetch();
+            } else if (!empty($zprn)) {
+                $stmt = $pdo->prepare("SELECT * FROM `users` WHERE LOWER(`zprn`) = LOWER(:zprn)");
+                $stmt->execute([':zprn' => $zprn]);
+                $user = $stmt->fetch();
+            } else {
+                $stmt = $pdo->prepare("SELECT * FROM `users` WHERE LOWER(`email`) = LOWER(:email)");
+                $stmt->execute([':email' => $email]);
+                $user = $stmt->fetch();
+            }
 
             if (!$user) {
-                echo json_encode(['status' => 'error', 'message' => 'No registered account found with that email address.']);
+                echo json_encode(['status' => 'error', 'message' => 'No registered account found matching that Email ID or ZPRN.']);
                 exit;
             }
 
-            $otp = sprintf("%06d", rand(100000, 999999));
-            $_SESSION['forgot_otp'] = [
-                'email' => strtolower($email),
-                'otp' => $otp,
-                'expires' => time() + 300 // 5 minutes validity
-            ];
-
-            // Dispatch OTP email to user's registered email
-            $subject = "AIMSA Portal - Password Reset OTP Code";
-            $message = "Hello {$user->name},\n\nYour 6-digit OTP code to reset your AIMSA Portal password is: {$otp}\n\nThis code is valid for 5 minutes.\nIf you did not request a password reset, please ignore this email.\n\nDepartment of AIML\nZeal College of Engineering and Research, Pune";
-            $headers = "From: AIMSA Helpdesk <aimsa.helpdesk@zealeducation.com>\r\n" .
-                       "Reply-To: support.aimsa@zealeducation.com\r\n" .
-                       "X-Mailer: PHP/" . phpversion() . "\r\n" .
-                       "Content-Type: text/plain; charset=UTF-8";
-
-            @mail($user->email, $subject, $message, $headers);
-
-            // Log email dispatch in notifications table
-            try {
-                $notifStmt = $pdo->prepare("INSERT INTO `notifications` (`title`, `text`, `indicator`, `recipient`, `email_sent`) VALUES (?, ?, 'green', ?, 1)");
-                $notifStmt->execute(['Password Reset OTP', "A 6-digit verification code was sent to {$user->email}.", $user->email]);
-            } catch (Exception $e) {
-                // Ignore database logging exceptions if schema differs
-            }
-
-            // Create masked email string for user feedback (e.g. ad***h@zealeducation.com)
-            $emailParts = explode('@', $user->email);
-            $uname = $emailParts[0];
-            $domain = $emailParts[1] ?? 'zealeducation.com';
-            $maskedName = strlen($uname) > 2 ? substr($uname, 0, 2) . '***' . substr($uname, -1) : $uname . '***';
-            $maskedEmail = $maskedName . '@' . $domain;
-
-            echo json_encode([
-                'status' => 'success',
-                'message' => "OTP sent successfully to {$maskedEmail}",
-                'masked_email' => $maskedEmail
-            ]);
-            break;
-
-        case 'verify_otp':
-            $email = trim($_POST['email'] ?? '');
-            $otp = trim($_POST['otp'] ?? '');
-
-            if (empty($email) || empty($otp)) {
-                echo json_encode(['status' => 'error', 'message' => 'Please enter the 6-digit OTP sent to your email.']);
+            if (!empty($zprn) && (!isset($user->zprn) || strtolower(trim($user->zprn)) !== strtolower(trim($zprn)))) {
+                echo json_encode(['status' => 'error', 'message' => 'Security Answer (ZPRN) does not match our records for this account.']);
                 exit;
             }
 
-            if (!isset($_SESSION['forgot_otp']) || strtolower($_SESSION['forgot_otp']['email']) !== strtolower($email)) {
-                echo json_encode(['status' => 'error', 'message' => 'No OTP request found for this email. Please request a new OTP.']);
-                exit;
-            }
-
-            if (time() > $_SESSION['forgot_otp']['expires']) {
-                echo json_encode(['status' => 'error', 'message' => 'OTP has expired (valid for 5 minutes). Please request a new OTP.']);
-                exit;
-            }
-
-            if ($_SESSION['forgot_otp']['otp'] !== $otp) {
-                echo json_encode(['status' => 'error', 'message' => 'Invalid OTP code. Please enter the correct 6-digit OTP.']);
-                exit;
-            }
-
-            // Mark OTP verified for this session
-            $_SESSION['forgot_otp_verified'] = [
-                'email' => strtolower($email),
+            $_SESSION['forgot_zprn_verified'] = [
+                'email' => strtolower($user->email),
+                'zprn' => strtolower($user->zprn ?? ''),
                 'verified_at' => time()
             ];
 
             echo json_encode([
                 'status' => 'success',
-                'message' => 'OTP verified successfully! You can now set your new password.'
+                'message' => 'Security Question (ZPRN) verified successfully! You can now set your new password.',
+                'email' => $user->email,
+                'name' => $user->name
             ]);
             break;
 
@@ -255,36 +223,44 @@ try {
             $email = trim($_POST['email'] ?? '');
             $newPassword = $_POST['new_password'] ?? '';
 
-            if (empty($email) || empty($newPassword)) {
-                echo json_encode(['status' => 'error', 'message' => 'Please fill out all required fields.']);
+            if (empty($newPassword)) {
+                echo json_encode(['status' => 'error', 'message' => 'Please enter your new secure password.']);
                 exit;
             }
 
-            // Require OTP verification before allowing password reset
-            if (!isset($_SESSION['forgot_otp_verified']) || strtolower($_SESSION['forgot_otp_verified']['email']) !== strtolower($email)) {
-                echo json_encode(['status' => 'error', 'message' => 'OTP verification required before resetting password.']);
+            // Require Security Question ZPRN verification before allowing password reset
+            if (!isset($_SESSION['forgot_zprn_verified'])) {
+                echo json_encode(['status' => 'error', 'message' => 'Security Question (ZPRN) verification required before resetting password.']);
                 exit;
             }
 
-            $stmt = $pdo->prepare("SELECT * FROM `users` WHERE LOWER(`email`) = LOWER(:email)");
-            $stmt->execute([':email' => $email]);
+            $targetEmail = !empty($_SESSION['forgot_zprn_verified']['email']) ? $_SESSION['forgot_zprn_verified']['email'] : strtolower($email);
+
+            $stmt = $pdo->prepare("SELECT * FROM `users` WHERE LOWER(`email`) = LOWER(:email) OR LOWER(`email`) = LOWER(:posted_email)");
+            $stmt->execute([':email' => $targetEmail, ':posted_email' => strtolower($email)]);
             $user = $stmt->fetch();
 
             if (!$user) {
-                echo json_encode(['status' => 'error', 'message' => 'No registered account found with that email address.']);
+                echo json_encode(['status' => 'error', 'message' => 'No registered account found for password reset.']);
                 exit;
             }
 
+            // Save new reset password to database
             $update = $pdo->prepare("UPDATE `users` SET `password` = :password WHERE `id` = :id");
             $update->execute([':password' => $newPassword, ':id' => $user->id]);
 
-            // Clear OTP session variables
-            unset($_SESSION['forgot_otp']);
-            unset($_SESSION['forgot_otp_verified']);
+            // Create notification record
+            try {
+                $notifStmt = $pdo->prepare("INSERT INTO `notifications` (`title`, `text`, `indicator`, `recipient`) VALUES (?, ?, 'green', ?)");
+                $notifStmt->execute(['Password Updated', "Password for {$user->email} was reset via ZPRN security verification.", $user->email]);
+            } catch (Exception $e) {}
+
+            // Clear session verification
+            unset($_SESSION['forgot_zprn_verified']);
 
             echo json_encode([
                 'status' => 'success',
-                'message' => 'Password reset successfully! You can now log in with your new password.'
+                'message' => 'Password reset successfully! Your new password has been saved to the database. You can now log in.'
             ]);
             break;
 
