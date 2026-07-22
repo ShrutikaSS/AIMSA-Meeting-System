@@ -104,7 +104,7 @@ try {
             $role = trim($_POST['role'] ?? 'Student Member');
             $branch = trim($_POST['branch'] ?? 'AI & ML');
             $batch = trim($_POST['batch'] ?? '2026');
-            $password = trim($_POST['password'] ?? 'password123');
+            $password = trim($_POST['password'] ?? 'student123');
 
             if (empty($name) || empty($email)) {
                 echo json_encode(['status' => 'error', 'message' => 'Name and Email are required.']);

@@ -23,15 +23,15 @@ function setupDatabaseTables($pdo) {
         $stmt = $pdo->query("SELECT COUNT(*) FROM `users`");
         if ($stmt->fetchColumn() == 0) {
             $defaultUsers = [
-                ['Dr. Dipali Shende', 'hod@zealeducation.com', 'password123', 'HOD', 'AI & ML', 'Faculty', 'Active', 'Head of Department', 'Departmental Leadership & Guidance'],
-                ['Prof. Rahul Patil', 'faculty@zealeducation.com', 'password123', 'Faculty Coordinator', 'AI & ML', 'Faculty', 'Active', 'Faculty Advisor', 'Event Supervision'],
-                ['Aarav Sharma', 'aarav.sharma@zealeducation.com', 'password123', 'President', 'AI & ML', '2024', 'Active', 'President', 'Association Roadmap & Execution'],
+                ['Dr. Dipali Shende', 'hod@zealeducation.com', 'hod123', 'HOD', 'AI & ML', 'Faculty', 'Active', 'Head of Department', 'Departmental Leadership & Guidance'],
+                ['Prof. Rahul Patil', 'faculty@zealeducation.com', 'faculty123', 'Faculty Coordinator', 'AI & ML', 'Faculty', 'Active', 'Faculty Advisor', 'Event Supervision'],
+                ['Aarav Sharma', 'aarav.sharma@zealeducation.com', 'president123', 'President', 'AI & ML', '2024', 'Active', 'President', 'Association Roadmap & Execution'],
                 ['Neha Verma', 'neha.verma@zealeducation.com', 'password123', 'Vice President', 'AI & ML', '2024', 'Active', 'Vice President', 'Cross-committee coordination'],
-                ['Rohan Kulkarni', 'rohan.k@zealeducation.com', 'password123', 'Committee Member', 'AI & ML', '2025', 'Active', 'Technical Head', 'Technical Workshops Lead'],
-                ['Ananya Deshmukh', 'ananya.d@zealeducation.com', 'password123', 'Student Member', 'CS', '2025', 'Pending', NULL, NULL],
-                ['Priya Joshi', 'priya.j@zealeducation.com', 'password123', 'Student Member', 'DS', '2026', 'Pending', NULL, NULL],
-                ['Siddharth Pawar', 'siddharth.p@zealeducation.com', 'password123', 'Student Member', 'AI & ML', '2026', 'Pending', NULL, NULL],
-                ['Vikram Salunkhe', 'vikram.s@zealeducation.com', 'password123', 'Student Member', 'AI & ML', '2025', 'Active', NULL, NULL]
+                ['Rohan Kulkarni', 'rohan.k@zealeducation.com', 'committee123', 'Committee Member', 'AI & ML', '2025', 'Active', 'Technical Head', 'Technical Workshops Lead'],
+                ['Ananya Deshmukh', 'ananya.d@zealeducation.com', 'student123', 'Student Member', 'CS', '2025', 'Pending', NULL, NULL],
+                ['Priya Joshi', 'priya.j@zealeducation.com', 'student123', 'Student Member', 'DS', '2026', 'Pending', NULL, NULL],
+                ['Siddharth Pawar', 'siddharth.p@zealeducation.com', 'student123', 'Student Member', 'AI & ML', '2026', 'Pending', NULL, NULL],
+                ['Vikram Salunkhe', 'vikram.s@zealeducation.com', 'student123', 'Student Member', 'AI & ML', '2025', 'Active', NULL, NULL]
             ];
 
             $insertUser = $pdo->prepare("INSERT INTO `users` (`name`, `email`, `password`, `role`, `branch`, `batch`, `membershipStatus`, `committeeDesignation`, `committeeResponsibility`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");

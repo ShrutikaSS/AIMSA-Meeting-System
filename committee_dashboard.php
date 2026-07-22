@@ -656,6 +656,50 @@ function addNotification(title, text, indicator, recipient, email = true) {
   });
   localStorage.setItem('aimsa_notifications', JSON.stringify(records));
   renderNotifications('notifications', currentUser.email);
+
+  const formData = new FormData();
+  formData.append('action', 'addNotification');
+  formData.append('title', title);
+  formData.append('text', text);
+  formData.append('indicator', indicator);
+  formData.append('recipient', recipient);
+  formData.append('email_sent', email ? 1 : 0);
+  fetch('ajax/notificationActions.php', { method: 'POST', body: formData }).catch(e => console.error('Failed to save notification to DB:', e));
+}
+
+async function loadNotificationsFromDB() {
+  try {
+    const params = new URLSearchParams();
+    params.append('action', 'getNotifications');
+    if (currentUser.email) params.append('email', currentUser.email);
+    if (currentUser.role) params.append('role', currentUser.role);
+
+    const res = await fetch('ajax/notificationActions.php?' + params.toString());
+    const data = await res.json();
+    if (data.status === 'success' && data.notifications.length > 0) {
+      const existing = JSON.parse(localStorage.getItem('aimsa_notifications')) || [];
+      const existingKeys = new Set(existing.map(n => (n.title || '') + '|' + (n.text || '')));
+
+      data.notifications.forEach(n => {
+        const key = (n.title || '') + '|' + (n.text || '');
+        if (!existingKeys.has(key)) {
+          existing.unshift({
+            title: n.title,
+            text: n.text,
+            indicator: n.indicator || 'green',
+            recipient: n.recipient || 'all',
+            time: new Date(n.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+            email: true,
+            id: n.id
+          });
+        }
+      });
+
+      localStorage.setItem('aimsa_notifications', JSON.stringify(existing));
+    }
+  } catch (e) {
+    console.error('Failed to load notifications from DB:', e);
+  }
 }
 
 function renderNotifications(containerId, userEmail) {
@@ -663,7 +707,12 @@ function renderNotifications(containerId, userEmail) {
   if (!container) return;
 
   const records = JSON.parse(localStorage.getItem('aimsa_notifications')) || [];
-  const filtered = records.filter(r => r.recipient === 'all' || r.recipient.toLowerCase() === userEmail.toLowerCase());
+  const filtered = records.filter(r => {
+    if (r.recipient === 'all') return true;
+    if (r.recipient.toLowerCase() === userEmail.toLowerCase()) return true;
+    if (currentUser.role && currentUser.role.toLowerCase() === r.recipient.toLowerCase()) return true;
+    return false;
+  });
 
   // Clear container but keep head
   container.innerHTML = `
@@ -707,13 +756,19 @@ function renderNotifications(containerId, userEmail) {
 
 window.clearNotifications = function(containerId, userEmail) {
   let records = JSON.parse(localStorage.getItem('aimsa_notifications')) || [];
-  records = records.filter(r => r.recipient !== 'all' && r.recipient.toLowerCase() !== userEmail.toLowerCase());
+  records = records.filter(r => {
+    if (r.recipient.toLowerCase() === userEmail.toLowerCase()) return false;
+    if (currentUser.role && r.recipient.toLowerCase() === currentUser.role.toLowerCase()) return false;
+    return true;
+  });
   localStorage.setItem('aimsa_notifications', JSON.stringify(records));
   renderNotifications(containerId, userEmail);
 };
 
 // Initial state load
-renderNotifications('notifications', currentUser.email);
+loadNotificationsFromDB().then(() => {
+  renderNotifications('notifications', currentUser.email);
+});
 
 // Listen to attendance save trigger
 document.getElementById('saveAttendanceBtn').addEventListener('click', () => {
