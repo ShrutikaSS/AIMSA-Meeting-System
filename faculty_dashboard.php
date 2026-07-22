@@ -217,7 +217,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
       <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard
     </a>
     <div class="nav-section-label">Events</div>
-    <a class="nav-item" href="#approved">
+    <a class="nav-item" id="navEvents" href="#approved">
       <svg class="nav-icon" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Approved Events
     </a>
     <a class="nav-item" href="#pending">
@@ -225,13 +225,13 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
       <span class="nav-badge">3</span>
     </a>
     <div class="nav-section-label">Statistics</div>
-    <a class="nav-item" href="#memberstats">
+    <a class="nav-item" id="navMemberStats" href="#memberstats">
       <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2M10 11a4 4 0 100-8 4 4 0 000 8z"/></svg>Member Statistics
     </a>
-    <a class="nav-item" href="#attendance">
+    <a class="nav-item" id="navAttendance" href="#attendance">
       <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Attendance Summary
     </a>
-    <a class="nav-item" href="#achievements">
+    <a class="nav-item" id="navAchievements" href="#achievements">
       <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 9l-5 4.5L17.5 21 12 17l-5.5 4L8 13.5 3 9l6.5-.5z"/></svg>Student Achievements
     </a>
     <div class="nav-section-label">Communication</div>
@@ -344,21 +344,16 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
         <div class="card-head"><div class="card-title">Events Pending Approval</div><span class="card-action">Review All</span></div>
         <table class="data-table">
           <thead><tr><th>Event</th><th>Proposed By</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
-          <tbody>
-            <tr><td><b>Robotics Workshop</b></td><td>Tech Committee</td><td>Aug 10</td><td><span class="badge badge-orange">Pending</span></td><td><button style="background:rgba(34,197,94,.1);color:#16a34a;border:1px solid rgba(34,197,94,.2);border-radius:6px;padding:4px 10px;font-size:.72rem;cursor:pointer;">Approve</button></td></tr>
-            <tr><td><b>Cultural Night 2026</b></td><td>Cultural Committee</td><td>Aug 20</td><td><span class="badge badge-orange">Pending</span></td><td><button style="background:rgba(34,197,94,.1);color:#16a34a;border:1px solid rgba(34,197,94,.2);border-radius:6px;padding:4px 10px;font-size:.72rem;cursor:pointer;">Approve</button></td></tr>
-            <tr><td><b>Alumni Connect 2026</b></td><td>Outreach Committee</td><td>Sep 5</td><td><span class="badge badge-blue">Review</span></td><td><button style="background:rgba(62,139,255,.1);color:var(--accent);border:1px solid rgba(62,139,255,.2);border-radius:6px;padding:4px 10px;font-size:.72rem;cursor:pointer;">Review</button></td></tr>
+          <tbody id="pendingEventsBody">
+            <!-- Dynamically populated -->
           </tbody>
         </table>
         <div style="margin-top:16px;">
           <div class="card-head" style="margin-bottom:12px;"><div class="card-title" style="font-size:.9rem;">Approved Events This Semester</div></div>
           <table class="data-table">
             <thead><tr><th>Event</th><th>Date</th><th>Registrations</th><th>Status</th></tr></thead>
-            <tbody>
-              <tr><td><b>Tech Symposium 2026</b></td><td>Jul 28</td><td>148</td><td><span class="badge badge-green">Approved</span></td></tr>
-              <tr><td><b>AI Workshop Series</b></td><td>Aug 3</td><td>67</td><td><span class="badge badge-green">Approved</span></td></tr>
-              <tr><td><b>Hackathon 2026</b></td><td>Aug 15</td><td>203</td><td><span class="badge badge-green">Approved</span></td></tr>
-              <tr><td><b>ML Guest Lecture</b></td><td>Aug 22</td><td>89</td><td><span class="badge badge-green">Approved</span></td></tr>
+            <tbody id="approvedEventsBody">
+              <!-- Dynamically populated -->
             </tbody>
           </table>
         </div>
@@ -380,19 +375,19 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
         <div class="card">
           <div class="card-head"><div class="card-title">Quick Actions</div></div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-            <button style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 10px;border-radius:12px;border:1.5px solid var(--line-dark);background:var(--paper);cursor:pointer;transition:.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--line-dark)'">
+            <button id="quickApproveEvent" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 10px;border-radius:12px;border:1.5px solid var(--line-dark);background:var(--paper);cursor:pointer;transition:.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--line-dark)'">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#123163" stroke-width="1.8"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
               <span style="font-size:.76rem;font-weight:600;color:var(--navy-900);">Approve Event</span>
             </button>
-            <button style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 10px;border-radius:12px;border:1.5px solid var(--line-dark);background:var(--paper);cursor:pointer;transition:.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--line-dark)'">
+            <button id="quickViewReports" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 10px;border-radius:12px;border:1.5px solid var(--line-dark);background:var(--paper);cursor:pointer;transition:.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--line-dark)'">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#123163" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
               <span style="font-size:.76rem;font-weight:600;color:var(--navy-900);">View Reports</span>
             </button>
-            <button style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 10px;border-radius:12px;border:1.5px solid var(--line-dark);background:var(--paper);cursor:pointer;transition:.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--line-dark)'">
+            <button id="quickNominate" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 10px;border-radius:12px;border:1.5px solid var(--line-dark);background:var(--paper);cursor:pointer;transition:.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--line-dark)'">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#123163" stroke-width="1.8"><path d="M12 2l2.5 6.5L21 9l-5 4.5L17.5 21 12 17l-5.5 4L8 13.5 3 9l6.5-.5z"/></svg>
               <span style="font-size:.76rem;font-weight:600;color:var(--navy-900);">Nominate</span>
             </button>
-            <button style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 10px;border-radius:12px;border:1.5px solid var(--line-dark);background:var(--paper);cursor:pointer;transition:.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--line-dark)'">
+            <button id="quickNotifyStudents" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 10px;border-radius:12px;border:1.5px solid var(--line-dark);background:var(--paper);cursor:pointer;transition:.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--line-dark)'">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#123163" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
               <span style="font-size:.76rem;font-weight:600;color:var(--navy-900);">Notify Students</span>
             </button>
@@ -606,6 +601,40 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   </div>
 </div>
 
+<!-- ── NOTIFY STUDENTS DRAWER ── -->
+<div class="drawer" id="notifyStudentsDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Notify Students</div>
+    <button class="drawer-close" onclick="closeDrawer('notifyStudentsDrawer')">&times;</button>
+  </div>
+  <div class="form-group">
+    <label>Notification Title</label>
+    <input type="text" id="notifTitle" placeholder="e.g. Event Reminder">
+  </div>
+  <div class="form-group">
+    <label>Message</label>
+    <textarea id="notifMessage" rows="4" placeholder="Enter your message to students..."></textarea>
+  </div>
+  <div class="form-group">
+    <label>Recipients</label>
+    <select id="notifRecipients">
+      <option value="all">All Students</option>
+      <option value="3rd Year">3rd Year Students</option>
+      <option value="2nd Year">2nd Year Students</option>
+      <option value="4th Year">4th Year Students</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>Priority</label>
+    <select id="notifPriority">
+      <option value="green">Normal</option>
+      <option value="yellow">Important</option>
+      <option value="red">Urgent</option>
+    </select>
+  </div>
+  <button class="btn btn-primary" style="width:100%; margin-top:10px;" id="sendNotifBtn">Send Notification</button>
+</div>
+
 <script>
 const sidebar=document.getElementById('sidebar'),overlay=document.getElementById('sidebarOverlay'),hamburger=document.getElementById('hamburgerBtn');
 hamburger.addEventListener('click',()=>{sidebar.classList.toggle('open');overlay.classList.toggle('open');});
@@ -636,7 +665,7 @@ let currentUser = <?php echo json_encode($sessionUser); ?> || JSON.parse(session
 document.querySelector('.content-title').innerHTML = `Welcome, ${currentUser.name} 👋`;
 
 // Handle Event Creation (Publish Event)
-document.getElementById('saveEventBtn').addEventListener('click', () => {
+document.getElementById('saveEventBtn').addEventListener('click', async () => {
   const name = document.getElementById('evtName').value.trim();
   const cat = document.getElementById('evtCategory').value;
   const date = document.getElementById('evtDate').value;
@@ -651,25 +680,175 @@ document.getElementById('saveEventBtn').addEventListener('click', () => {
     return;
   }
 
-  // Save new event to localStorage
-  const events = JSON.parse(localStorage.getItem('aimsa_published_events')) || [];
-  events.push({name, cat, date, time, venue, desc, max, dl, coordinator: currentUser.name});
-  localStorage.setItem('aimsa_published_events', JSON.stringify(events));
+  const formData = new FormData();
+  formData.append('action', 'createEvent');
+  formData.append('name', name);
+  formData.append('category', cat);
+  formData.append('date', date);
+  formData.append('time', time);
+  formData.append('venue', venue);
+  formData.append('description', desc);
+  formData.append('max_participants', max);
+  formData.append('registration_deadline', dl);
+  formData.append('coordinator', currentUser.name);
+  formData.append('status', 'Approved');
 
-  addNotification('New Event Published', `Prof. Meera Nair proposed: ${name}.`, 'green', 'all');
-
-  // Update stat count
-  const approvedStat = document.querySelector('#approved .stat-val');
-  approvedStat.textContent = parseInt(approvedStat.textContent) + 1;
-
-  closeDrawer('createEventDrawer');
-  alert('Event published successfully! Students are notified.');
+  try {
+    const res = await fetch('ajax/eventActions.php', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.status === 'success') {
+      addNotification('New Event Published', `${currentUser.name} proposed: ${name}.`, 'green', 'all');
+      await loadEventsFromDB();
+      closeDrawer('createEventDrawer');
+      alert('Event published successfully! Students are notified.');
+      document.getElementById('evtName').value = '';
+      document.getElementById('evtDate').value = '';
+      document.getElementById('evtTime').value = '';
+      document.getElementById('evtVenue').value = '';
+      document.getElementById('evtDescription').value = '';
+      document.getElementById('evtDeadline').value = '';
+    } else {
+      alert(data.message || 'Failed to create event');
+    }
+  } catch (e) {
+    alert('Error creating event: ' + e.message);
+  }
 });
+
+// Load events from MySQL
+async function loadEventsFromDB() {
+  try {
+    const [pendingRes, approvedRes] = await Promise.all([
+      fetch('ajax/eventActions.php?action=getPendingEvents'),
+      fetch('ajax/eventActions.php?action=getApprovedEvents')
+    ]);
+    const pendingData = await pendingRes.json();
+    const approvedData = await approvedRes.json();
+
+    const pendingBody = document.getElementById('pendingEventsBody');
+    const approvedBody = document.getElementById('approvedEventsBody');
+    pendingBody.innerHTML = '';
+    approvedBody.innerHTML = '';
+
+    if (pendingData.status === 'success' && pendingData.events.length > 0) {
+      pendingData.events.forEach(evt => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td><b>${escapeHtml(evt.name)}</b></td><td>${escapeHtml(evt.coordinator || 'N/A')}</td><td>${formatDate(evt.date)}</td><td><span class="badge badge-orange">Pending</span></td><td><button class="btn btn-primary" style="padding:4px 12px;font-size:.72rem;" onclick="approveEvent(${evt.id})">Approve</button> <button class="btn btn-ghost" style="padding:4px 12px;font-size:.72rem;border-color:#f87171;color:#ef4444;" onclick="rejectEvent(${evt.id})">Reject</button></td>`;
+        pendingBody.appendChild(row);
+      });
+    } else {
+      pendingBody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted-dark);padding:20px;">No pending events.</td></tr>';
+    }
+
+    if (approvedData.status === 'success' && approvedData.events.length > 0) {
+      approvedData.events.forEach(evt => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td><b>${escapeHtml(evt.name)}</b></td><td>${formatDate(evt.date)}</td><td>${evt.max_participants || 0}</td><td><span class="badge badge-green">Approved</span></td>`;
+        approvedBody.appendChild(row);
+      });
+    } else {
+      approvedBody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted-dark);padding:20px;">No approved events yet.</td></tr>';
+    }
+
+    // Update stats
+    const pendingStat = document.querySelector('#pending .stat-val');
+    const approvedStat = document.querySelector('#approved .stat-val');
+    if (pendingStat) pendingStat.textContent = pendingData.events.length;
+    if (approvedStat) approvedStat.textContent = approvedData.events.length;
+  } catch (e) {
+    console.error('Failed to load events:', e);
+  }
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return 'N/A';
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+window.approveEvent = async function(id) {
+  if (!confirm('Are you sure you want to approve this event?')) return;
+  const formData = new FormData();
+  formData.append('action', 'approveEvent');
+  formData.append('id', id);
+  try {
+    const res = await fetch('ajax/eventActions.php', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.status === 'success') {
+      addNotification('Event Approved', 'An event proposal has been approved.', 'green', 'all');
+      await loadEventsFromDB();
+    } else {
+      alert(data.message || 'Failed to approve event');
+    }
+  } catch (e) {
+    alert('Error approving event: ' + e.message);
+  }
+};
+
+window.rejectEvent = async function(id) {
+  if (!confirm('Are you sure you want to reject this event?')) return;
+  const formData = new FormData();
+  formData.append('action', 'rejectEvent');
+  formData.append('id', id);
+  try {
+    const res = await fetch('ajax/eventActions.php', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.status === 'success') {
+      addNotification('Event Rejected', 'An event proposal has been rejected.', 'red', 'all');
+      await loadEventsFromDB();
+    } else {
+      alert(data.message || 'Failed to reject event');
+    }
+  } catch (e) {
+    alert('Error rejecting event: ' + e.message);
+  }
+};
 
 // Trigger drawers from quick actions & cards
-document.querySelector('button[style*="Approve Event"]').addEventListener('click', () => {
-  openDrawer('createEventDrawer');
-});
+const quickApproveBtn = document.getElementById('quickApproveEvent');
+if (quickApproveBtn) {
+  quickApproveBtn.addEventListener('click', () => {
+    const pendingSection = document.getElementById('pendingEventsBody');
+    const pendingCard = document.getElementById('pending');
+    if (pendingSection) {
+      pendingSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      loadEventsFromDB();
+      if (pendingCard) {
+        pendingCard.style.outline = '2px solid var(--accent)';
+        setTimeout(() => { pendingCard.style.outline = 'none'; }, 2000);
+      }
+    }
+  });
+}
+
+const quickReportsBtn = document.getElementById('quickViewReports');
+if (quickReportsBtn) {
+  quickReportsBtn.addEventListener('click', () => {
+    openDrawer('reportHubDrawer');
+  });
+}
+
+const quickNominateBtn = document.getElementById('quickNominate');
+if (quickNominateBtn) {
+  quickNominateBtn.addEventListener('click', () => {
+    renderPendingAchievements();
+    openDrawer('approveAchievementsDrawer');
+  });
+}
+
+const quickNotifyBtn = document.getElementById('quickNotifyStudents');
+if (quickNotifyBtn) {
+  quickNotifyBtn.addEventListener('click', () => {
+    openDrawer('notifyStudentsDrawer');
+  });
+}
+
 document.getElementById('navEvents').addEventListener('click', (e) => {
   e.preventDefault();
   openDrawer('createEventDrawer');
@@ -745,17 +924,10 @@ document.getElementById('achievements').addEventListener('click', () => {
   renderPendingAchievements();
   openDrawer('approveAchievementsDrawer');
 });
-document.querySelector('button[style*="Nominate"]').addEventListener('click', () => {
-  renderPendingAchievements();
-  openDrawer('approveAchievementsDrawer');
-});
 
 // Reports Hub Trigger
 document.getElementById('navMemberStats').addEventListener('click', (e) => {
   e.preventDefault();
-  openDrawer('reportHubDrawer');
-});
-document.querySelector('button[style*="View Reports"]').addEventListener('click', () => {
   openDrawer('reportHubDrawer');
 });
 
@@ -763,6 +935,32 @@ window.exportReport = function(format) {
   const cat = document.getElementById('reportCategory').value;
   alert(`Exporting ${cat}... Format: ${format} Success! Download initiated.`);
 };
+
+window.sendStudentNotification = function() {
+  const title = document.getElementById('notifTitle').value.trim();
+  const message = document.getElementById('notifMessage').value.trim();
+  const recipients = document.getElementById('notifRecipients').value;
+  const priority = document.getElementById('notifPriority').value;
+
+  if (!title || !message) {
+    alert('Please enter both title and message.');
+    return;
+  }
+
+  const recipientLabel = recipients === 'all' ? 'All Students' : recipients;
+  addNotification(title, message, priority, recipients);
+  alert(`Notification sent to ${recipientLabel}!`);
+  closeDrawer('notifyStudentsDrawer');
+  document.getElementById('notifTitle').value = '';
+  document.getElementById('notifMessage').value = '';
+};
+
+const sendNotifBtn = document.getElementById('sendNotifBtn');
+if (sendNotifBtn) {
+  sendNotifBtn.addEventListener('click', () => {
+    window.sendStudentNotification();
+  });
+}
 
 // Notification Helpers
 function addNotification(title, text, indicator, recipient, email = true) {
@@ -918,6 +1116,7 @@ window.openNotifications = function() {
 
 // Initialization and animation stats counter
 renderNotifications('notifications', currentUser.email);
+loadEventsFromDB();
 
 document.querySelectorAll('.stat-val').forEach(el=>{
   const raw=el.textContent.replace(/,/g,'');

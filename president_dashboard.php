@@ -392,12 +392,11 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 
       <!-- Upcoming Events -->
       <div class="card">
-        <div class="card-head"><div class="card-title">Upcoming Events</div><span class="card-action">Create Event</span></div>
-        <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>Tech Symposium 2026</b><span>Jul 28 · 148 registered · Auditorium</span></div></div>
-        <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>AI Workshop Series</b><span>Aug 3 · 67 registered · Lab 402</span></div></div>
-        <div class="list-item"><div class="list-dot" style="background:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.18);"></div><div class="list-text"><b>Hackathon 2026</b><span>Aug 15 · 203 registered · Online + Campus</span></div></div>
-        <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>Guest Lecture: ML in Healthcare</b><span>Aug 22 · 89 registered · Seminar Hall</span></div></div>
-        <button class="btn btn-primary" style="width:100%;margin-top:16px;justify-content:center;">+ Create New Event</button>
+        <div class="card-head"><div class="card-title">Upcoming Events</div><span class="card-action" id="createEventActionBtn">Create Event</span></div>
+        <div id="upcomingEventsBody">
+          <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>Loading events...</b><span>Please wait</span></div></div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-top:16px;justify-content:center;" id="createEventBtnFooter">+ Create New Event</button>
       </div>
 
       <!-- Announcements -->
@@ -565,7 +564,7 @@ let currentUser = <?php echo json_encode($sessionUser); ?> || JSON.parse(session
 document.querySelector('.content-title').innerHTML = `Welcome back, ${currentUser.name.split(' ')[0]}! 👋`;
 
 // Handle Event Creation (Publish Event)
-document.getElementById('saveEventBtn').addEventListener('click', () => {
+document.getElementById('saveEventBtn').addEventListener('click', async () => {
   const name = document.getElementById('evtName').value.trim();
   const cat = document.getElementById('evtCategory').value;
   const date = document.getElementById('evtDate').value;
@@ -581,21 +580,38 @@ document.getElementById('saveEventBtn').addEventListener('click', () => {
     return;
   }
 
-  // Save new event to localStorage
-  const events = JSON.parse(localStorage.getItem('aimsa_published_events')) || [];
-  events.push({name, cat, date, time, venue, desc, max, dl, coordinator});
-  localStorage.setItem('aimsa_published_events', JSON.stringify(events));
+  const formData = new FormData();
+  formData.append('action', 'createEvent');
+  formData.append('name', name);
+  formData.append('category', cat);
+  formData.append('date', date);
+  formData.append('time', time);
+  formData.append('venue', venue);
+  formData.append('description', desc);
+  formData.append('max_participants', max);
+  formData.append('registration_deadline', dl);
+  formData.append('coordinator', coordinator);
+  formData.append('status', 'Pending');
 
-  addNotification('New Event Published', `${currentUser.name} proposed: ${name}.`, 'green', 'all');
-
-  // Update stats counters
-  const approvedStat = document.querySelector('#upcomingEvents .stat-val');
-  if (approvedStat) {
-    approvedStat.textContent = parseInt(approvedStat.textContent) + 1;
+  try {
+    const res = await fetch('ajax/eventActions.php', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.status === 'success') {
+      addNotification('New Event Published', `${currentUser.name} proposed: ${name}.`, 'green', 'all');
+      closeDrawer('createEventDrawer');
+      alert('Event successfully proposed and published! Faculty will review it.');
+      document.getElementById('evtName').value = '';
+      document.getElementById('evtDate').value = '';
+      document.getElementById('evtTime').value = '';
+      document.getElementById('evtVenue').value = '';
+      document.getElementById('evtDescription').value = '';
+      document.getElementById('evtDeadline').value = '';
+    } else {
+      alert(data.message || 'Failed to create event');
+    }
+  } catch (e) {
+    alert('Error creating event: ' + e.message);
   }
-
-  closeDrawer('createEventDrawer');
-  alert('Event successfully proposed and published! Student notifications sent.');
 });
 
 // Event Proposal buttons trigger create drawer
@@ -603,9 +619,63 @@ document.getElementById('navEvents').addEventListener('click', (e) => {
   e.preventDefault();
   openDrawer('createEventDrawer');
 });
-document.getElementById('proposeEventBtn').addEventListener('click', () => {
-  openDrawer('createEventDrawer');
-});
+const proposeBtn = document.getElementById('proposeEventBtn');
+if (proposeBtn) {
+  proposeBtn.addEventListener('click', () => {
+    openDrawer('createEventDrawer');
+  });
+}
+
+// Upcoming Events dynamic loading
+async function loadUpcomingEventsFromDB() {
+  const body = document.getElementById('upcomingEventsBody');
+  if (!body) return;
+  try {
+    const res = await fetch('ajax/eventActions.php?action=getApprovedEvents');
+    const data = await res.json();
+    body.innerHTML = '';
+    if (data.status === 'success' && data.events.length > 0) {
+      data.events.forEach(evt => {
+        const item = document.createElement('div');
+        item.className = 'list-item';
+        item.innerHTML = `<div class="list-dot"></div><div class="list-text"><b>${escapeHtml(evt.name)}</b><span>${formatDate(evt.date)} · ${evt.max_participants || 0} registered · ${escapeHtml(evt.venue || 'TBD')}</span></div>`;
+        body.appendChild(item);
+      });
+    } else {
+      body.innerHTML = '<div class="list-item"><div class="list-text"><b>No upcoming events</b><span>Approved events will appear here</span></div></div>';
+    }
+  } catch (e) {
+    console.error('Failed to load upcoming events:', e);
+    body.innerHTML = '<div class="list-item"><div class="list-text"><b>Error loading events</b><span>Please try again later</span></div></div>';
+  }
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return 'TBD';
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+const createEventActionBtn = document.getElementById('createEventActionBtn');
+if (createEventActionBtn) {
+  createEventActionBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    openDrawer('createEventDrawer');
+  });
+}
+
+const createEventBtnFooter = document.getElementById('createEventBtnFooter');
+if (createEventBtnFooter) {
+  createEventBtnFooter.addEventListener('click', () => {
+    openDrawer('createEventDrawer');
+  });
+}
 
 // Committee list rendering
 function renderCommitteeList() {
@@ -804,6 +874,7 @@ window.openNotifications = function() {
 
 // Animation stats counter and initial notifications render
 renderNotifications('notifications', currentUser.email);
+loadUpcomingEventsFromDB();
 
 document.querySelectorAll('.stat-val').forEach(el=>{
   const raw=el.textContent.replace(/,/g,'');
