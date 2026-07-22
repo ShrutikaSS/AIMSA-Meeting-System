@@ -534,7 +534,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
     </div>
     <div class="form-group">
       <label>Initial Password</label>
-      <input type="password" id="addMemPassword" value="password123" required>
+      <input type="password" id="addMemPassword" value="student123" required>
     </div>
     <div class="form-group">
       <label>Role</label>

@@ -882,6 +882,11 @@ function applyLanguage(lang) {
         "असोसिएशन अध्यक्ष": "Association President",
         "समिती सदस्य": "Committee Member",
         "विद्यार्थी सदस्य": "Student Member",
+        "तांत्रिक समिती": "Technical Committee",
+        "AIMSA विद्यार्थी पोर्टल": "AIMSA Student Portal",
+        "AIMSA विद्यार्थी पोर्टलवर आपले स्वागत आहे": "Welcome to the AIMSA Student Portal",
+        "असोसिएशन बद्दल जाणून घ्या": "Explore the Association",
+        "पोर्टलवर लॉगिन करा →": "Login to Portal →",
         "एकूण सदस्य": "Total Members",
         "समिती सदस्य": "Committee Members",
         "आयोजित कार्यक्रम": "Events Conducted",
@@ -890,6 +895,22 @@ function applyLanguage(lang) {
         "उपस्थितीचे प्रमाण": "Attendance Rate",
         "दाखल अहवाल": "Event Reports Filed",
         "नवीन सूचना": "Unread Notifications",
+        "सक्रिय सदस्य": "Active Members",
+        "समिती भूमिका": "Committee Roles",
+        "स्थापना वर्ष": "Institute Est.",
+        "तुमची भूमिका निवडा": "Select Your Role",
+        "विभागप्रमुख (HOD)": "Head of Department (HOD)",
+        "पासवर्ड रिसेट करा": "Reset Password",
+        "कॉलेज ईमेल आयडी": "College Email ID",
+        "६-अंकी ओटीपी प्रविष्ट करा": "Enter 6-Digit OTP",
+        "नवीन पासवर्ड": "New Password",
+        "नवीन पासवर्डची पुष्टी करा": "Confirm New Password",
+        "ओटीपी कोड पाठवा →": "Send OTP Code →",
+        "ओटीपी पडताळणी करा →": "Verify OTP Code →",
+        "पासवर्ड अद्ययावत करा →": "Update Password →",
+        "खाते तयार करा →": "Create Account →",
+        "सुरक्षित लॉगिन →": "Secure Login →",
+        "पूर्ण नाव": "Full Name",
         "सदस्याचे नाव": "Member Name",
         "ईमेल आयडी": "Email ID",
         "भूमिका": "Role",
@@ -902,8 +923,10 @@ function applyLanguage(lang) {
         "वेळ": "Time",
         "स्थळ": "Venue",
         "विषय": "Topic",
+        "वर्णन": "Description",
         "गोपनीयता धोरण": "Privacy Policy",
-        "अटी व शर्ती": "Terms & Conditions"
+        "अटी व शर्ती": "Terms & Conditions",
+        "मदत केंद्र:": "Support:"
       };
 
       const targetSelectors = 'a, button, span, div.section-eyebrow, div.stat-label, th, div.drawer-title, h1, h2, h3, h4, label, p.sub, nav.links a, .nav-item, .sidebar-link';
@@ -954,13 +977,16 @@ if (document.body) {
   observer.observe(document.body, { childList: true, subtree: true });
 }
 
-// Initialize language on DOM ready & page load
+// Reset language to English and initialize on page load
+localStorage.setItem('aimsa_lang', 'en');
+sessionStorage.setItem('aimsa_lang', 'en');
+
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
-    applyLanguage(localStorage.getItem('aimsa_lang') || 'en');
+    applyLanguage('en');
   });
 } else {
-  applyLanguage(localStorage.getItem('aimsa_lang') || 'en');
+  applyLanguage('en');
 }
 
 

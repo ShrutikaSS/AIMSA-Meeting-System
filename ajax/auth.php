@@ -76,6 +76,25 @@ try {
                 'committeeDesignation' => $user->committeeDesignation
             ];
 
+            // Add login-time notification for the user (avoid duplicates within last 1 hour)
+            try {
+                $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM `notifications` WHERE `title` = :title AND `recipient` = :recipient AND `created_at` > DATE_SUB(NOW(), INTERVAL 1 HOUR)");
+                $checkStmt->execute([
+                    ':title' => 'Welcome back, ' . $user->name,
+                    ':recipient' => $user->role
+                ]);
+                if ($checkStmt->fetchColumn() == 0) {
+                    $loginNotifStmt = $pdo->prepare("INSERT INTO `notifications` (`title`, `text`, `indicator`, `recipient`, `email_sent`) VALUES (?, ?, 'green', ?, 1)");
+                    $loginNotifStmt->execute([
+                        'Welcome back, ' . $user->name,
+                        'You have successfully logged into the AIMSA Portal. You have new updates waiting for you.',
+                        $user->role
+                    ]);
+                }
+            } catch (Exception $e) {
+                error_log("Login notification failed: " . $e->getMessage());
+            }
+
             $redirect = $roleDashboards[$user->role] ?? 'student_dashboard.php';
 
             echo json_encode([

@@ -395,7 +395,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
             </button>
             <button id="quickNotifyStudents" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 10px;border-radius:12px;border:1.5px solid var(--line-dark);background:var(--paper);cursor:pointer;transition:.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--line-dark)'">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#123163" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
-              <span style="font-size:.76rem;font-weight:600;color:var(--navy-900);">Notify Students</span>
+              <span style="font-size:.76rem;font-weight:600;color:var(--navy-900);">Send Notification</span>
             </button>
           </div>
         </div>
@@ -610,7 +610,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 <!-- ── NOTIFY STUDENTS DRAWER ── -->
 <div class="drawer" id="notifyStudentsDrawer">
   <div class="drawer-header">
-    <div class="drawer-title">Notify Students</div>
+    <div class="drawer-title">Send Notification</div>
     <button class="drawer-close" onclick="closeDrawer('notifyStudentsDrawer')">&times;</button>
   </div>
   <div class="form-group">
@@ -619,12 +619,17 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   </div>
   <div class="form-group">
     <label>Message</label>
-    <textarea id="notifMessage" rows="4" placeholder="Enter your message to students..."></textarea>
+    <textarea id="notifMessage" rows="4" placeholder="Enter your message..."></textarea>
   </div>
   <div class="form-group">
     <label>Recipients</label>
     <select id="notifRecipients">
-      <option value="all">All Students</option>
+      <option value="all">All Users</option>
+      <option value="Student Member">All Students</option>
+      <option value="Faculty Coordinator">All Faculty</option>
+      <option value="HOD">HOD</option>
+      <option value="Association President">Association President</option>
+      <option value="Committee Member">Committee Members</option>
       <option value="3rd Year">3rd Year Students</option>
       <option value="2nd Year">2nd Year Students</option>
       <option value="4th Year">4th Year Students</option>
@@ -965,7 +970,7 @@ window.sendStudentNotification = function() {
     return;
   }
 
-  const recipientLabel = recipients === 'all' ? 'All Students' : recipients;
+  const recipientLabel = recipients === 'all' ? 'All Users' : recipients;
   addNotification(title, message, priority, recipients);
   alert(`Notification sent to ${recipientLabel}!`);
   closeDrawer('notifyStudentsDrawer');
@@ -993,6 +998,50 @@ function addNotification(title, text, indicator, recipient, email = true) {
   });
   localStorage.setItem('aimsa_notifications', JSON.stringify(records));
   renderNotifications('notifications', currentUser.email);
+
+  const formData = new FormData();
+  formData.append('action', 'addNotification');
+  formData.append('title', title);
+  formData.append('text', text);
+  formData.append('indicator', indicator);
+  formData.append('recipient', recipient);
+  formData.append('email_sent', email ? 1 : 0);
+  fetch('ajax/notificationActions.php', { method: 'POST', body: formData }).catch(e => console.error('Failed to save notification to DB:', e));
+}
+
+async function loadNotificationsFromDB() {
+  try {
+    const params = new URLSearchParams();
+    params.append('action', 'getNotifications');
+    if (currentUser.email) params.append('email', currentUser.email);
+    if (currentUser.role) params.append('role', currentUser.role);
+
+    const res = await fetch('ajax/notificationActions.php?' + params.toString());
+    const data = await res.json();
+    if (data.status === 'success' && data.notifications.length > 0) {
+      const existing = JSON.parse(localStorage.getItem('aimsa_notifications')) || [];
+      const existingKeys = new Set(existing.map(n => (n.title || '') + '|' + (n.text || '')));
+
+      data.notifications.forEach(n => {
+        const key = (n.title || '') + '|' + (n.text || '');
+        if (!existingKeys.has(key)) {
+          existing.unshift({
+            title: n.title,
+            text: n.text,
+            indicator: n.indicator || 'green',
+            recipient: n.recipient || 'all',
+            time: new Date(n.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+            email: true,
+            id: n.id
+          });
+        }
+      });
+
+      localStorage.setItem('aimsa_notifications', JSON.stringify(existing));
+    }
+  } catch (e) {
+    console.error('Failed to load notifications from DB:', e);
+  }
 }
 
 function renderNotifications(containerId, userEmail) {
@@ -1000,7 +1049,13 @@ function renderNotifications(containerId, userEmail) {
   if (!container) return;
 
   const records = JSON.parse(localStorage.getItem('aimsa_notifications')) || [];
-  const filtered = records.filter(r => r.recipient === 'all' || r.recipient.toLowerCase() === userEmail.toLowerCase());
+  const filtered = records.filter(r => {
+    if (r.recipient === 'all') return true;
+    if (r.recipient.toLowerCase() === userEmail.toLowerCase()) return true;
+    if (currentUser.role && currentUser.role.toLowerCase() === r.recipient.toLowerCase()) return true;
+    if (currentUser.year && currentUser.year.toLowerCase() === r.recipient.toLowerCase()) return true;
+    return false;
+  });
 
   // Clear container but keep head
   container.innerHTML = `
@@ -1044,7 +1099,12 @@ function renderNotifications(containerId, userEmail) {
 
 window.clearNotifications = function(containerId, userEmail) {
   let records = JSON.parse(localStorage.getItem('aimsa_notifications')) || [];
-  records = records.filter(r => r.recipient !== 'all' && r.recipient.toLowerCase() !== userEmail.toLowerCase());
+  records = records.filter(r => {
+    if (r.recipient.toLowerCase() === userEmail.toLowerCase()) return false;
+    if (currentUser.role && r.recipient.toLowerCase() === currentUser.role.toLowerCase()) return false;
+    if (currentUser.year && currentUser.year.toLowerCase() === r.recipient.toLowerCase()) return false;
+    return true;
+  });
   localStorage.setItem('aimsa_notifications', JSON.stringify(records));
   renderNotifications(containerId, userEmail);
 };
@@ -1133,7 +1193,9 @@ window.openNotifications = function() {
 };
 
 // Initialization and animation stats counter
-renderNotifications('notifications', currentUser.email);
+loadNotificationsFromDB().then(() => {
+  renderNotifications('notifications', currentUser.email);
+});
 loadEventsFromDB();
 
 document.querySelectorAll('.stat-val').forEach(el=>{
