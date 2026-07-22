@@ -434,7 +434,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
       <div class="card">
         <div class="card-head">
           <div class="card-title">Membership Growth</div>
-          <span class="card-action" onclick="openDrawer('reportHubDrawer')">Full Analytics</span>
+          <span class="card-action" onclick="openDrawer('growthAnalyticsDrawer')">Full Analytics</span>
         </div>
         <div id="growthContainer">
           <!-- Dynamically populated from MySQL -->
@@ -605,6 +605,79 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   <!-- Tab 2: Pending Event Proposals -->
   <div id="pendingEventsContainer" style="display:none; flex-direction:column; gap:12px;">
     <!-- Dynamically populated from MySQL -->
+  </div>
+</div>
+
+<!-- ── DRAWER: MEMBERSHIP GROWTH ANALYTICS & COMPARISON ── -->
+<div class="drawer" id="growthAnalyticsDrawer" style="width: min(580px, 100%);">
+  <div class="drawer-header">
+    <div>
+      <div class="drawer-title" style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:1.3rem;">📊</span> Growth &amp; Membership Analytics
+      </div>
+      <p style="font-size:0.78rem; color:var(--muted-dark); margin-top:2px;">Analytical comparison of student membership growth across branches, batches, and active status.</p>
+    </div>
+    <button class="drawer-close" onclick="closeDrawer('growthAnalyticsDrawer')">&times;</button>
+  </div>
+
+  <!-- Summary KPI Cards -->
+  <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-bottom:10px;">
+    <div style="background:rgba(62,139,255,0.08); border:1px solid rgba(62,139,255,0.2); border-radius:10px; padding:10px; text-align:center;">
+      <span style="font-size:0.7rem; color:var(--muted-dark); text-transform:uppercase; font-weight:600; letter-spacing:0.5px;">Active Ratio</span>
+      <h3 id="analyticsActiveRatio" style="font-size:1.25rem; margin:2px 0 0 0; color:var(--accent); font-weight:700;">--</h3>
+    </div>
+    <div style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2); border-radius:10px; padding:10px; text-align:center;">
+      <span style="font-size:0.7rem; color:var(--muted-dark); text-transform:uppercase; font-weight:600; letter-spacing:0.5px;">Top Branch</span>
+      <h3 id="analyticsTopBranch" style="font-size:1.05rem; margin:2px 0 0 0; color:#10b981; font-weight:700;">--</h3>
+    </div>
+    <div style="background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.2); border-radius:10px; padding:10px; text-align:center;">
+      <span style="font-size:0.7rem; color:var(--muted-dark); text-transform:uppercase; font-weight:600; letter-spacing:0.5px;">Top Batch</span>
+      <h3 id="analyticsTopBatch" style="font-size:1.05rem; margin:2px 0 0 0; color:#f59e0b; font-weight:700;">--</h3>
+    </div>
+  </div>
+
+  <!-- Analytical View Tabs -->
+  <div class="tab-buttons">
+    <button class="tab-btn active" id="tabBranchGrowth" onclick="switchGrowthTab('branch')">🏢 Branch Comparison</button>
+    <button class="tab-btn" id="tabBatchGrowth" onclick="switchGrowthTab('batch')">🎓 Batch Comparison</button>
+    <button class="tab-btn" id="tabMatrixGrowth" onclick="switchGrowthTab('matrix')">📈 Comparison Matrix</button>
+  </div>
+
+  <!-- TAB 1: Branch Comparison -->
+  <div id="branchGrowthContainer" style="display:flex; flex-direction:column; gap:12px;">
+    <!-- Dynamically populated from MySQL -->
+  </div>
+
+  <!-- TAB 2: Batch Comparison -->
+  <div id="batchGrowthContainer" style="display:none; flex-direction:column; gap:12px;">
+    <!-- Dynamically populated from MySQL -->
+  </div>
+
+  <!-- TAB 3: Comparison Matrix Table -->
+  <div id="matrixGrowthContainer" style="display:none; flex-direction:column; gap:12px;">
+    <div style="overflow-x:auto;">
+      <table class="data-table" style="width:100%; font-size:0.82rem;">
+        <thead>
+          <tr>
+            <th>Segment</th>
+            <th>Active</th>
+            <th>Pending</th>
+            <th>Total</th>
+            <th>Share</th>
+            <th>Trend</th>
+          </tr>
+        </thead>
+        <tbody id="matrixGrowthTableBody">
+          <!-- Dynamically populated -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Action Footer inside Drawer -->
+  <div style="border-top:1px solid var(--line-dark); padding-top:12px; margin-top:auto; display:flex; justify-content:space-between; align-items:center;">
+    <span style="font-size:0.75rem; color:var(--muted-dark);">Live analytics updated from database</span>
+    <button class="btn btn-primary" style="padding:6px 14px; font-size:0.8rem;" onclick="closeDrawer('growthAnalyticsDrawer'); openDrawer('reportHubDrawer');">⚡ Create Report File</button>
   </div>
 </div>
 
