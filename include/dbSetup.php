@@ -300,6 +300,73 @@ function setupDatabaseTables($pdo) {
             }
         }
 
+        // Alter users table to ensure phone and photograph columns exist
+        try {
+            $pdo->exec("ALTER TABLE `users` ADD COLUMN `phone` VARCHAR(50) NULL AFTER `zprn`;");
+        } catch (Exception $e) {}
+        try {
+            $pdo->exec("ALTER TABLE `users` ADD COLUMN `photograph` VARCHAR(255) NULL AFTER `phone`;");
+        } catch (Exception $e) {}
+
+        // 10. Event Registrations Table
+        $pdo->exec("CREATE TABLE IF NOT EXISTS `event_registrations` (
+            `id` INT AUTO_INCREMENT PRIMARY KEY,
+            `event_id` INT NOT NULL,
+            `event_name` VARCHAR(255) NOT NULL,
+            `user_id` INT NOT NULL,
+            `student_name` VARCHAR(255) NOT NULL,
+            `student_email` VARCHAR(255) NOT NULL,
+            `zprn` VARCHAR(100) NULL,
+            `role` VARCHAR(100) DEFAULT 'Attendee',
+            `status` VARCHAR(50) DEFAULT 'Registered',
+            `registered_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE KEY `unique_event_user` (`event_id`, `student_email`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+        $stmt = $pdo->query("SELECT COUNT(*) FROM `event_registrations`");
+        if ($stmt->fetchColumn() == 0) {
+            $defaultRegs = [
+                [1, 'Tech Symposium 2026', 6, 'Arjun Patil', 'student@zealeducation.com', '125UAM1005', 'Attendee', 'Registered'],
+                [3, 'Campus Hackathon 2026', 6, 'Arjun Patil', 'student@zealeducation.com', '125UAM1005', 'Participant', 'Registered'],
+                [1, 'Tech Symposium 2026', 5, 'Piyush Sharma', 'piyush@zealeducation.com', '125UAM1137', 'Attendee', 'Registered'],
+                [2, 'AI Workshop Series', 5, 'Piyush Sharma', 'piyush@zealeducation.com', '125UAM1137', 'Attendee', 'Registered']
+            ];
+
+            $insertReg = $pdo->prepare("INSERT INTO `event_registrations` (`event_id`, `event_name`, `user_id`, `student_name`, `student_email`, `zprn`, `role`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            foreach ($defaultRegs as $r) {
+                $insertReg->execute($r);
+            }
+        }
+
+        // 11. User Achievements Table
+        $pdo->exec("CREATE TABLE IF NOT EXISTS `user_achievements` (
+            `id` INT AUTO_INCREMENT PRIMARY KEY,
+            `user_id` INT NOT NULL,
+            `student_name` VARCHAR(255) NOT NULL,
+            `student_email` VARCHAR(255) NOT NULL,
+            `category` VARCHAR(100) NOT NULL,
+            `title` VARCHAR(255) NOT NULL,
+            `description` TEXT NULL,
+            `file_path` VARCHAR(255) NULL,
+            `status` VARCHAR(50) DEFAULT 'Pending',
+            `submitted_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+        $stmt = $pdo->query("SELECT COUNT(*) FROM `user_achievements`");
+        if ($stmt->fetchColumn() == 0) {
+            $defaultAch = [
+                [6, 'Arjun Patil', 'student@zealeducation.com', 'Hackathon Achievement', 'Active Participant', 'Attended 5+ departmental technical events and workshops.', NULL, 'Approved'],
+                [6, 'Arjun Patil', 'student@zealeducation.com', 'Competition Certificate', 'Workshop Graduate', 'Successfully completed AI & ML hands-on bootcamp.', NULL, 'Approved'],
+                [6, 'Arjun Patil', 'student@zealeducation.com', 'Research Publication', 'Loyal Member', '1 year active AIMSA member with 90%+ attendance.', NULL, 'Approved'],
+                [6, 'Arjun Patil', 'student@zealeducation.com', 'Hackathon Achievement', 'Hackathon Finalist', 'Top 10 finalist in Inter-College AI Hackathon 2025.', NULL, 'Approved']
+            ];
+
+            $insertAch = $pdo->prepare("INSERT INTO `user_achievements` (`user_id`, `student_name`, `student_email`, `category`, `title`, `description`, `file_path`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            foreach ($defaultAch as $a) {
+                $insertAch->execute($a);
+            }
+        }
+
         return true;
     } catch (PDOException $e) {
         error_log("Database Table Setup Failed: " . $e->getMessage());
