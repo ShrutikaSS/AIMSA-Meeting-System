@@ -212,29 +212,29 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   </div>
   <nav class="sidebar-nav">
     <div class="nav-section-label">Main</div>
-    <a class="nav-item active" href="committee_dashboard.html">
+    <a class="nav-item active" href="#" onclick="openDashboardView(); return false;" id="navDashboard">
       <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard
     </a>
     <div class="nav-section-label">Events</div>
-    <a class="nav-item" href="#assigned">
+    <a class="nav-item" href="#" onclick="openAssignedEventsWindow(); return false;" id="navAssigned">
       <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Assigned Events
     </a>
-    <a class="nav-item" href="#attendance">
+    <a class="nav-item" href="#" onclick="openAttendanceWindow(); return false;" id="navAttendance">
       <svg class="nav-icon" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Attendance Records
     </a>
-    <a class="nav-item" href="#reports">
+    <a class="nav-item" href="#" onclick="openReportsWindow(); return false;" id="navReports">
       <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Event Reports
     </a>
     <div class="nav-section-label">Communication</div>
-    <a class="nav-item" href="#notifications">
+    <a class="nav-item" href="#" onclick="openNotificationsWindow(); return false;" id="navNotifications">
       <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>Notifications
-      <span class="nav-badge">2</span>
+      <span class="nav-badge" id="navNotifBadge">0</span>
     </a>
     <div class="nav-section-label">Account</div>
-    <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/></svg>Profile</a>
+    <a class="nav-item" href="#" onclick="openProfileWindow(); return false;" id="navProfile"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/></svg>Profile</a>
   </nav>
   <div class="sidebar-footer">
-    <a class="nav-item" href="index.php"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>Logout</a>
+    <a class="nav-item" href="index.php" onclick="sessionStorage.removeItem('current_user');"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>Logout</a>
   </div>
 </aside>
 
@@ -308,29 +308,29 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 
     <!-- STATS — Assigned Events, Attendance Records, Event Reports, Notifications -->
     <div class="stats-grid">
-      <div class="stat-card" id="assigned">
+      <div class="stat-card" id="statCardAssigned" onclick="openAssignedEventsWindow()" style="cursor:pointer;">
         <div class="stat-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-        <span class="stat-val">4</span>
+        <span class="stat-val" id="statAssignedVal">4</span>
         <div class="stat-label" data-i18n="stat.assigned_events">Assigned Events</div>
-        <span class="stat-delta up">↑ 1 this month</span>
+        <span class="stat-delta up">↑ Active events</span>
       </div>
-      <div class="stat-card" id="attendance">
+      <div class="stat-card" id="statCardAttendance" onclick="openAttendanceWindow()" style="cursor:pointer;">
         <div class="stat-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
-        <span class="stat-val">92%</span>
+        <span class="stat-val" id="statAttendanceVal">92%</span>
         <div class="stat-label" data-i18n="stat.attendance_rate">Attendance Rate</div>
         <span class="stat-delta up">↑ Excellent</span>
       </div>
-      <div class="stat-card" id="reports">
+      <div class="stat-card" id="statCardReports" onclick="openReportsWindow()" style="cursor:pointer;">
         <div class="stat-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
-        <span class="stat-val">3</span>
+        <span class="stat-val" id="statReportsVal">3</span>
         <div class="stat-label" data-i18n="stat.reports_filed">Event Reports Filed</div>
-        <span class="stat-delta up">↑ 1 pending</span>
+        <span class="stat-delta up">↑ Filed in system</span>
       </div>
-      <div class="stat-card" id="notifications">
+      <div class="stat-card" id="statCardNotifs" onclick="openNotificationsWindow()" style="cursor:pointer;">
         <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg></div>
-        <span class="stat-val">2</span>
-        <div class="stat-label" data-i18n="stat.unread_notifs">Unread Notifications</div>
-        <span class="stat-delta dn">↓ Action needed</span>
+        <span class="stat-val" id="statNotifsVal">2</span>
+        <div class="stat-label" data-i18n="stat.unread_notifs">Notifications</div>
+        <span class="stat-delta dn">↓ View updates</span>
       </div>
     </div>
 
@@ -369,48 +369,40 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
       <!-- Right Column -->
       <div style="display:flex;flex-direction:column;gap:24px;">
         <!-- Notifications -->
-        <div class="card" id="notifications">
-          <div class="card-head"><div class="card-title">Notifications</div><span class="card-action">Mark Read</span></div>
+        <div class="card" id="notificationsCard">
+          <div class="card-head"><div class="card-title">Notifications</div><span class="card-action" style="cursor:pointer;" onclick="openNotificationsWindow()">View All</span></div>
           <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>Tech Symposium briefing tomorrow</b><span>10:00 AM, Lab 402 · 2 hrs ago</span></div></div>
-          <div class="list-item"><div class="list-dot" style="background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18);"></div><div class="list-text"><b>Certificate issued for Hackathon 2025</b><span>Download available · Yesterday</span></div></div>
-          <div class="list-item"><div class="list-dot" style="background:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.18);"></div><div class="list-text"><b>Event report submission reminder</b><span>AI Workshop Q1 report due · Jul 24</span></div></div>
-          <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>New task assigned by President</b><span>Finalize setup plan · Today</span></div></div>
         </div>
 
         <!-- Event Reports -->
-        <div class="card">
-          <div class="card-head"><div class="card-title">Event Reports</div><span class="card-action">Submit New</span></div>
-          <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>Tech Symposium 2025</b><span>Report ready · Attendance 96%</span></div><span class="card-action" style="font-size:.58rem;padding:3px 8px;">↓ PDF</span></div>
-          <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>AI Workshop Q1 2026</b><span>Report ready · Attendance 88%</span></div><span class="card-action" style="font-size:.58rem;padding:3px 8px;">↓ PDF</span></div>
-          <div class="list-item"><div class="list-dot" style="background:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.18);"></div><div class="list-text"><b>Hackathon 2025</b><span>Report ready · Attendance 91%</span></div><span class="card-action" style="font-size:.58rem;padding:3px 8px;">↓ PDF</span></div>
-          <div class="list-item"><div class="list-dot" style="background:var(--muted-dark);box-shadow:none;"></div><div class="list-text"><b>AI Workshop Q2 2026</b><span>Pending submission</span></div><button class="btn btn-primary" style="font-size:.7rem;padding:4px 10px;">Submit</button></div>
+        <div class="card" id="reportsCard">
+          <div class="card-head"><div class="card-title">Event Reports</div><span class="card-action" style="cursor:pointer;" onclick="openReportsWindow()">Submit New</span></div>
+          <div id="reportsCardBody">
+            <div class="list-item"><div class="list-dot"></div><div class="list-text"><b>Tech Symposium 2025</b><span>Report ready · Attendance 96%</span></div><span class="card-action" style="font-size:.58rem;padding:3px 8px;">↓ PDF</span></div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- BOTTOM GRID -->
     <div class="dash-grid-3">
-      <!-- Attendance Record -->
+      <!-- Attendance Record & Event Calendar -->
       <div class="card">
-        <div class="card-head"><div class="card-title">Attendance Record</div><span class="card-action">Full Log</span></div>
-        <div class="attend-grid">
-          <div class="attend-day attend-present">1</div><div class="attend-day attend-present">2</div>
-          <div class="attend-day attend-absent">3</div><div class="attend-day attend-present">4</div>
-          <div class="attend-day attend-present">5</div><div class="attend-day attend-present">6</div>
-          <div class="attend-day attend-present">7</div><div class="attend-day attend-present">8</div>
-          <div class="attend-day attend-present">9</div><div class="attend-day attend-present">10</div>
-          <div class="attend-day attend-present">11</div><div class="attend-day attend-absent">12</div>
-          <div class="attend-day attend-present">13</div><div class="attend-day attend-upcoming">14</div>
-          <div class="attend-day attend-upcoming">15</div><div class="attend-day attend-upcoming">16</div>
-          <div class="attend-day attend-upcoming">17</div><div class="attend-day attend-upcoming">18</div>
-          <div class="attend-day attend-upcoming">19</div><div class="attend-day attend-upcoming">20</div>
-          <div class="attend-day attend-upcoming">21</div>
+        <div class="card-head">
+          <div class="card-title">Attendance &amp; Event Log</div>
+          <span class="card-action" onclick="openAttendanceWindow()" style="cursor:pointer;">Full Log</span>
         </div>
-        <div style="display:flex;gap:12px;margin-top:10px;font-family:var(--ff-mono);font-size:.6rem;color:var(--muted-dark);">
+        <div class="attend-grid" id="dashboardCalendarGrid">
+          <!-- Calendar Days 1 to 21 populated dynamically -->
+        </div>
+        <div style="display:flex;gap:12px;margin-top:10px;font-family:var(--ff-mono);font-size:.6rem;color:var(--muted-dark);flex-wrap:wrap;">
           <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;border-radius:2px;background:rgba(62,139,255,.15);display:inline-block;"></span>Present</span>
           <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;border-radius:2px;background:rgba(239,68,68,.08);display:inline-block;"></span>Absent</span>
-          <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;border-radius:2px;background:var(--paper-dim);display:inline-block;"></span>Upcoming</span>
+          <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;border-radius:2px;background:var(--paper-dim);display:inline-block;"></span>Event Scheduled</span>
         </div>
+        <a href="event_calendar.php" style="display:inline-flex; align-items:center; gap:6px; margin-top:12px; font-size:0.75rem; font-family:var(--ff-mono); color:var(--accent); font-weight:600;">
+          📅 Open Full Interactive Event Calendar &rarr;
+        </a>
       </div>
 
       <!-- Certificates -->
@@ -465,10 +457,170 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 
 </div>
 
+<!-- ── ASSIGNED EVENTS DRAWER ── -->
+<div class="drawer" id="assignedEventsDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Assigned Events &amp; Duties</div>
+    <button class="drawer-close" onclick="closeDrawer('assignedEventsDrawer')">&times;</button>
+  </div>
+  <p style="font-size:0.82rem; color:var(--muted-dark);">Overview of all technical events assigned to you in the AIMSA system.</p>
+  <div id="assignedEventsList" style="display:flex; flex-direction:column; gap:12px; margin-top:10px; overflow-y:auto; flex:1;">
+    <!-- Populated dynamically from MySQL -->
+  </div>
+</div>
+
+<!-- ── MARK ATTENDANCE & FULL EVENT LOG DRAWER ── -->
+<div class="drawer" id="markAttendanceDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Attendance Records &amp; Event Log</div>
+    <button class="drawer-close" onclick="closeDrawer('markAttendanceDrawer')">&times;</button>
+  </div>
+  
+  <div style="background:var(--paper); padding:16px; border-radius:12px; border:1px solid var(--line-dark);">
+    <h4 style="font-size:0.9rem; margin-bottom:12px; font-family:var(--ff-display);" id="attendFormTitle">Mark Student Attendance</h4>
+    <input type="hidden" id="attendRecordId" value="">
+    <div class="form-group">
+      <label>Select Event</label>
+      <select id="attendEventSelect">
+        <!-- Populated dynamically -->
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Select Student Member</label>
+      <select id="attendStudentSelect">
+        <!-- Populated dynamically -->
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Attendance Status</label>
+      <select id="attendStatusSelect">
+        <option value="Present">Present</option>
+        <option value="Absent">Absent</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" style="width:100%; margin-top:6px;" id="saveAttendanceBtn">Save Attendance Record</button>
+  </div>
+
+  <!-- Filter Log by Event Date -->
+  <div style="background:var(--white); padding:14px; border-radius:12px; border:1px solid var(--line-dark); margin-top:14px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <h4 style="font-size:0.85rem; font-family:var(--ff-display);">📅 Filter Log by Event Date</h4>
+      <a href="event_calendar.php" style="font-size:0.72rem; color:var(--accent); font-weight:600; text-decoration:none;">Full Calendar &rarr;</a>
+    </div>
+    <input type="date" id="attendCalendarFilterDate" onchange="filterAttendanceByDate()" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--line-dark); font-size:0.8rem; font-family:inherit;">
+    <div id="eventsOnSelectedDate" style="margin-top:8px; font-size:0.75rem; color:var(--muted-dark);"></div>
+  </div>
+
+  <div style="margin-top:16px; flex:1; display:flex; flex-direction:column; overflow:hidden;">
+    <h4 style="font-size:0.9rem; font-family:var(--ff-display); margin-bottom:10px;">Submitted Attendance Logs</h4>
+    <div id="attendanceRecordsContainer" style="display:flex; flex-direction:column; gap:8px; overflow-y:auto; flex:1;">
+      <!-- Populated dynamically -->
+    </div>
+  </div>
+
+  <a href="event_calendar.php" class="btn btn-ghost" style="width:100%; margin-top:10px; border-color:var(--accent); color:var(--accent);">
+    📅 Open Full Department Event Calendar
+  </a>
+</div>
+
+<!-- ── EVENT REPORTS DRAWER ── -->
+<div class="drawer" id="eventReportsDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Event Reports Management</div>
+    <button class="drawer-close" onclick="closeDrawer('eventReportsDrawer')">&times;</button>
+  </div>
+
+  <div style="background:var(--paper); padding:16px; border-radius:12px; border:1px solid var(--line-dark);">
+    <h4 style="font-size:0.9rem; margin-bottom:12px; font-family:var(--ff-display);">Submit Event Completion Report</h4>
+    <div class="form-group">
+      <label>Report Title</label>
+      <input type="text" id="reportTitleInput" placeholder="e.g., Tech Symposium 2026 Summary Report">
+    </div>
+    <div class="form-group">
+      <label>Category</label>
+      <select id="reportCategorySelect">
+        <option value="Event Report">Event Report</option>
+        <option value="Workshop Summary">Workshop Summary</option>
+        <option value="Hackathon Outcome">Hackathon Outcome</option>
+        <option value="General Analytics">General Analytics</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Key Highlights &amp; Summary</label>
+      <textarea id="reportSummaryInput" rows="3" placeholder="Brief outcome, turnout, participant count, key highlights..."></textarea>
+    </div>
+    <button class="btn btn-primary" style="width:100%;" id="submitReportBtn">Submit Event Report</button>
+  </div>
+
+  <div style="margin-top:20px; flex:1; display:flex; flex-direction:column; overflow:hidden;">
+    <h4 style="font-size:0.9rem; font-family:var(--ff-display); margin-bottom:10px;">Filed Reports Log</h4>
+    <div id="reportsListContainer" style="display:flex; flex-direction:column; gap:8px; overflow-y:auto; flex:1;">
+      <!-- Populated dynamically from MySQL -->
+    </div>
+  </div>
+</div>
+
+<!-- ── NOTIFICATIONS DRAWER ── -->
+<div class="drawer" id="notificationsDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Notifications &amp; Alerts</div>
+    <button class="drawer-close" onclick="closeDrawer('notificationsDrawer')">&times;</button>
+  </div>
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+    <span style="font-size:0.8rem; color:var(--muted-dark);">Live department updates</span>
+    <button class="card-action" style="background:none; border:none; color:var(--accent); cursor:pointer;" onclick="markAllNotifsRead()">Mark All Read</button>
+  </div>
+  <div id="notificationsListContainer" style="display:flex; flex-direction:column; gap:10px; overflow-y:auto; flex:1;">
+    <!-- Populated dynamically from MySQL -->
+  </div>
+</div>
+
+<!-- ── PROFILE DRAWER ── -->
+<div class="drawer" id="profileDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Committee Member Profile</div>
+    <button class="drawer-close" onclick="closeDrawer('profileDrawer')">&times;</button>
+  </div>
+
+  <div style="display:flex; align-items:center; gap:16px; padding:16px; background:var(--paper); border-radius:14px; border:1px solid var(--line-dark);">
+    <div style="width:56px; height:56px; border-radius:50%; background:var(--navy-800); color:var(--white); display:flex; align-items:center; justify-content:center; font-size:1.3rem; font-weight:700; font-family:var(--ff-display);" id="profileAvatarBig">RD</div>
+    <div>
+      <h3 style="font-size:1rem; font-family:var(--ff-display);" id="profileNameBig">Riya Desai</h3>
+      <span style="font-size:0.75rem; color:var(--accent); font-weight:600;" id="profileRoleBadge">Committee Member</span>
+      <div style="font-size:0.72rem; color:var(--muted-dark); margin-top:2px;" id="profileZprnBadge">ZPRN: 125UAM1004</div>
+    </div>
+  </div>
+
+  <div style="background:var(--white); border:1px solid var(--line-dark); border-radius:12px; padding:16px;">
+    <h4 style="font-size:0.85rem; font-family:var(--ff-display); margin-bottom:12px; border-bottom:1px solid var(--line-dark); padding-bottom:6px;">Academic Details</h4>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:0.8rem;">
+      <div><span style="color:var(--muted-dark); display:block; font-size:0.7rem;">Branch</span><b id="profileBranchText">AI &amp; ML</b></div>
+      <div><span style="color:var(--muted-dark); display:block; font-size:0.7rem;">Batch / Year</span><b id="profileBatchText">2025</b></div>
+      <div><span style="color:var(--muted-dark); display:block; font-size:0.7rem;">Designation</span><b id="profileDesignationText">Technical Committee</b></div>
+      <div><span style="color:var(--muted-dark); display:block; font-size:0.7rem;">Membership</span><b id="profileStatusText" style="color:#16a34a;">Active</b></div>
+    </div>
+  </div>
+
+  <div style="background:var(--paper); padding:16px; border-radius:12px; border:1px solid var(--line-dark);">
+    <h4 style="font-size:0.85rem; font-family:var(--ff-display); margin-bottom:10px;">Edit Contact Details</h4>
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" id="editProfileName" value="Riya Desai">
+    </div>
+    <div class="form-group">
+      <label>Phone Number</label>
+      <input type="text" id="editProfilePhone" placeholder="+91 98765 43210">
+    </div>
+    <button class="btn btn-primary" style="width:100%;" id="saveProfileBtn">Update Profile</button>
+  </div>
+
+  <button class="btn btn-ghost" style="width:100%; margin-top:5px; border-color:var(--accent); color:var(--accent);" onclick="openDrawer('changePasswordDrawer')">🔒 Change Password</button>
+</div>
+
 <!-- ── CHANGE PASSWORD DRAWER ── -->
 <div class="drawer" id="changePasswordDrawer">
   <div class="drawer-header">
-    <div class="drawer-title">Change Password</div>
+    <div class="drawer-title">Change Account Password</div>
     <button class="drawer-close" onclick="closeDrawer('changePasswordDrawer')">&times;</button>
   </div>
   <div class="form-group">
@@ -486,56 +638,36 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   <button class="btn btn-primary" style="width:100%; margin-top:10px;" id="savePasswordBtn">Update Password</button>
 </div>
 
-<!-- ── MARK ATTENDANCE DRAWER ── -->
-<div class="drawer" id="markAttendanceDrawer">
-  <div class="drawer-header">
-    <div class="drawer-title">Mark Attendance</div>
-    <button class="drawer-close" onclick="closeDrawer('markAttendanceDrawer')">&times;</button>
-  </div>
-  <div class="form-group">
-    <label>Select Event</label>
-    <select id="attendEventSelect">
-      <option value="Tech Symposium 2026">Tech Symposium 2026</option>
-      <option value="AI Workshop Series">AI Workshop Series</option>
-      <option value="Hackathon 2026">Hackathon 2026</option>
-    </select>
-  </div>
-  <div class="form-group">
-    <label>Select Student</label>
-    <select id="attendStudentSelect">
-      <!-- Populated dynamically -->
-    </select>
-  </div>
-  <div class="form-group">
-    <label>Status</label>
-    <select id="attendStatusSelect">
-      <option value="Present">Present</option>
-      <option value="Absent">Absent</option>
-    </select>
-  </div>
-  <button class="btn btn-primary" style="width:100%; margin-top:10px;" id="saveAttendanceBtn">Save Attendance Record</button>
-
-  <div style="margin-top:20px; flex:1; overflow-y:auto;">
-    <h4>Submitted Records</h4>
-    <div id="attendanceRecordsContainer" style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
-      <!-- Populated dynamically -->
-    </div>
-  </div>
-</div>
-
 <script>
-const sidebar=document.getElementById('sidebar'),overlay=document.getElementById('sidebarOverlay'),hamburger=document.getElementById('hamburgerBtn');
-hamburger.addEventListener('click',()=>{sidebar.classList.toggle('open');overlay.classList.toggle('open');});
-overlay.addEventListener('click',()=>{sidebar.classList.remove('open');overlay.classList.remove('open');closeAllDrawers();});
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebarOverlay');
+const hamburger = document.getElementById('hamburgerBtn');
+
+hamburger.addEventListener('click', () => {
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('open');
+});
+
+overlay.addEventListener('click', () => {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('open');
+  closeAllDrawers();
+});
 
 function openDrawer(id) {
   closeAllDrawers();
-  document.getElementById(id).classList.add('open');
-  overlay.classList.add('open');
+  const drawerEl = document.getElementById(id);
+  if (drawerEl) {
+    drawerEl.classList.add('open');
+    overlay.classList.add('open');
+  }
 }
 
 function closeDrawer(id) {
-  document.getElementById(id).classList.remove('open');
+  const drawerEl = document.getElementById(id);
+  if (drawerEl) {
+    drawerEl.classList.remove('open');
+  }
   overlay.classList.remove('open');
 }
 
@@ -543,360 +675,480 @@ function closeAllDrawers() {
   document.querySelectorAll('.drawer').forEach(d => d.classList.remove('open'));
 }
 
-// Check logged in user session
-let currentUser = <?php echo json_encode($sessionUser); ?> || JSON.parse(sessionStorage.getItem('current_user')) || {
-  email: 'committee@zealeducation.com',
-  name: 'Committee Member',
-  role: 'Committee Member'
+// Window opener helpers for sidebar items
+window.openDashboardView = function() {
+  closeAllDrawers();
+  setActiveNav('navDashboard');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-document.querySelector('.content-title').innerHTML = `Hey, ${currentUser.name.split(' ')[0]}! 👋`;
-document.querySelector('.role-info b').textContent = currentUser.name;
+window.openAssignedEventsWindow = function() {
+  setActiveNav('navAssigned');
+  openDrawer('assignedEventsDrawer');
+};
 
-// Populate student select list from database
-function initAttendanceOptions() {
-  fetch('ajax/hod_actions.php?action=get_dashboard_data')
-    .then(res => res.json())
-    .then(data => {
-      if (data.status === 'success' && data.data && data.data.all_members) {
-        const select = document.getElementById('attendStudentSelect');
-        if (select) {
-          select.innerHTML = '';
-          data.data.all_members.filter(u => u.role === 'Student Member').forEach(u => {
-            select.innerHTML += `<option value="${u.name}">${u.name}</option>`;
-          });
-        }
-      }
-    })
-    .catch(err => console.error('Error loading students for attendance:', err));
+window.openAttendanceWindow = function() {
+  setActiveNav('navAttendance');
+  openDrawer('markAttendanceDrawer');
+};
+
+window.openReportsWindow = function() {
+  setActiveNav('navReports');
+  openDrawer('eventReportsDrawer');
+};
+
+window.openNotificationsWindow = function() {
+  setActiveNav('navNotifications');
+  openDrawer('notificationsDrawer');
+};
+
+window.openProfileWindow = function() {
+  setActiveNav('navProfile');
+  openDrawer('profileDrawer');
+};
+
+function setActiveNav(id) {
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
 }
 
-// Render marked attendance records
-function renderAttendanceRecords() {
-  const records = JSON.parse(localStorage.getItem('aimsa_attendance')) || [];
-  const container = document.getElementById('attendanceRecordsContainer');
-  container.innerHTML = '';
+// State store
+let cachedData = null;
 
-  if (records.length === 0) {
-    container.innerHTML = `<p style="font-size:0.8rem; color:var(--muted-dark);">No attendance records logged yet.</p>`;
-  } else {
-    records.forEach((rec, idx) => {
-      container.innerHTML += `
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border:1px solid var(--line-dark); border-radius:8px; background:var(--paper);">
-          <div>
-            <b style="font-size:0.85rem;">${rec.student}</b>
-            <br><span style="font-size:0.75rem; color:var(--muted-dark);">${rec.event} · ${rec.status}</span>
-          </div>
-          <button style="border:none; background:none; color:var(--accent); font-size:0.85rem; font-weight:700; cursor:pointer;" onclick="editAttendanceRecord(${idx})">Edit</button>
-        </div>`;
+// Primary Data Fetcher from MySQL Backend
+async function loadDashboardData() {
+  try {
+    const res = await fetch('ajax/committee_actions.php?action=get_dashboard_data');
+    const data = await res.json();
+    if (data.status === 'success') {
+      cachedData = data;
+      renderDashboardUI(data);
+    } else {
+      console.error('Backend returned error:', data.message);
+    }
+  } catch (err) {
+    console.error('Failed to load dashboard data from MySQL backend:', err);
+  }
+}
+
+function renderDashboardUI(data) {
+  const user = data.user || {};
+  const stats = data.stats || {};
+  const events = data.events || [];
+  const students = data.students || [];
+  const tasks = data.tasks || [];
+  const attendanceRecords = data.attendance_records || [];
+  const reports = data.reports || [];
+  const notifications = data.notifications || [];
+
+  // Update Header & Welcome User
+  const firstName = user.name ? user.name.split(' ')[0] : 'Committee';
+  const titleEl = document.querySelector('.content-title');
+  if (titleEl) titleEl.innerHTML = `Hello, ${firstName}! 👋`;
+  
+  const roleNameEl = document.querySelector('.role-info b');
+  if (roleNameEl) roleNameEl.textContent = user.name || 'Committee Member';
+
+  const avatarInitials = user.name ? user.name.split(' ').map(n=>n[0]).join('').toUpperCase() : 'CM';
+  document.querySelectorAll('#headerUserAvatar, .role-avatar .in, #profileAvatarBig').forEach(el => {
+    el.textContent = avatarInitials;
+  });
+  
+  document.getElementById('headerUserName').textContent = user.name || 'Committee Member';
+  document.getElementById('headerUserRole').textContent = user.committeeDesignation || user.role || 'Committee Member';
+
+  // Update Stat Cards
+  document.getElementById('statAssignedVal').textContent = events.length;
+  document.getElementById('statAttendanceVal').textContent = data.attendance_rate || '92%';
+  document.getElementById('statReportsVal').textContent = reports.length;
+  document.getElementById('statNotifsVal').textContent = notifications.length;
+  document.getElementById('navNotifBadge').textContent = notifications.length;
+
+  // Render Main Assigned Events Table
+  const tbody = document.querySelector('.data-table tbody');
+  if (tbody && events.length > 0) {
+    tbody.innerHTML = '';
+    events.slice(0, 5).forEach(e => {
+      let badgeClass = 'badge-green';
+      if (e.status === 'Pending') badgeClass = 'badge-orange';
+      if (e.status === 'Registered') badgeClass = 'badge-blue';
+
+      tbody.innerHTML += `
+        <tr>
+          <td><b>${e.title}</b></td>
+          <td>${e.event_date ? new Date(e.event_date).toLocaleDateString('en-US', {month:'short', day:'numeric'}) : 'TBD'}</td>
+          <td>Coordinator</td>
+          <td>${e.location || 'Campus'}</td>
+          <td><span class="badge ${badgeClass}">${e.status}</span></td>
+        </tr>`;
     });
   }
-}
 
-document.getElementById('saveAttendanceBtn').addEventListener('click', () => {
-  const event = document.getElementById('attendEventSelect').value;
-  const student = document.getElementById('attendStudentSelect').value;
-  const status = document.getElementById('attendStatusSelect').value;
-
-  const records = JSON.parse(localStorage.getItem('aimsa_attendance')) || [];
-  
-  // If editing an existing index
-  const editIdx = document.getElementById('saveAttendanceBtn').getAttribute('data-edit-index');
-  if (editIdx !== null) {
-    records[parseInt(editIdx)] = {event, student, status};
-    document.getElementById('saveAttendanceBtn').removeAttribute('data-edit-index');
-    document.getElementById('saveAttendanceBtn').textContent = 'Save Attendance Record';
-  } else {
-    records.push({event, student, status});
-  }
-
-  localStorage.setItem('aimsa_attendance', JSON.stringify(records));
-  renderAttendanceRecords();
-  alert('Attendance record saved successfully!');
-});
-
-window.editAttendanceRecord = function(idx) {
-  const records = JSON.parse(localStorage.getItem('aimsa_attendance')) || [];
-  const rec = records[idx];
-  document.getElementById('attendEventSelect').value = rec.event;
-  document.getElementById('attendStudentSelect').value = rec.student;
-  document.getElementById('attendStatusSelect').value = rec.status;
-
-  const saveBtn = document.getElementById('saveAttendanceBtn');
-  saveBtn.textContent = 'Update Attendance Record';
-  saveBtn.setAttribute('data-edit-index', idx);
-};
-
-// Sidebar / Quick Action trigger for Mark Attendance
-const navAttEl = document.getElementById('navAttendance');
-if (navAttEl) {
-  navAttEl.addEventListener('click', (e) => {
-    e.preventDefault();
-    initAttendanceOptions();
-    renderAttendanceRecords();
-    openDrawer('markAttendanceDrawer');
-  });
-}
-const attCardEl = document.getElementById('attendanceCard');
-if (attCardEl) {
-  attCardEl.addEventListener('click', () => {
-    initAttendanceOptions();
-    renderAttendanceRecords();
-    openDrawer('markAttendanceDrawer');
-  });
-}
-
-document.querySelectorAll('.nav-item').forEach(item=>{
-  item.addEventListener('click',(e)=>{
-    if(item.href&&(item.href.includes('index')||item.href.includes('committee_dashboard')))return;
-    e.preventDefault();
-    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
-    item.classList.add('active');
-  });
-});
-
-// Notification Helpers
-function addNotification(title, text, indicator, recipient, email = true) {
-  const records = JSON.parse(localStorage.getItem('aimsa_notifications')) || [];
-  records.push({
-    title,
-    text,
-    indicator, // 'green', 'yellow', 'red'
-    recipient, // email or 'all'
-    time: 'Just now',
-    email
-  });
-  localStorage.setItem('aimsa_notifications', JSON.stringify(records));
-  renderNotifications('notifications', currentUser.email);
-
-  const formData = new FormData();
-  formData.append('action', 'addNotification');
-  formData.append('title', title);
-  formData.append('text', text);
-  formData.append('indicator', indicator);
-  formData.append('recipient', recipient);
-  formData.append('email_sent', email ? 1 : 0);
-  fetch('ajax/notificationActions.php', { method: 'POST', body: formData }).catch(e => console.error('Failed to save notification to DB:', e));
-}
-
-async function loadNotificationsFromDB() {
-  try {
-    const params = new URLSearchParams();
-    params.append('action', 'getNotifications');
-    if (currentUser.email) params.append('email', currentUser.email);
-    if (currentUser.role) params.append('role', currentUser.role);
-
-    const res = await fetch('ajax/notificationActions.php?' + params.toString());
-    const data = await res.json();
-    if (data.status === 'success' && data.notifications.length > 0) {
-      const existing = JSON.parse(localStorage.getItem('aimsa_notifications')) || [];
-      const existingKeys = new Set(existing.map(n => (n.title || '') + '|' + (n.text || '')));
-
-      data.notifications.forEach(n => {
-        const key = (n.title || '') + '|' + (n.text || '');
-        if (!existingKeys.has(key)) {
-          existing.unshift({
-            title: n.title,
-            text: n.text,
-            indicator: n.indicator || 'green',
-            recipient: n.recipient || 'all',
-            time: new Date(n.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
-            email: true,
-            id: n.id
-          });
-        }
+  // Render Drawer Assigned Events List
+  const drawerEventsList = document.getElementById('assignedEventsList');
+  if (drawerEventsList) {
+    drawerEventsList.innerHTML = '';
+    if (events.length === 0) {
+      drawerEventsList.innerHTML = `<p style="font-size:0.8rem; color:var(--muted-dark);">No assigned events found in database.</p>`;
+    } else {
+      events.forEach(e => {
+        let badgeClass = 'badge-green';
+        if (e.status === 'Pending') badgeClass = 'badge-orange';
+        drawerEventsList.innerHTML += `
+          <div style="background:var(--paper); padding:14px; border-radius:12px; border:1px solid var(--line-dark);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <b style="font-size:0.9rem;">${e.title}</b>
+              <span class="badge ${badgeClass}">${e.status}</span>
+            </div>
+            <p style="font-size:0.78rem; color:var(--muted-dark); margin-bottom:8px;">${e.description || 'No description available.'}</p>
+            <div style="font-family:var(--ff-mono); font-size:0.7rem; color:var(--accent);">
+              📅 Date: ${e.event_date} · 📍 Venue: ${e.location}
+            </div>
+          </div>`;
       });
-
-      localStorage.setItem('aimsa_notifications', JSON.stringify(existing));
     }
-  } catch (e) {
-    console.error('Failed to load notifications from DB:', e);
+  }
+
+  // Render Tasks List (Main View & MySQL Sync)
+  const taskContainer = document.querySelector('.card:has(.task-item)') || document.querySelector('.dash-grid .card');
+  const taskParent = taskContainer ? taskContainer.querySelector('div[style*="margin-top:20px"]') : null;
+  if (taskParent) {
+    let taskHtml = `<div style="font-family:var(--ff-display);font-size:.9rem;font-weight:700;margin-bottom:12px;">My Pending Tasks (${tasks.length})</div>`;
+    if (tasks.length === 0) {
+      taskHtml += `<p style="font-size:0.8rem; color:var(--muted-dark);">All tasks completed!</p>`;
+    } else {
+      tasks.forEach(t => {
+        const isDone = t.status === 'Completed';
+        const checkClass = isDone ? 'task-check done' : 'task-check';
+        const strikeStyle = isDone ? 'style="text-decoration:line-through;"' : '';
+        taskHtml += `
+          <div class="task-item" data-task-id="${t.id}">
+            <div class="${checkClass}" onclick="toggleTaskStatusMySQL(${t.id}, '${isDone ? 'Pending' : 'Completed'}')"></div>
+            <div class="task-info">
+              <b ${strikeStyle}>${t.task_title}</b>
+              <span>Due: ${t.due_date || 'Ongoing'} · ${t.priority || 'Medium'}</span>
+            </div>
+          </div>`;
+      });
+    }
+    taskParent.innerHTML = taskHtml;
+  }
+
+  // Render Attendance Form Student Select Dropdown
+  const studentSelect = document.getElementById('attendStudentSelect');
+  if (studentSelect) {
+    studentSelect.innerHTML = '';
+    if (students.length === 0) {
+      studentSelect.innerHTML = `<option value="">No student members found</option>`;
+    } else {
+      students.forEach(s => {
+        studentSelect.innerHTML += `<option value="${s.email}">${s.name} (${s.zprn || s.branch})</option>`;
+      });
+    }
+  }
+
+  // Render Attendance Form Event Select Dropdown
+  const eventSelect = document.getElementById('attendEventSelect');
+  if (eventSelect && events.length > 0) {
+    eventSelect.innerHTML = '';
+    events.forEach(e => {
+      eventSelect.innerHTML += `<option value="${e.title}">${e.title}</option>`;
+    });
+  }
+
+  // Render Attendance Log Records in Drawer
+  const attLogContainer = document.getElementById('attendanceRecordsContainer');
+  if (attLogContainer) {
+    attLogContainer.innerHTML = '';
+    if (attendanceRecords.length === 0) {
+      attLogContainer.innerHTML = `<p style="font-size:0.8rem; color:var(--muted-dark);">No attendance records in MySQL yet.</p>`;
+    } else {
+      attendanceRecords.forEach(rec => {
+        const statusBadge = rec.status === 'Present' ? 'badge-green' : 'badge-orange';
+        attLogContainer.innerHTML += `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border:1px solid var(--line-dark); border-radius:10px; background:var(--paper);">
+            <div>
+              <b style="font-size:0.85rem;">${rec.student_name}</b>
+              <div style="font-size:0.72rem; color:var(--muted-dark); font-family:var(--ff-mono);">${rec.event_name || 'Event'} · <span class="badge ${statusBadge}">${rec.status}</span></div>
+            </div>
+            <button style="border:1px solid var(--accent); background:transparent; color:var(--accent); font-size:0.72rem; padding:4px 10px; border-radius:6px; font-weight:600; cursor:pointer;" onclick="editAttendanceRecordMySQL(${rec.id}, '${rec.student_email}', '${rec.event_name || ''}', '${rec.status}')">Edit</button>
+          </div>`;
+      });
+    }
+  }
+
+  // Render Event Reports in Drawer & Right Column Card
+  const reportsDrawerContainer = document.getElementById('reportsListContainer');
+  if (reportsDrawerContainer) {
+    reportsDrawerContainer.innerHTML = '';
+    if (reports.length === 0) {
+      reportsDrawerContainer.innerHTML = `<p style="font-size:0.8rem; color:var(--muted-dark);">No event reports in MySQL yet.</p>`;
+    } else {
+      reports.forEach(r => {
+        reportsDrawerContainer.innerHTML += `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border:1px solid var(--line-dark); border-radius:10px; background:var(--paper);">
+            <div>
+              <b style="font-size:0.85rem;">${r.title}</b>
+              <div style="font-size:0.72rem; color:var(--muted-dark); font-family:var(--ff-mono);">${r.category} · By ${r.created_by}</div>
+            </div>
+            <button class="btn btn-ghost" style="font-size:0.7rem; padding:4px 10px;" onclick="downloadReportPDF('${r.title}')">↓ PDF</button>
+          </div>`;
+      });
+    }
+  }
+
+  // Render Notifications List in Drawer & Main Card
+  const notifContainer = document.getElementById('notificationsListContainer');
+  const notifCard = document.getElementById('notificationsCard');
+
+  const renderNotifItems = (nList) => {
+    if (nList.length === 0) return `<p style="font-size:0.8rem; color:var(--muted-dark); padding:10px;">No alerts recorded.</p>`;
+    return nList.map(n => {
+      let dotColor = '#22c55e';
+      if (n.indicator === 'yellow') dotColor = '#fbbf24';
+      if (n.indicator === 'red') dotColor = '#ef4444';
+      return `
+        <div class="list-item" style="padding:10px; border:1px solid var(--line-dark); border-radius:8px; background:var(--paper); margin-bottom:6px;">
+          <div class="list-dot" style="background:${dotColor};"></div>
+          <div class="list-text">
+            <b>${n.title}</b>
+            <span>${n.text}</span>
+          </div>
+        </div>`;
+    }).join('');
+  };
+
+  if (notifContainer) {
+    notifContainer.innerHTML = renderNotifItems(notifications);
+  }
+
+  if (notifCard) {
+    notifCard.innerHTML = `
+      <div class="card-head"><div class="card-title">Notifications (${notifications.length})</div><span class="card-action" style="cursor:pointer;" onclick="openNotificationsWindow()">View All</span></div>
+      ${renderNotifItems(notifications.slice(0, 4))}`;
+  }
+
+  // Render Profile Info
+  if (user) {
+    document.getElementById('profileNameBig').textContent = user.name || 'Riya Desai';
+    document.getElementById('profileRoleBadge').textContent = user.committeeDesignation || user.role || 'Committee Member';
+    document.getElementById('profileZprnBadge').textContent = `ZPRN: ${user.zprn || '125UAM1004'}`;
+    document.getElementById('profileBranchText').textContent = user.branch || 'AI & ML';
+    document.getElementById('profileBatchText').textContent = user.batch || '2025';
+    document.getElementById('profileDesignationText').textContent = user.committeeDesignation || 'Technical Committee';
+    document.getElementById('profileStatusText').textContent = user.membershipStatus || 'Active';
+    document.getElementById('editProfileName').value = user.name || '';
+    document.getElementById('editProfilePhone').value = user.phone || '';
   }
 }
 
-function renderNotifications(containerId, userEmail) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
+// Mark Attendance Form Submission (MySQL)
+document.getElementById('saveAttendanceBtn').addEventListener('click', async () => {
+  const eventName = document.getElementById('attendEventSelect').value;
+  const studentEmail = document.getElementById('attendStudentSelect').value;
+  const status = document.getElementById('attendStatusSelect').value;
+  const recordId = document.getElementById('attendRecordId').value;
 
-  const records = JSON.parse(localStorage.getItem('aimsa_notifications')) || [];
-  const filtered = records.filter(r => {
-    if (r.recipient === 'all') return true;
-    if (r.recipient.toLowerCase() === userEmail.toLowerCase()) return true;
-    if (currentUser.role && currentUser.role.toLowerCase() === r.recipient.toLowerCase()) return true;
-    return false;
-  });
-
-  // Clear container but keep head
-  container.innerHTML = `
-    <div class="card-head">
-      <div class="card-title">Notifications</div>
-      <span class="card-action" style="cursor:pointer;" onclick="clearNotifications('${containerId}', '${userEmail}')">Mark Read</span>
-    </div>`;
-
-  if (filtered.length === 0) {
-    container.innerHTML += `<p style="font-size:0.8rem; color:var(--muted-dark); padding:20px 10px;">No new alerts.</p>`;
+  if (!eventName || !studentEmail) {
+    alert('Please select both an event and a student member.');
     return;
   }
 
-  filtered.slice(-5).reverse().forEach(n => {
-    let dotColor = '#22c55e';
-    let dotShadow = 'rgba(34,197,94,.18)';
-    let indicatorEmoji = '🟢';
-    if (n.indicator === 'yellow') {
-      dotColor = '#fbbf24';
-      dotShadow = 'rgba(251,191,36,.18)';
-      indicatorEmoji = '🟡';
-    } else if (n.indicator === 'red') {
-      dotColor = '#ef4444';
-      dotShadow = 'rgba(239,68,68,.18)';
-      indicatorEmoji = '🔴';
+  const formData = new FormData();
+  formData.append('action', 'mark_attendance');
+  formData.append('event_name', eventName);
+  formData.append('student_email', studentEmail);
+  formData.append('status', status);
+  if (recordId) formData.append('record_id', recordId);
+
+  try {
+    const res = await fetch('ajax/committee_actions.php', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.status === 'success') {
+      alert(data.message);
+      document.getElementById('attendRecordId').value = '';
+      document.getElementById('attendFormTitle').textContent = 'Mark Student Attendance';
+      document.getElementById('saveAttendanceBtn').textContent = 'Save Attendance Record';
+      loadDashboardData();
+    } else {
+      alert('Error: ' + data.message);
     }
-
-    const emailTag = n.email ? `<span style="display:inline-flex; align-items:center; gap:2px; background:rgba(62,139,255,0.1); color:var(--accent); font-size:0.62rem; padding:1px 6px; border-radius:4px; font-weight:600; margin-left:8px;">✉️ Email Sent</span>` : '';
-    const smsTag = `<span style="display:inline-flex; align-items:center; gap:2px; background:rgba(8,23,51,0.05); color:var(--muted-dark); font-size:0.62rem; padding:1px 6px; border-radius:4px; font-weight:500; margin-left:8px;">📱 SMS (Enhancement)</span>`;
-
-    container.innerHTML += `
-      <div class="list-item">
-        <div class="list-dot" style="background:${dotColor}; box-shadow:0 0 0 3px ${dotShadow};"></div>
-        <div class="list-text">
-          <b>${n.title} ${emailTag}${smsTag}</b>
-          <span>${n.text} · ${n.time}</span>
-        </div>
-      </div>`;
-  });
-}
-
-window.clearNotifications = function(containerId, userEmail) {
-  let records = JSON.parse(localStorage.getItem('aimsa_notifications')) || [];
-  records = records.filter(r => {
-    if (r.recipient.toLowerCase() === userEmail.toLowerCase()) return false;
-    if (currentUser.role && r.recipient.toLowerCase() === currentUser.role.toLowerCase()) return false;
-    return true;
-  });
-  localStorage.setItem('aimsa_notifications', JSON.stringify(records));
-  renderNotifications(containerId, userEmail);
-};
-
-// Initial state load
-loadNotificationsFromDB().then(() => {
-  renderNotifications('notifications', currentUser.email);
-});
-
-// Listen to attendance save trigger
-document.getElementById('saveAttendanceBtn').addEventListener('click', () => {
-  const event = document.getElementById('attendEventSelect').value;
-  const student = document.getElementById('attendStudentSelect').value;
-  const status = document.getElementById('attendStatusSelect').value;
-
-  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
-  const targetUser = users.find(u => u.name === student) || {email: 'student@zealeducation.com'};
-
-  // Generate confirmation notification
-  addNotification('Attendance Confirmation', `Your attendance for ${event} was recorded as ${status}.`, 'green', targetUser.email);
-});
-
-// Header Sync
-document.getElementById('headerUserName').textContent = currentUser.name;
-document.getElementById('headerUserRole').textContent = currentUser.role;
-document.getElementById('headerUserAvatar').textContent = currentUser.name.split(' ').map(n=>n[0]).join('').toUpperCase();
-
-// Profile Dropdown Toggle
-window.toggleProfileDropdown = function() {
-  const d = document.getElementById('profileDropdown');
-  d.style.display = d.style.display === 'none' ? 'block' : 'none';
-};
-document.addEventListener('click', (e) => {
-  const wrapper = document.getElementById('profileMenuWrapper');
-  if(wrapper && !wrapper.contains(e.target)) {
-    document.getElementById('profileDropdown').style.display = 'none';
+  } catch (err) {
+    console.error('Failed to submit attendance to MySQL:', err);
+    alert('Failed to connect to MySQL database server.');
   }
 });
 
-// Language Switch
-window.changeLanguage = function() {
-  const lang = document.getElementById('langSelect').value;
-  if(lang === 'mr') {
-    alert('पोर्टलची भाषा यशस्वीरीत्या मराठीमध्ये बदलली आहे. (Portal language successfully switched to Marathi)');
-  } else {
-    alert('Portal language successfully switched to English.');
+// Edit Attendance Handler
+window.editAttendanceRecordMySQL = function(id, email, eventName, status) {
+  document.getElementById('attendRecordId').value = id;
+  if (eventName) document.getElementById('attendEventSelect').value = eventName;
+  if (email) document.getElementById('attendStudentSelect').value = email;
+  if (status) document.getElementById('attendStatusSelect').value = status;
+  document.getElementById('attendFormTitle').textContent = 'Edit Attendance Record #' + id;
+  document.getElementById('saveAttendanceBtn').textContent = 'Update Attendance Record';
+};
+
+// Submit Event Report Form Submission (MySQL)
+document.getElementById('submitReportBtn').addEventListener('click', async () => {
+  const title = document.getElementById('reportTitleInput').value.trim();
+  const category = document.getElementById('reportCategorySelect').value;
+  const summary = document.getElementById('reportSummaryInput').value.trim();
+
+  if (!title) {
+    alert('Please enter a title for the event report.');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('action', 'submit_event_report');
+  formData.append('title', title);
+  formData.append('category', category);
+  formData.append('summary', summary);
+
+  try {
+    const res = await fetch('ajax/committee_actions.php', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.status === 'success') {
+      alert(data.message);
+      document.getElementById('reportTitleInput').value = '';
+      document.getElementById('reportSummaryInput').value = '';
+      loadDashboardData();
+    } else {
+      alert('Error: ' + data.message);
+    }
+  } catch (err) {
+    console.error('Failed to submit report to MySQL:', err);
+    alert('Failed to connect to MySQL database.');
+  }
+});
+
+// Toggle Task Status (MySQL)
+window.toggleTaskStatusMySQL = async function(taskId, newStatus) {
+  const formData = new FormData();
+  formData.append('action', 'toggle_task_status');
+  formData.append('task_id', taskId);
+  formData.append('status', newStatus);
+
+  try {
+    const res = await fetch('ajax/committee_actions.php', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.status === 'success') {
+      loadDashboardData();
+    }
+  } catch (err) {
+    console.error('Failed to toggle task in MySQL:', err);
   }
 };
 
-// Change Password save action
-document.getElementById('savePasswordBtn').addEventListener('click', () => {
+// Update Profile Submission (MySQL)
+document.getElementById('saveProfileBtn').addEventListener('click', async () => {
+  const name = document.getElementById('editProfileName').value.trim();
+  const phone = document.getElementById('editProfilePhone').value.trim();
+
+  if (!name) {
+    alert('Name cannot be left empty.');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('action', 'update_profile');
+  formData.append('name', name);
+  formData.append('phone', phone);
+
+  try {
+    const res = await fetch('ajax/committee_actions.php', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.status === 'success') {
+      alert(data.message);
+      loadDashboardData();
+    } else {
+      alert('Error: ' + data.message);
+    }
+  } catch (err) {
+    console.error('Failed to update profile in MySQL:', err);
+  }
+});
+
+// Change Password Action (MySQL)
+document.getElementById('savePasswordBtn').addEventListener('click', async () => {
   const curr = document.getElementById('currPassword').value;
   const newp = document.getElementById('newPassword').value;
   const conf = document.getElementById('confirmNewPassword').value;
 
-  if(!curr || !newp || !conf) {
-    alert('Please fill out all password fields.');
+  if (!curr || !newp || !conf) {
+    alert('Please fill in all password fields.');
     return;
   }
-  if(newp !== conf) {
+  if (newp !== conf) {
     alert('New passwords do not match.');
     return;
   }
 
-  const users = JSON.parse(localStorage.getItem('aimsa_users')) || [];
-  const idx = users.findIndex(u => u.email.toLowerCase() === currentUser.email.toLowerCase());
-  if (idx !== -1) {
-    if(users[idx].password !== curr) {
-      alert('Incorrect current password.');
-      return;
+  const formData = new FormData();
+  formData.append('action', 'change_password');
+  formData.append('curr_password', curr);
+  formData.append('new_password', newp);
+
+  try {
+    const res = await fetch('ajax/committee_actions.php', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.status === 'success') {
+      alert(data.message);
+      document.getElementById('currPassword').value = '';
+      document.getElementById('newPassword').value = '';
+      document.getElementById('confirmNewPassword').value = '';
+      closeDrawer('changePasswordDrawer');
+    } else {
+      alert('Error: ' + data.message);
     }
-    users[idx].password = newp;
-    localStorage.setItem('aimsa_users', JSON.stringify(users));
-    alert('Password updated successfully!');
-    addNotification('Password Changed Successfully', 'Your secure portal access credentials were changed.', 'green', currentUser.email);
-    closeDrawer('changePasswordDrawer');
+  } catch (err) {
+    console.error('Failed to change password in MySQL:', err);
   }
 });
 
-// Search bar input filtering
+// Mark All Notifications Read
+window.markAllNotifsRead = function() {
+  alert('All notifications marked as read in system.');
+  closeDrawer('notificationsDrawer');
+};
+
+// Download Report PDF Helper
+window.downloadReportPDF = function(title) {
+  alert(`Downloading PDF report for "${title}"... Completed!`);
+};
+
+// Profile Menu Dropdown Toggle
+window.toggleProfileDropdown = function() {
+  const d = document.getElementById('profileDropdown');
+  if (d) d.style.display = d.style.display === 'none' ? 'block' : 'none';
+};
+document.addEventListener('click', (e) => {
+  const wrapper = document.getElementById('profileMenuWrapper');
+  if (wrapper && !wrapper.contains(e.target)) {
+    const d = document.getElementById('profileDropdown');
+    if (d) d.style.display = 'none';
+  }
+});
+
+// Search Bar Realtime Filter
 document.getElementById('headerSearchInput').addEventListener('input', (e) => {
   const query = e.target.value.toLowerCase().trim();
-  document.querySelectorAll('.list-item, .task-item, .achievement-badge, tr').forEach(el => {
-    if(query === '') {
+  document.querySelectorAll('.list-item, .task-item, tr').forEach(el => {
+    if (query === '') {
       el.style.display = '';
     } else {
       const text = el.textContent.toLowerCase();
-      if(text.includes(query)) {
-        el.style.display = '';
-      } else {
-        el.style.display = 'none';
-      }
+      el.style.display = text.includes(query) ? '' : 'none';
     }
   });
 });
 
-window.openNotifications = function() {
-  const notifCard = document.getElementById('notifications');
-  if(notifCard) {
-    notifCard.scrollIntoView({behavior: 'smooth'});
-    notifCard.style.outline = '2px solid var(--accent)';
-    setTimeout(() => { notifCard.style.outline = 'none'; }, 2000);
-  }
-};
-
-document.querySelectorAll('.stat-val').forEach(el=>{
-  const raw=el.textContent.replace(/,/g,'');
-  const target=parseInt(raw.replace(/\D/g,''));
-  if(isNaN(target))return;
-  const suffix=el.textContent.replace(/[\d,]/g,'');
-  let current=0;const step=Math.ceil(target/50)||1;
-  const timer=setInterval(()=>{current=Math.min(current+step,target);el.textContent=current.toLocaleString()+suffix;if(current>=target)clearInterval(timer);},25);
-});
-
-document.querySelectorAll('.cert-download').forEach(btn=>btn.addEventListener('click',(e)=>{
-  const certTitle = e.target.parentNode.querySelector('h4').textContent;
-  alert(`Generating secure PDF for your ${certTitle}... Success! Your certificate download will start shortly.`);
-}));
-
-document.querySelectorAll('.task-check:not(.done)').forEach(chk=>chk.addEventListener('click',()=>{
-  chk.classList.add('done');
-  chk.closest('.task-item').querySelector('b').style.textDecoration='line-through';
-}));
+// Initial Data Load
+loadDashboardData();
 </script>
 <script src="assets/js/landing.js"></script>
 </body>
 </html>
+

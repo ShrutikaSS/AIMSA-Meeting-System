@@ -367,6 +367,42 @@ function setupDatabaseTables($pdo) {
             }
         }
 
+        // 12. Committee Tasks Table
+        $pdo->exec("CREATE TABLE IF NOT EXISTS `committee_tasks` (
+            `id` INT AUTO_INCREMENT PRIMARY KEY,
+            `user_id` INT DEFAULT 0,
+            `task_title` VARCHAR(255) NOT NULL,
+            `description` TEXT NULL,
+            `due_date` VARCHAR(50) NULL,
+            `priority` VARCHAR(50) DEFAULT 'Medium',
+            `status` VARCHAR(50) DEFAULT 'Pending',
+            `assigned_to_email` VARCHAR(255) DEFAULT 'committee@zealeducation.com',
+            `assigned_to_name` VARCHAR(255) DEFAULT 'Riya Desai',
+            `created_by` VARCHAR(255) DEFAULT 'Karan Mehta (President)',
+            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+        // Alter table if created with older schema
+        try { $pdo->exec("ALTER TABLE `committee_tasks` ADD COLUMN `description` TEXT NULL AFTER `task_title`;"); } catch (Exception $e) {}
+        try { $pdo->exec("ALTER TABLE `committee_tasks` ADD COLUMN `assigned_to_email` VARCHAR(255) DEFAULT 'committee@zealeducation.com' AFTER `status`;"); } catch (Exception $e) {}
+        try { $pdo->exec("ALTER TABLE `committee_tasks` ADD COLUMN `assigned_to_name` VARCHAR(255) DEFAULT 'Riya Desai' AFTER `assigned_to_email`;"); } catch (Exception $e) {}
+        try { $pdo->exec("ALTER TABLE `committee_tasks` ADD COLUMN `created_by` VARCHAR(255) DEFAULT 'Karan Mehta (President)' AFTER `assigned_to_name`;"); } catch (Exception $e) {}
+
+        $stmt = $pdo->query("SELECT COUNT(*) FROM `committee_tasks`");
+        if ($stmt->fetchColumn() == 0) {
+            $defaultTasks = [
+                [13, 'Finalize Tech Symposium stage setup plan', 'Coordinate stage lighting, sound system and banner setup.', '2026-07-25', 'High Priority', 'Pending', 'committee@zealeducation.com', 'Riya Desai', 'Karan Mehta (President)'],
+                [13, 'Collect registration forms — AI Workshop', 'Verify Google form entries and compile list of participants.', '2026-07-20', 'Medium Priority', 'Completed', 'committee@zealeducation.com', 'Riya Desai', 'Prof. Meera Nair'],
+                [13, 'Submit Hackathon team details', 'Gather hackathon team lists and submit to core committee.', '2026-08-10', 'Medium Priority', 'Pending', 'committee@zealeducation.com', 'Riya Desai', 'Karan Mehta (President)'],
+                [13, 'Prepare attendance sheets for ML Guest Lecture', 'Print attendance rosters for Seminar Hall 2 entrance.', '2026-08-20', 'Normal Priority', 'Pending', 'committee@zealeducation.com', 'Riya Desai', 'Prof. Meera Nair']
+            ];
+
+            $insertTask = $pdo->prepare("INSERT INTO `committee_tasks` (`user_id`, `task_title`, `description`, `due_date`, `priority`, `status`, `assigned_to_email`, `assigned_to_name`, `created_by`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            foreach ($defaultTasks as $t) {
+                $insertTask->execute($t);
+            }
+        }
+
         return true;
     } catch (PDOException $e) {
         error_log("Database Table Setup Failed: " . $e->getMessage());
