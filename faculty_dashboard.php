@@ -320,8 +320,8 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 
   <div class="content">
     <div class="section-eyebrow" data-i18n="dash.faculty_eyebrow">Faculty Coordinator</div>
-    <div class="content-title">Welcome, Prof. Nair 👋</div>
-    <div class="content-sub">Your faculty oversight portal — <span class="liveDateText"><?php echo date('F j, Y'); ?></span></div>
+    <div class="content-title">Good Morning, <?= htmlspecialchars($sessionUser['name'] ?? 'Prof. Manisha Devgunde') ?> 👋</div>
+    <div class="content-sub">Your faculty oversight portal — <span class="liveDateText"><?php echo $sqlCurrentDateFormatted; ?></span></div>
 
     <!-- STATS — Approved Events, Pending Events, Member Stats, Attendance -->
     <div class="stats-grid">

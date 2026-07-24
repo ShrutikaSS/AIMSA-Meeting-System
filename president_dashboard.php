@@ -323,8 +323,8 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 
   <div class="content">
     <div class="section-eyebrow" data-i18n="dash.president_eyebrow">Association President</div>
-    <div class="content-title">Hey, Varad! ⭐</div>
-    <div class="content-sub">AIMSA leadership dashboard — <span class="liveDateText"><?php echo date('F j, Y'); ?></span></div>
+    <div class="content-title">Good Morning, <?= htmlspecialchars($sessionUser['name'] ?? 'Varad') ?> 👋</div>
+    <div class="content-sub">AIMSA leadership dashboard — <span class="liveDateText"><?php echo $sqlCurrentDateFormatted; ?></span></div>
 
     <!-- STATS -->
     <div class="stats-grid">

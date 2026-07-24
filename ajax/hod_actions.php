@@ -172,9 +172,27 @@ try {
             $stmt = $pdo->query("SELECT * FROM `gallery` ORDER BY `id` DESC");
             $gallery = $stmt->fetchAll();
 
+            // Current HOD Profile Data
+            $hodEmail = $_SESSION['user']['email'] ?? 'hod.aiml@zealeducation.com';
+            $stmtUser = $pdo->prepare("SELECT `id`, `name`, `email`, `role`, `branch`, `batch`, `zprn`, `membershipStatus` FROM `users` WHERE LOWER(`email`) = LOWER(?) OR `role` IN ('HOD', 'Head of Department') LIMIT 1");
+            $stmtUser->execute([$hodEmail]);
+            $currentUserData = $stmtUser->fetch();
+            if (!$currentUserData) {
+                $currentUserData = (object)[
+                    'name' => $_SESSION['user']['name'] ?? 'Dr. Dipali Shende',
+                    'email' => $hodEmail,
+                    'role' => 'Head of Department',
+                    'branch' => 'AI & ML',
+                    'batch' => 'N/A',
+                    'zprn' => $_SESSION['user']['zprn'] ?? 'HOD-AIML-001',
+                    'membershipStatus' => 'Active'
+                ];
+            }
+
             echo json_encode([
                 'status' => 'success',
                 'data' => [
+                    'user' => $currentUserData,
                     'stats' => [
                         'total_members' => $total_members,
                         'committee_members' => $committee_members,
@@ -195,6 +213,30 @@ try {
                     'gallery' => $gallery
                 ]
             ]);
+            break;
+
+        // ── HOD PROFILE UPDATE ──
+        case 'update_profile':
+            $name = trim($_POST['name'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $zprn = trim($_POST['zprn'] ?? '');
+
+            if (empty($name) || empty($email)) {
+                echo json_encode(['status' => 'error', 'message' => 'Name and Email are required.']);
+                exit;
+            }
+
+            $currentEmail = $_SESSION['user']['email'] ?? '';
+            $stmt = $pdo->prepare("UPDATE `users` SET `name` = ?, `email` = ?, `zprn` = ? WHERE LOWER(`email`) = LOWER(?) OR `role` IN ('HOD', 'Head of Department')");
+            $stmt->execute([$name, $email, $zprn, $currentEmail]);
+
+            if (isset($_SESSION['user'])) {
+                $_SESSION['user']['name'] = $name;
+                $_SESSION['user']['email'] = $email;
+                if (!empty($zprn)) $_SESSION['user']['zprn'] = $zprn;
+            }
+
+            echo json_encode(['status' => 'success', 'message' => 'HOD Profile updated successfully in database.']);
             break;
 
         // ── 2. QUICK ACTION: ADD MEMBER ──
