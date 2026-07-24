@@ -217,13 +217,15 @@ try {
             $stmtPass->execute([$sessionUserEmail]);
             $userRow = $stmtPass->fetch();
 
-            if (!$userRow || $userRow->password !== $currPassword) {
+            $pwdMatch = ($userRow->password === $currPassword) || password_verify($currPassword, $userRow->password);
+            if (!$userRow || !$pwdMatch) {
                 echo json_encode(['status' => 'error', 'message' => 'Incorrect current password.']);
                 exit;
             }
 
+            $hashedNewPassword = password_hash($newPassword, PASSWORD_BCRYPT);
             $stmtUpdPass = $pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
-            $stmtUpdPass->execute([$newPassword, $userRow->id]);
+            $stmtUpdPass->execute([$hashedNewPassword, $userRow->id]);
 
             // Save notification
             $stmtN = $pdo->prepare("INSERT INTO notifications (title, text, indicator, recipient, email_sent) VALUES (?, ?, 'green', ?, 1)");

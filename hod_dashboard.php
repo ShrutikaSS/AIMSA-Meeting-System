@@ -3,6 +3,12 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 require_once __DIR__ . '/include/dbConfig.php';
+
+$sessionUser = $_SESSION['user'] ?? null;
+if (!$sessionUser || !in_array($sessionUser['role'] ?? '', ['HOD', 'Head of Department'])) {
+    header("Location: index.php?auth_error=" . urlencode("Unauthorized access. Please login with HOD credentials."));
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

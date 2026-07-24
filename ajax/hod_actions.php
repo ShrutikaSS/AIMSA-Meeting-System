@@ -215,8 +215,9 @@ try {
                 exit;
             }
 
+            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
             $stmt = $pdo->prepare("INSERT INTO `users` (`name`, `email`, `password`, `role`, `branch`, `batch`, `membershipStatus`) VALUES (?, ?, ?, ?, ?, ?, 'Active')");
-            $stmt->execute([$name, $email, $password, $role, $branch, $batch]);
+            $stmt->execute([$name, $email, $hashedPassword, $role, $branch, $batch]);
 
             // Add notification
             $notifStmt = $pdo->prepare("INSERT INTO `notifications` (`title`, `text`, `indicator`, `recipient`) VALUES (?, ?, 'green', ?)");

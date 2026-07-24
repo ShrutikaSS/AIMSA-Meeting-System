@@ -142,9 +142,12 @@ try {
                 exit;
             }
 
+            // Hash password before insertion
+            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
             // Insert new user into DB as Active
             $insert = $pdo->prepare("INSERT INTO `users` (`name`, `email`, `password`, `role`, `branch`, `batch`, `membershipStatus`, `zprn`) VALUES (?, ?, ?, ?, 'AI & ML', '2026', 'Active', ?)");
-            $insert->execute([$name, $email, $password, $role, $zprn]);
+            $insert->execute([$name, $email, $hashedPassword, $role, $zprn]);
             $newId = $pdo->lastInsertId();
 
             $newUser = [
@@ -245,9 +248,10 @@ try {
                 exit;
             }
 
-            // Save new reset password to database
+            // Save new reset password to database with password_hash
+            $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
             $update = $pdo->prepare("UPDATE `users` SET `password` = :password WHERE `id` = :id");
-            $update->execute([':password' => $newPassword, ':id' => $user->id]);
+            $update->execute([':password' => $hashedPassword, ':id' => $user->id]);
 
             // Create notification record
             try {

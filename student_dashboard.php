@@ -5,6 +5,10 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once __DIR__ . '/include/dbConfig.php';
 
 $sessionUser = $_SESSION['user'] ?? null;
+if (!$sessionUser) {
+    header("Location: index.php?auth_error=" . urlencode("Unauthorized access. Please login to access your portal."));
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

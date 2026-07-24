@@ -36,7 +36,7 @@ try {
             $uniqueName = time() . '_' . preg_replace('/[^a-zA-Z0-9_\.-]/', '_', $fileName);
             $uploadDir = __DIR__ . '/../uploads/gallery/';
             if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
+                mkdir($uploadDir, 0755, true);
             }
 
             $targetPath = $uploadDir . $uniqueName;

@@ -6,6 +6,10 @@ require_once __DIR__ . '/include/dbConfig.php';
 require_once __DIR__ . '/include/dbSetup.php';
 
 $sessionUser = $_SESSION['user'] ?? null;
+if (!$sessionUser) {
+    header("Location: index.php?auth_error=" . urlencode("Please login to access the interactive Event Calendar."));
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

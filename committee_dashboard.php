@@ -5,6 +5,10 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once __DIR__ . '/include/dbConfig.php';
 
 $sessionUser = $_SESSION['user'] ?? null;
+if (!$sessionUser || !in_array($sessionUser['role'] ?? '', ['Committee Member', 'Association President', 'President', 'Faculty Coordinator', 'HOD'])) {
+    header("Location: index.php?auth_error=" . urlencode("Unauthorized access. Please login with Committee Member credentials."));
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

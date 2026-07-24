@@ -334,8 +334,9 @@ try {
                 exit;
             }
 
+            $hashedNewPassword = password_hash($newPassword, PASSWORD_BCRYPT);
             $stmtUpdatePass = $pdo->prepare("UPDATE `users` SET `password` = ? WHERE LOWER(`email`) = LOWER(?)");
-            $stmtUpdatePass->execute([$newPassword, $userEmail]);
+            $stmtUpdatePass->execute([$hashedNewPassword, $userEmail]);
 
             echo json_encode(['status' => 'success', 'message' => 'Password updated successfully in database']);
             break;
