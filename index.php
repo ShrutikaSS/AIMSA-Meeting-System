@@ -29,7 +29,7 @@ include_once __DIR__ . '/navbar.php';
       <div class="stat"><b class="counter-num" data-target="120">0</b><b>+</b><span data-i18n="hero.stat.members">Active Members</span></div>
       <div class="stat"><b class="counter-num" data-target="18">0</b><span data-i18n="hero.stat.events">Events Hosted</span></div>
       <div class="stat"><b class="counter-num" data-target="9">0</b><span data-i18n="hero.stat.roles">Committee Roles</span></div>
-      <div class="stat"><b class="counter-num" data-target="1996">0</b><span data-i18n="hero.stat.est">Institute Est.</span></div>
+      <div class="stat"><b class="counter-num" data-target="2007">0</b><span data-i18n="hero.stat.est">Institute Est.</span></div>
     </div>
   </div>
 </section>

@@ -36,7 +36,7 @@
       <span>© <span class="currentYearText"><?php echo date('Y'); ?></span> <b>Department of AIML</b>, Zeal College of Engineering and Research, Pune. All rights reserved.</span>
       <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
         <a href="#" onclick="alert('Privacy Policy: All membership data is kept strictly confidential within Zeal Society.')" style="color:inherit; text-decoration:none;">Privacy Policy</a>
-        <a href="#" onclick="alert('Terms &amp; Conditions: AIMSA portal usage is governed by college guidelines.')" style="color:inherit; text-decoration:none;">Terms &amp; Conditions</a>
+        <a href="terms.php" target="_blank" style="color:inherit; text-decoration:none;">Terms &amp; Conditions</a>
         <span style="color:var(--line);">|</span>
         <span>Version: <b>v2.1.0</b></span>
         <span>Last Updated: <b class="liveDateText"><?php echo date('F j, Y'); ?></b></span>
