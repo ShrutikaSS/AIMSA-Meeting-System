@@ -1183,6 +1183,9 @@ document.getElementById('headerSearchInput').addEventListener('input', (e) => {
 
 // Initial Data Load
 loadDashboardData();
+
+// Real-time dashboard data polling every 30s (syncs notifications)
+setInterval(loadDashboardData, 30000);
 </script>
 <script src="assets/js/landing.js"></script>
 </body>

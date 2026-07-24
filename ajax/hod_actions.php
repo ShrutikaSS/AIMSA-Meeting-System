@@ -255,6 +255,13 @@ try {
                 exit;
             }
 
+            $conflictCheck = $pdo->prepare("SELECT COUNT(*) FROM `meetings` WHERE `venue` = ? AND `meeting_date` = ? AND `meeting_time` = ? AND `status` != 'Cancelled' AND `id` != 0");
+            $conflictCheck->execute([$venue, $meetingDate, $meetingTime]);
+            if ($conflictCheck->fetchColumn() > 0) {
+                echo json_encode(['status' => 'error', 'message' => 'Slot already booked: A meeting is already scheduled at this venue, date and time.']);
+                exit;
+            }
+
             $stmt = $pdo->prepare("INSERT INTO `meetings` (`title`, `meeting_date`, `meeting_time`, `venue`, `category`, `target_audience`, `agenda`, `created_by`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Scheduled')");
             $stmt->execute([$title, $meetingDate, $meetingTime, $venue, $category, $targetAudience, $agenda, $createdBy]);
 
@@ -297,6 +304,50 @@ try {
             }
 
             echo json_encode(['status' => 'success', 'message' => "Meeting '{$meeting->title}' was cancelled and participants notified!"]);
+            break;
+
+        case 'update_meeting':
+            $meetingId = (int)($_POST['meeting_id'] ?? 0);
+            $title = trim($_POST['title'] ?? '');
+            $meetingDate = trim($_POST['meeting_date'] ?? '');
+            $meetingTime = trim($_POST['meeting_time'] ?? '10:00 AM');
+            $venue = trim($_POST['venue'] ?? 'AIML Seminar Hall');
+            $category = trim($_POST['category'] ?? 'General Body');
+            $targetAudience = trim($_POST['target_audience'] ?? 'All Members');
+            $agenda = trim($_POST['agenda'] ?? '');
+
+            if ($meetingId <= 0 || empty($title) || empty($meetingDate) || empty($venue)) {
+                echo json_encode(['status' => 'error', 'message' => 'Meeting ID, Title, Date, and Venue are required.']);
+                exit;
+            }
+
+            $stmtFetch = $pdo->prepare("SELECT * FROM `meetings` WHERE `id` = ?");
+            $stmtFetch->execute([$meetingId]);
+            $existing = $stmtFetch->fetch();
+            if (!$existing) {
+                echo json_encode(['status' => 'error', 'message' => 'Meeting record not found.']);
+                exit;
+            }
+
+            $conflictCheck = $pdo->prepare("SELECT COUNT(*) FROM `meetings` WHERE `venue` = ? AND `meeting_date` = ? AND `meeting_time` = ? AND `status` != 'Cancelled' AND `id` != ?");
+            $conflictCheck->execute([$venue, $meetingDate, $meetingTime, $meetingId]);
+            if ($conflictCheck->fetchColumn() > 0) {
+                echo json_encode(['status' => 'error', 'message' => 'Slot already booked: Another meeting is already scheduled at this venue, date and time.']);
+                exit;
+            }
+
+            $stmtUpd = $pdo->prepare("UPDATE `meetings` SET `title` = ?, `meeting_date` = ?, `meeting_time` = ?, `venue` = ?, `category` = ?, `target_audience` = ?, `agenda` = ? WHERE `id` = ?");
+            $stmtUpd->execute([$title, $meetingDate, $meetingTime, $venue, $category, $targetAudience, $agenda, $meetingId]);
+
+            try {
+                $notifText = "HOD rescheduled '{$title}' to {$meetingDate} at {$meetingTime} in {$venue}. Target: {$targetAudience}";
+                $notifStmt = $pdo->prepare("INSERT INTO `notifications` (`title`, `text`, `indicator`, `recipient`) VALUES (?, ?, 'blue', ?)");
+                $notifStmt->execute(["Meeting Rescheduled: {$title}", $notifText, $targetAudience]);
+            } catch (Exception $ne) {
+                error_log('HOD Meeting update notification error: ' . $ne->getMessage());
+            }
+
+            echo json_encode(['status' => 'success', 'message' => 'Meeting rescheduled successfully and notifications broadcasted!']);
             break;
 
         case 'get_meetings':
@@ -444,13 +495,23 @@ try {
             $stmt = $pdo->prepare("UPDATE `events` SET `status` = 'Approved' WHERE `id` = ?");
             $stmt->execute([$id]);
 
-            $eventStmt = $pdo->prepare("SELECT title, event_date FROM `events` WHERE `id` = ?");
+            $eventStmt = $pdo->prepare("SELECT title, event_date, created_by FROM `events` WHERE `id` = ?");
             $eventStmt->execute([$id]);
             $evt = $eventStmt->fetch();
 
             if ($evt) {
                 $notif = $pdo->prepare("INSERT INTO `notifications` (`title`, `text`, `indicator`, `recipient`) VALUES (?, ?, 'green', 'all')");
                 $notif->execute(["Event Approved: {$evt->title}", "HOD has officially approved {$evt->title}."]);
+
+                if ($evt->created_by) {
+                    $userStmt = $pdo->prepare("SELECT email FROM users WHERE LOWER(name) = LOWER(?) LIMIT 1");
+                    $userStmt->execute([$evt->created_by]);
+                    $creatorEmail = $userStmt->fetchColumn();
+                    if ($creatorEmail) {
+                        $notif2 = $pdo->prepare("INSERT INTO `notifications` (`title`, `text`, `indicator`, `recipient`) VALUES (?, ?, 'green', ?)");
+                        $notif2->execute(["Your Event Approved", "HOD has approved your event \"{$evt->title}\". It is now live for registrations.", $creatorEmail]);
+                    }
+                }
             }
 
             echo json_encode(['status' => 'success', 'message' => 'Event approved successfully!']);
@@ -460,6 +521,23 @@ try {
             $id = (int)($_POST['event_id'] ?? 0);
             $stmt = $pdo->prepare("UPDATE `events` SET `status` = 'Rejected' WHERE `id` = ?");
             $stmt->execute([$id]);
+
+            $eventStmt = $pdo->prepare("SELECT title, created_by FROM `events` WHERE `id` = ?");
+            $eventStmt->execute([$id]);
+            $evt = $eventStmt->fetch();
+
+            $notif = $pdo->prepare("INSERT INTO `notifications` (`title`, `text`, `indicator`, `recipient`) VALUES (?, ?, 'red', 'all')");
+            $notif->execute(["Event Rejected", $evt ? "HOD has rejected {$evt->title}." : "An event request has been rejected."]);
+
+            if ($evt && $evt->created_by) {
+                $userStmt = $pdo->prepare("SELECT email FROM users WHERE LOWER(name) = LOWER(?) LIMIT 1");
+                $userStmt->execute([$evt->created_by]);
+                $creatorEmail = $userStmt->fetchColumn();
+                if ($creatorEmail) {
+                    $notif2 = $pdo->prepare("INSERT INTO `notifications` (`title`, `text`, `indicator`, `recipient`) VALUES (?, ?, 'red', ?)");
+                    $notif2->execute(["Your Event Rejected", "HOD has rejected your event \"{$evt->title}\". Please contact HOD for details.", $creatorEmail]);
+                }
+            }
 
             echo json_encode(['status' => 'success', 'message' => 'Event request rejected.']);
             break;

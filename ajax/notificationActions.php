@@ -7,6 +7,16 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+if (!function_exists('sendEmailNotification')) {
+    function sendEmailNotification($toEmail, $subject, $body) {
+        $headers = "MIME-Version: 1.0\r\n";
+        $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+        $headers .= "From: AIMSA Association <noreply@zealeducation.com>\r\n";
+        $mailSent = @mail($toEmail, $subject, $body, $headers);
+        return $mailSent;
+    }
+}
+
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
 
 /**
@@ -96,6 +106,20 @@ try {
                 $priority = $indicator === 'red' ? 'Urgent' : ($indicator === 'yellow' ? 'Important' : 'Normal');
                 $annStmt = $pdo->prepare("INSERT INTO `announcements` (`title`, `content`, `priority`, `posted_by`, `target_audience`, `views_count`, `pinned`) VALUES (?, ?, ?, ?, ?, 1, 0)");
                 $annStmt->execute([$title, $text, $priority, $postedBy, 'All Members']);
+            }
+
+            // Send email notification if email_sent flag is set
+            if ($emailSent && !empty($recipient)) {
+                $subject = "[AIMSA] {$title}";
+                $htmlBody = "<h2>{$title}</h2><p>{$text}</p><hr><p style='color:#666;font-size:12px;'>AIMSA Association - Zeal Education</p>";
+                if (in_array(strtolower($recipient), ['all', 'all members', 'everyone', 'public'])) {
+                    $userStmt = $pdo->query("SELECT email FROM users WHERE membershipStatus = 'Active'");
+                    while ($u = $userStmt->fetch()) {
+                        sendEmailNotification($u->email, $subject, $htmlBody);
+                    }
+                } elseif (filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
+                    sendEmailNotification($recipient, $subject, $htmlBody);
+                }
             }
 
             echo json_encode(['status' => 'success', 'message' => 'Notification added', 'id' => $notifId]);

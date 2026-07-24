@@ -1337,6 +1337,9 @@ window.changeLanguage = function() {
 
 // Initial Page Load
 fetchDashboardData();
+
+// Real-time notification/data polling every 30s
+setInterval(fetchDashboardData, 30000);
 </script>
 </body>
 </html>
