@@ -1,4 +1,8 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once __DIR__ . '/../include/dbConfig.php';
 
 header('Content-Type: application/json');
@@ -246,6 +250,42 @@ try {
             $notif->execute([$email]);
 
             echo json_encode(['status' => 'success', 'message' => 'Membership application rejected.']);
+            break;
+
+        case 'change_password':
+            $email = trim($_POST['email'] ?? ($_SESSION['user']['email'] ?? ''));
+            $currentPassword = trim($_POST['current_password'] ?? '');
+            $newPassword = trim($_POST['new_password'] ?? '');
+            $confirmPassword = trim($_POST['confirm_password'] ?? '');
+
+            if (empty($email) || empty($currentPassword) || empty($newPassword) || empty($confirmPassword)) {
+                echo json_encode(['status' => 'error', 'message' => 'Please fill in all password fields.']);
+                exit;
+            }
+
+            if ($newPassword !== $confirmPassword) {
+                echo json_encode(['status' => 'error', 'message' => 'New passwords do not match.']);
+                exit;
+            }
+
+            $stmt = $pdo->prepare("SELECT `id`, `password` FROM `users` WHERE `email` = ? LIMIT 1");
+            $stmt->execute([$email]);
+            $user = $stmt->fetch();
+
+            if (!$user) {
+                echo json_encode(['status' => 'error', 'message' => 'User account not found.']);
+                exit;
+            }
+
+            if ($user->password !== $currentPassword) {
+                echo json_encode(['status' => 'error', 'message' => 'Current password is incorrect.']);
+                exit;
+            }
+
+            $updateStmt = $pdo->prepare("UPDATE `users` SET `password` = ? WHERE `email` = ?");
+            $updateStmt->execute([$newPassword, $email]);
+
+            echo json_encode(['status' => 'success', 'message' => 'Password updated successfully.']);
             break;
 
         // ── 4. QUICK ACTION: NEW EVENT & EVENT APPROVAL ──
