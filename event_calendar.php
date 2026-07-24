@@ -180,6 +180,32 @@ button, input, select{font-family:inherit;}
 .modal-body{display:flex;flex-direction:column;gap:14px;font-size:0.88rem;color:var(--navy-950);}
 .modal-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:var(--paper);padding:14px;border-radius:12px;font-family:var(--ff-mono);font-size:0.75rem;}
 .modal-footer{margin-top:20px;display:flex;justify-content:flex-end;gap:12px;}
+@media(max-width:375px){
+  .topbar{padding:12px 14px !important; flex-wrap:wrap; gap:8px;}
+  .topbar-left{gap:8px; width:100%;}
+  .topbar-right{gap:8px; flex-wrap:wrap;}
+  .page-title{font-size:.9rem;}
+  .month-header{gap:4px;}
+  .day-name{font-size:.6rem; padding:4px 0;}
+  .month-days-grid{gap:4px;}
+  .day-cell{min-height:80px; padding:6px;}
+  .day-number{font-size:.78rem;}
+  .event-pill-title{font-size:.65rem;}
+  .event-pill-meta{font-size:.55rem;}
+  .calendar-card{padding:14px;}
+  .filter-group{flex-direction:column; align-items:stretch;}
+  .search-input{width:100%;}
+  .select-input{width:100%;}
+  .view-btn-group{width:100%; justify-content:center;}
+  .event-card-item{flex-direction:column; align-items:flex-start; padding:14px;}
+  .event-date-badge{min-width:70px; padding:8px 12px;}
+  .event-date-badge .day{font-size:1.1rem;}
+  .event-action-col{width:100%; flex-direction:row; justify-content:flex-end;}
+  .side-card{padding:14px;}
+  .modal-card{padding:20px; width:94%;}
+  .modal-meta-grid{grid-template-columns:1fr; gap:6px;}
+  .event-sub-meta{flex-direction:column; gap:6px;}
+}
 </style>
 </head>
 <body>
