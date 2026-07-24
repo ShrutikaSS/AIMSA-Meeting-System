@@ -352,8 +352,8 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 
   <div class="content">
     <div class="section-eyebrow">Student Member</div>
-    <div class="content-title" id="greetingTitle">Hey, Student! 👋</div>
-    <div class="content-sub">Your AIMSA journey at a glance — <span class="liveDateText"><?php echo date('F j, Y'); ?></span></div>
+    <div class="content-title" id="greetingTitle">Good Morning, <?= htmlspecialchars($sessionUser['name'] ?? 'Student') ?>! 👋</div>
+    <div class="content-sub">Your AIMSA journey at a glance — <span class="liveDateText"><?php echo $sqlCurrentDateFormatted; ?></span></div>
 
     <!-- Membership Card -->
     <div class="membership-card" id="membership" onclick="openDrawer('membershipDrawer')" title="Click to view full digital pass & renew membership">

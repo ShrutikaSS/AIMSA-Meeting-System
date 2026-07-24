@@ -236,9 +236,9 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
     <div class="brand-info"><b>AIMSA Portal</b><span>HOD Access</span></div>
   </div>
 
-  <div class="sidebar-role">
-    <div class="role-avatar"><div class="in">HD</div></div>
-    <div class="role-info"><b>Dr. Dipali Shende</b><span>Head of Department</span></div>
+  <div class="sidebar-role" style="cursor:pointer;" onclick="openDrawer('viewProfileDrawer')" title="Click to view HOD Profile">
+    <div class="role-avatar"><div class="in" id="sidebarAvatar">HD</div></div>
+    <div class="role-info"><b id="sidebarUserName">Dr. Dipali Shende</b><span id="sidebarUserRole">Head of Department</span></div>
   </div>
 
   <nav class="sidebar-nav">
@@ -276,7 +276,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
       Certificates Generated
     </a>
 
-    <a class="nav-item" href="#reports" id="navReports" onclick="openDrawer('reportHubDrawer'); return false;">
+    <a class="nav-item" href="#reports" id="navReports">
       <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
       Reports
     </a>
@@ -287,15 +287,15 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
       Notifications
     </a>
 
-    <a class="nav-item" href="#" id="navGallery">
+    <a class="nav-item" href="#gallery" id="navGallery">
       <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
       Gallery & Documents
     </a>
 
     <div class="nav-section-label">Account</div>
-    <a class="nav-item" href="#" id="navSettings" onclick="openDrawer('changePasswordDrawer'); return false;">
-      <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-      Settings
+    <a class="nav-item" href="#profile" id="navProfile">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/></svg>
+      Profile
     </a>
   </nav>
 
@@ -353,6 +353,10 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
         <div id="profileDropdown" style="display:none; position:absolute; right:0; top:42px; background:var(--white); border:1px solid var(--line-dark); border-radius:12px; box-shadow:0 10px 25px -5px rgba(0,0,0,0.1); width:180px; z-index:150; padding:6px 0;">
+          <a href="#" onclick="openDrawer('viewProfileDrawer'); toggleProfileDropdown(); return false;" style="display:flex; align-items:center; gap:8px; padding:10px 16px; font-size:0.78rem; color:var(--navy-950); text-decoration:none; font-weight:500;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/></svg>
+            <span>My Profile</span>
+          </a>
           <a href="#" onclick="openDrawer('changePasswordDrawer'); toggleProfileDropdown(); return false;" style="display:flex; align-items:center; gap:8px; padding:10px 16px; font-size:0.78rem; color:var(--navy-950); text-decoration:none; font-weight:500;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             <span data-i18n="dash.change_password">Change Password</span>
@@ -370,8 +374,8 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   <!-- CONTENT -->
   <div class="content">
     <div class="section-eyebrow" data-i18n="dash.hod_eyebrow">HOD Overview</div>
-    <div class="content-title">Good Morning, Dr. Shende 👋</div>
-    <div class="content-sub">Here's what's happening in AIMSA today — <span class="liveDateText"><?php echo date('F j, Y'); ?></span></div>
+    <div class="content-title">Good Morning, <?= htmlspecialchars($sessionUser['name'] ?? 'Dr. Dipali Shende') ?> 👋</div>
+    <div class="content-sub">Here's what's happening in AIMSA today — <span class="liveDateText"><?php echo $sqlCurrentDateFormatted; ?></span></div>
 
     <!-- STAT CARDS -->
     <div class="stats-grid" id="members">
@@ -922,6 +926,47 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   </div>
 </div>
 
+<!-- ── DRAWER: HOD PROFILE OVERVIEW ── -->
+<div class="drawer" id="viewProfileDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">HOD Profile &amp; Account Details</div>
+    <button class="drawer-close" onclick="closeDrawer('viewProfileDrawer')">&times;</button>
+  </div>
+  <div style="text-align:center; padding:15px 0; border-bottom:1px solid var(--line-dark);">
+    <div style="width:70px; height:70px; border-radius:50%; background:conic-gradient(from 180deg,var(--accent),var(--navy-700),var(--accent)); padding:3px; margin:0 auto 10px;">
+      <div style="width:100%; height:100%; border-radius:50%; background:var(--navy-800); display:flex; align-items:center; justify-content:center; font-family:var(--ff-display); font-weight:700; color:var(--white); font-size:1.4rem;" id="hodDrawerAvatar">HD</div>
+    </div>
+    <b style="font-size:1.1rem; color:var(--navy-950); display:block;" id="hodDrawerName">Dr. Dipali Shende</b>
+    <span style="font-family:var(--ff-mono); font-size:0.72rem; color:var(--accent); letter-spacing:0.1em; text-transform:uppercase;">Head of Department · AI &amp; ML</span>
+  </div>
+  <form id="hodProfileForm" onsubmit="submitUpdateHodProfile(event)" style="margin-top:15px;">
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" id="hodProfName" value="Dr. Dipali Shende" required>
+    </div>
+    <div class="form-group">
+      <label>College Email ID</label>
+      <input type="email" id="hodProfEmail" value="hod.aiml@zealeducation.com" required>
+    </div>
+    <div class="form-group">
+      <label>Faculty ZPRN / Employee ID</label>
+      <input type="text" id="hodProfZprn" value="HOD-AIML-001" placeholder="e.g. HOD-AIML-001">
+    </div>
+    <div class="form-group">
+      <label>Department / Institution</label>
+      <input type="text" value="Artificial Intelligence &amp; Machine Learning · Zeal Education Society" readonly style="background:var(--paper-dim);">
+    </div>
+    <div class="form-group">
+      <label>Designation &amp; Status</label>
+      <input type="text" value="Head of Department (Active)" readonly style="background:var(--paper-dim);">
+    </div>
+    <button type="submit" class="btn btn-primary" style="width:100%; margin-top:10px;">Save Profile Changes</button>
+  </form>
+  <div style="border-top:1px solid var(--line-dark); margin-top:20px; padding-top:15px;">
+    <button class="btn btn-ghost" style="width:100%; text-align:center;" onclick="closeDrawer('viewProfileDrawer'); openDrawer('changePasswordDrawer');">🔒 Change Account Password</button>
+  </div>
+</div>
+
 <!-- ── DRAWER 9: CHANGE PASSWORD DRAWER ── -->
 <div class="drawer" id="changePasswordDrawer">
   <div class="drawer-header">
@@ -945,25 +990,64 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 
 <!-- ══ JAVASCRIPT LOGIC ══ -->
 <script>
-const sidebar = document.getElementById('sidebar'), overlay = document.getElementById('sidebarOverlay'), hamburger = document.getElementById('hamburgerBtn');
-hamburger.addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('open'); });
-overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); closeAllDrawers(); });
+const sidebar = document.getElementById('sidebar'),
+      overlay = document.getElementById('sidebarOverlay'),
+      hamburger = document.getElementById('hamburgerBtn');
 
-function openDrawer(id) {
+if (hamburger) {
+  hamburger.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    if (overlay) overlay.classList.toggle('open');
+  });
+}
+
+if (overlay) {
+  overlay.addEventListener('click', () => {
+    if (sidebar) sidebar.classList.remove('open');
+    if (overlay) overlay.classList.remove('open');
+    closeAllDrawers();
+  });
+}
+
+function setActiveNavItem(activeId) {
+  document.querySelectorAll('.sidebar-nav .nav-item').forEach(item => {
+    item.classList.toggle('active', item.id === activeId);
+  });
+}
+
+function openDrawer(id, navId = null) {
   closeAllDrawers();
   const d = document.getElementById(id);
   if (d) d.classList.add('open');
-  overlay.classList.add('open');
+  if (overlay) overlay.classList.add('open');
+  if (navId) setActiveNavItem(navId);
 }
 
 function closeDrawer(id) {
   const d = document.getElementById(id);
   if (d) d.classList.remove('open');
-  overlay.classList.remove('open');
+  if (!document.querySelector('.drawer.open')) {
+    if (overlay) overlay.classList.remove('open');
+    setActiveNavItem('navDashboard');
+  }
 }
 
 function closeAllDrawers() {
   document.querySelectorAll('.drawer').forEach(d => d.classList.remove('open'));
+  if (overlay) overlay.classList.remove('open');
+}
+
+function switchEventTab(tab) {
+  const btnCreate = document.getElementById('tabCreateEvt');
+  const btnApprove = document.getElementById('tabApproveEvt');
+  const fCreate = document.getElementById('createEventForm');
+  const cPending = document.getElementById('pendingEventsContainer');
+
+  if (btnCreate) btnCreate.classList.toggle('active', tab === 'create');
+  if (btnApprove) btnApprove.classList.toggle('active', tab === 'approve');
+
+  if (fCreate) fCreate.style.display = tab === 'create' ? 'block' : 'none';
+  if (cPending) cPending.style.display = tab === 'approve' ? 'flex' : 'none';
 }
 
 function switchGrowthTab(tab) {
@@ -982,26 +1066,44 @@ function switchGrowthTab(tab) {
   if (cMatrix) cMatrix.style.display = tab === 'matrix' ? 'flex' : 'none';
 }
 
-document.getElementById('navGallery').addEventListener('click', (e) => {
-  e.preventDefault();
-  openDrawer('galleryDrawer');
+// ── FULL SIDEBAR NAVIGATION ENGINE ──
+const navMap = [
+  { id: 'navDashboard', target: 'top', type: 'scroll' },
+  { id: 'navMembers', target: 'membersDrawer', section: 'members', type: 'drawer' },
+  { id: 'navCommittee', target: 'committeeDrawer', section: 'committee', type: 'drawer' },
+  { id: 'navEvents', target: 'newEventDrawer', section: 'events', type: 'drawer', tab: 'create' },
+  { id: 'navUpcoming', target: 'newEventDrawer', section: 'upcoming', type: 'drawer', tab: 'approve' },
+  { id: 'navCerts', target: 'certGeneratorDrawer', section: 'certificates', type: 'drawer' },
+  { id: 'navReports', target: 'reportHubDrawer', section: 'reports', type: 'drawer' },
+  { id: 'navNotif', target: 'notifyAllDrawer', section: 'notifications', type: 'drawer' },
+  { id: 'navGallery', target: 'galleryDrawer', type: 'drawer' },
+  { id: 'navProfile', target: 'viewProfileDrawer', type: 'drawer' }
+];
+
+navMap.forEach(item => {
+  const el = document.getElementById(item.id);
+  if (!el) return;
+  el.addEventListener('click', (e) => {
+    e.preventDefault();
+    setActiveNavItem(item.id);
+
+    if (window.innerWidth <= 992 && sidebar) {
+      sidebar.classList.remove('open');
+    }
+
+    if (item.type === 'scroll') {
+      closeAllDrawers();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (item.type === 'drawer') {
+      if (item.tab) switchEventTab(item.tab);
+      openDrawer(item.target, item.id);
+      if (item.section) {
+        const secEl = document.getElementById(item.section);
+        if (secEl) secEl.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  });
 });
-
-const navReports = document.getElementById('navReports');
-if (navReports) {
-  navReports.addEventListener('click', (e) => {
-    e.preventDefault();
-    openDrawer('reportHubDrawer');
-  });
-}
-
-const navSettings = document.getElementById('navSettings');
-if (navSettings) {
-  navSettings.addEventListener('click', (e) => {
-    e.preventDefault();
-    openDrawer('changePasswordDrawer');
-  });
-}
 
 // Profile dropdown
 window.toggleProfileDropdown = function() {
@@ -1035,6 +1137,25 @@ function fetchDashboardData() {
 
 // ── RENDER DASHBOARD UI ──
 function renderDashboard(data) {
+  // Populate User Profile
+  if (data.user) {
+    const userName = data.user.name || 'Dr. Dipali Shende';
+    const userEmail = data.user.email || 'hod.aiml@zealeducation.com';
+    const userZprn = data.user.zprn || 'HOD-AIML-001';
+
+    if (document.getElementById('hodProfName')) document.getElementById('hodProfName').value = userName;
+    if (document.getElementById('hodProfEmail')) document.getElementById('hodProfEmail').value = userEmail;
+    if (document.getElementById('hodProfZprn')) document.getElementById('hodProfZprn').value = userZprn;
+    if (document.getElementById('hodDrawerName')) document.getElementById('hodDrawerName').textContent = userName;
+    if (document.getElementById('sidebarUserName')) document.getElementById('sidebarUserName').textContent = userName;
+    if (document.getElementById('headerUserName')) document.getElementById('headerUserName').textContent = userName;
+
+    const initials = userName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'HD';
+    if (document.getElementById('hodDrawerAvatar')) document.getElementById('hodDrawerAvatar').textContent = initials;
+    if (document.getElementById('sidebarAvatar')) document.getElementById('sidebarAvatar').textContent = initials;
+    if (document.getElementById('headerUserAvatar')) document.getElementById('headerUserAvatar').textContent = initials;
+  }
+
   // Stat cards
   document.getElementById('statTotalMembers').textContent = data.stats.total_members;
   document.getElementById('statCommittee').textContent = data.stats.committee_members;
@@ -1723,6 +1844,27 @@ window.deleteGalleryItem = function(id) {
       fetchDashboardData();
     });
 };
+
+// HOD Profile Save Action
+function submitUpdateHodProfile(e) {
+  e.preventDefault();
+  const formData = new FormData();
+  formData.append('action', 'update_profile');
+  formData.append('name', document.getElementById('hodProfName').value.trim());
+  formData.append('email', document.getElementById('hodProfEmail').value.trim());
+  formData.append('zprn', document.getElementById('hodProfZprn').value.trim());
+
+  fetch('ajax/hod_actions.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(res => {
+      alert(res.message);
+      if (res.status === 'success') {
+        fetchDashboardData();
+        closeDrawer('viewProfileDrawer');
+      }
+    })
+    .catch(() => alert('Failed to update profile details.'));
+}
 
 // Change password save action
 document.getElementById('savePasswordBtn').addEventListener('click', () => {

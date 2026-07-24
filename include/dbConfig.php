@@ -30,4 +30,21 @@ try {
 if ($pdo) {
     require_once __DIR__ . '/dbSetup.php';
 }
+
+// ── MYSQL DATE & TIME MODULE ──
+$sqlCurrentDateFormatted = date('F j, Y');
+$sqlFullDateFormatted = date('l, F j, Y');
+
+if ($pdo) {
+    try {
+        $stmtDate = $pdo->query("SELECT DATE_FORMAT(NOW(), '%W, %M %e, %Y') AS `full_date`, DATE_FORMAT(NOW(), '%M %e, %Y') AS `std_date`");
+        $sqlDateRow = $stmtDate->fetch(PDO::FETCH_ASSOC);
+        if ($sqlDateRow && !empty($sqlDateRow['std_date'])) {
+            $sqlCurrentDateFormatted = $sqlDateRow['std_date'];
+            $sqlFullDateFormatted = $sqlDateRow['full_date'];
+        }
+    } catch (Exception $e) {
+        error_log("SQL Date Module query error: " . $e->getMessage());
+    }
+}
 ?>
