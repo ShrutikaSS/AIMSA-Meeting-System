@@ -65,6 +65,50 @@ try {
             echo json_encode(['status' => 'success', 'message' => 'Event approved']);
             break;
 
+        case 'getLandingEvents':
+            $items = [];
+            $titleSeen = [];
+            try {
+                $stmt = $pdo->query("SELECT `id`, `title`, `description`, `event_date` as `date`, '10:00 AM' as `time`, `location` as `venue`, 'Departmental Event' as `category`, 'All Members' as `target_audience`, `created_by` 
+                                    FROM `events` 
+                                    WHERE `status` = 'Approved' OR `status` = 'Scheduled'
+                                    ORDER BY `event_date` ASC");
+                $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                if ($events) {
+                    foreach ($events as $ev) {
+                        $normTitle = strtolower(trim($ev['title']));
+                        if (!isset($titleSeen[$normTitle])) {
+                            $titleSeen[$normTitle] = true;
+                            $items[] = $ev;
+                        }
+                    }
+                }
+            } catch (Exception $e) {}
+
+            try {
+                $stmt2 = $pdo->query("SELECT `id`, `title`, CONCAT(`title`, ' — Official department meeting scheduled for ', `target_audience`, '.') as `description`, `meeting_date` as `date`, `meeting_time` as `time`, `venue`, `category`, `target_audience`, COALESCE(`verified_by`, 'Faculty Coordinator') as `created_by` 
+                                     FROM `meetings` 
+                                     WHERE `status` != 'Completed' AND `status` != 'Cancelled'
+                                     ORDER BY `meeting_date` ASC");
+                $meetings = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+                if ($meetings) {
+                    foreach ($meetings as $mt) {
+                        $normTitle = strtolower(trim($mt['title']));
+                        if (!isset($titleSeen[$normTitle])) {
+                            $titleSeen[$normTitle] = true;
+                            $items[] = $mt;
+                        }
+                    }
+                }
+            } catch (Exception $e) {}
+
+            usort($items, function($a, $b) {
+                return strtotime($a['date']) - strtotime($b['date']);
+            });
+
+            echo json_encode(['status' => 'success', 'events' => array_values($items)]);
+            break;
+
         case 'rejectEvent':
             $id = $_POST['id'] ?? 0;
             $stmt = $pdo->prepare("UPDATE events SET status = 'Rejected' WHERE id = ?");

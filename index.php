@@ -128,31 +128,63 @@ include_once __DIR__ . '/navbar.php';
   </div>
 </section>
 
-<!-- ============ MEETINGS ============ -->
+<!-- ============ MEETINGS & EVENTS ============ -->
 <section class="meetings" id="meetings">
   <div class="container">
     <div class="section-head reveal">
-      <span class="section-tag">Upcoming Meetings</span>
+      <span class="section-tag">Upcoming Events &amp; Meetings</span>
       <h2 style="color:var(--navy-950);">What's Next on the Calendar</h2>
-      <p>Committee syncs, workshops and general body meetings — all scheduled in one place.</p>
+      <p>Committee syncs, workshops and general body meetings — click any event to view complete details &amp; description.</p>
     </div>
-    <div class="meet-list reveal">
-      <div class="meet-row">
+    <div class="meet-list reveal" id="landingMeetingsList">
+      <div class="meet-row" style="cursor:pointer;" onclick="showEventDetailsFromElement(this)"
+           data-title="General Body Meeting — Semester Kickoff" 
+           data-desc="Welcome all AIMSA department members to the official semester kickoff general body meeting. Agenda includes annual roadmap, event calendar reveal, and committee introductions." 
+           data-date="<?php echo date('M d, Y', strtotime('+2 days')); ?>" 
+           data-time="4:00 PM" 
+           data-venue="AIML Seminar Hall" 
+           data-audience="All Members" 
+           data-category="General Body" 
+           data-organizer="Association President">
         <div class="meet-date"><span class="d"><?php echo date('d', strtotime('+2 days')); ?></span><span class="m"><?php echo date('M · D', strtotime('+2 days')); ?></span></div>
         <div class="meet-info"><h4>General Body Meeting — Semester Kickoff</h4><span>4:00 PM · AIML Seminar Hall</span></div>
         <span class="meet-badge">All Members</span>
       </div>
-      <div class="meet-row">
+      <div class="meet-row" style="cursor:pointer;" onclick="showEventDetailsFromElement(this)"
+           data-title="Executive Committee Sync" 
+           data-desc="Internal sync for all executive committee members to review event logistics, budget allocation, and upcoming technical workshops." 
+           data-date="<?php echo date('M d, Y', strtotime('+7 days')); ?>" 
+           data-time="2:30 PM" 
+           data-venue="Faculty Coordination Room" 
+           data-audience="Committee Only" 
+           data-category="Executive Sync" 
+           data-organizer="Faculty Coordinator">
         <div class="meet-date"><span class="d"><?php echo date('d', strtotime('+7 days')); ?></span><span class="m"><?php echo date('M · D', strtotime('+7 days')); ?></span></div>
         <div class="meet-info"><h4>Executive Committee Sync</h4><span>2:30 PM · Faculty Coordination Room</span></div>
         <span class="meet-badge">Committee Only</span>
       </div>
-      <div class="meet-row">
+      <div class="meet-row" style="cursor:pointer;" onclick="showEventDetailsFromElement(this)"
+           data-title="Workshop Planning — ML Bootcamp" 
+           data-desc="Technical team sync to curate hands-on ML &amp; Deep Learning tracks, dataset repositories, and speaker schedules for ML Bootcamp Batch 4." 
+           data-date="<?php echo date('M d, Y', strtotime('+14 days')); ?>" 
+           data-time="11:00 AM" 
+           data-venue="Lab 3, AIML Block" 
+           data-audience="Technical Team" 
+           data-category="Workshop Track" 
+           data-organizer="Technical Head">
         <div class="meet-date"><span class="d"><?php echo date('d', strtotime('+14 days')); ?></span><span class="m"><?php echo date('M · D', strtotime('+14 days')); ?></span></div>
         <div class="meet-info"><h4>Workshop Planning — ML Bootcamp</h4><span>11:00 AM · Lab 3, AIML Block</span></div>
         <span class="meet-badge">Technical Team</span>
       </div>
-      <div class="meet-row">
+      <div class="meet-row" style="cursor:pointer;" onclick="showEventDetailsFromElement(this)"
+           data-title="Budget Review with Faculty Coordinator" 
+           data-desc="Core committee meeting with Faculty Coordinator and HOD to finalize budget allocation for flagship symposium and certificate distributions." 
+           data-date="<?php echo date('M d, Y', strtotime('+21 days')); ?>" 
+           data-time="1:00 PM" 
+           data-venue="HOD Office" 
+           data-audience="Core Team" 
+           data-category="Budget Sync" 
+           data-organizer="Dr. Dipali Shende (HOD)">
         <div class="meet-date"><span class="d"><?php echo date('d', strtotime('+21 days')); ?></span><span class="m"><?php echo date('M · D', strtotime('+21 days')); ?></span></div>
         <div class="meet-info"><h4>Budget Review with Faculty Coordinator</h4><span>1:00 PM · HOD Office</span></div>
         <span class="meet-badge">Core Team</span>
@@ -218,7 +250,7 @@ include_once __DIR__ . '/navbar.php';
       <span class="section-tag on-dark">Announcements</span>
       <h2>Latest From the Association</h2>
     </div>
-    <div class="announce-list reveal">
+    <div class="announce-list reveal" id="landingAnnouncementsList">
       <div class="ann-item">
         <div class="ann-dot"></div>
         <div style="flex:1;"><h4>Registrations open — ML Bootcamp Batch 4</h4><span>Posted 2 days ago</span></div>

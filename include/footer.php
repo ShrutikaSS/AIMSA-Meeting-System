@@ -49,6 +49,51 @@
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7fb0ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.2s;"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
 </button>
 
+<!-- ============ EVENT / MEETING DETAILS MODAL ============ -->
+<div class="modal-overlay" id="eventDetailsModal" style="z-index:99999;">
+  <div class="modal" style="max-width:560px; width:92%; padding:30px; border-radius:20px; background:#ffffff; border:1px solid rgba(62,139,255,0.25); box-shadow:0 24px 60px rgba(8,23,51,0.28); position:relative;">
+    <button class="modal-close" id="closeEventModalBtn" onclick="closeEventModal()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
+      <span id="eventModalCategory" class="meet-badge" style="margin:0; background:rgba(62,139,255,0.12); color:#2563eb; border:1px solid rgba(37,99,235,0.2); font-weight:600; padding:4px 10px; font-size:0.75rem;">Event</span>
+      <span id="eventModalAudience" class="meet-badge" style="margin:0; background:rgba(34,197,94,0.12); color:#16a34a; border:1px solid rgba(22,163,74,0.2); font-weight:600; padding:4px 10px; font-size:0.75rem;">All Members</span>
+    </div>
+
+    <h3 id="eventModalTitle" style="font-size:1.35rem; color:var(--navy-950); margin-bottom:14px; line-height:1.35; font-weight:700;">Event Title</h3>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:18px; padding:14px; background:rgba(8,23,51,0.03); border-radius:12px; border:1px solid rgba(8,23,51,0.06);">
+      <div style="display:flex; align-items:center; gap:8px; font-size:0.88rem; color:var(--navy-950);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3E8BFF" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span id="eventModalDate">July 28, 2026</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; font-size:0.88rem; color:var(--navy-950);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3E8BFF" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span id="eventModalTime">10:00 AM</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; font-size:0.88rem; color:var(--navy-950); grid-column:1/-1;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3E8BFF" stroke-width="2"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span id="eventModalVenue">AIML Seminar Hall</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--muted-dark); grid-column:1/-1;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Organized / Verified by: <strong id="eventModalOrganizer" style="color:var(--navy-950);">Faculty Coordinator</strong></span>
+      </div>
+    </div>
+
+    <div style="margin-bottom:22px;">
+      <h4 style="font-size:0.85rem; color:var(--muted-dark); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; font-weight:600;">Description &amp; Overview</h4>
+      <div id="eventModalDesc" style="font-size:0.92rem; color:var(--navy-950); line-height:1.6; background:#f8fafc; padding:14px; border-radius:10px; border:1px solid var(--line); max-height:180px; overflow-y:auto;">
+        Detailed description of the event...
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px;">
+      <button class="btn btn-dark" onclick="closeEventModal()" style="padding:8px 18px; font-size:0.9rem;">Close</button>
+      <button class="btn btn-primary" onclick="closeEventModal(); openModal();" style="padding:8px 20px; font-size:0.9rem;">Login to Register →</button>
+    </div>
+  </div>
+</div>
+
 <!-- ============ LOGIN MODAL ============ -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">

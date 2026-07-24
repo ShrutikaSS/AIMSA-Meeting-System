@@ -154,7 +154,14 @@ try {
             $reports = $stmt->fetchAll();
 
             // Notifications
-            $stmt = $pdo->query("SELECT * FROM `notifications` ORDER BY `id` DESC LIMIT 10");
+            $hodEmail = $_SESSION['user']['email'] ?? '';
+            $hodZprn = $_SESSION['user']['zprn'] ?? '';
+            $stmt = $pdo->prepare("SELECT * FROM `notifications` 
+                WHERE LOWER(`recipient`) IN ('all', 'all members', 'everyone', 'public', 'hod', 'head of department')
+                OR LOWER(`recipient`) = LOWER(?)
+                OR ( ? <> '' AND LOWER(`recipient`) = LOWER(?) )
+                ORDER BY `id` DESC LIMIT 10");
+            $stmt->execute([$hodEmail, $hodZprn, $hodZprn]);
             $notifications = $stmt->fetchAll();
 
             // Gallery
@@ -254,12 +261,27 @@ try {
                 exit;
             }
 
+            // Check if event already exists with same title & date
+            $checkExisting = $pdo->prepare("SELECT `id` FROM `events` WHERE LOWER(`title`) = LOWER(?) AND `event_date` = ?");
+            $checkExisting->execute([$title, $event_date]);
+            $existingId = $checkExisting->fetchColumn();
+
+            if ($existingId) {
+                $upd = $pdo->prepare("UPDATE `events` SET `description` = ?, `location` = ?, `status` = 'Approved' WHERE `id` = ?");
+                $upd->execute([$description, $location, $existingId]);
+                echo json_encode(['status' => 'success', 'message' => 'Event details updated & published successfully!']);
+                break;
+            }
+
             $stmt = $pdo->prepare("INSERT INTO `events` (`title`, `description`, `event_date`, `location`, `status`, `created_by`, `registrations_count`) VALUES (?, ?, ?, ?, 'Approved', ?, 0)");
             $stmt->execute([$title, $description, $event_date, $location, $created_by]);
 
-            // Broadcast notification
+            // Broadcast notification & persistent announcement
             $notif = $pdo->prepare("INSERT INTO `notifications` (`title`, `text`, `indicator`, `recipient`) VALUES (?, ?, 'green', 'all')");
-            $notif->execute(["New Event: {$title}", "Scheduled on {$event_date} at {$location}. Registrations are now open!", 'all']);
+            $notif->execute(["New Event: {$title}", "Scheduled on {$event_date} at {$location}. Registrations are now open!"]);
+
+            $annStmt = $pdo->prepare("INSERT INTO `announcements` (`title`, `content`, `priority`, `posted_by`, `target_audience`, `views_count`, `pinned`) VALUES (?, ?, 'Normal', ?, 'All Members', 1, 0)");
+            $annStmt->execute(["New Event: {$title}", "Scheduled on {$event_date} at {$location}. Registrations are now open!", $created_by]);
 
             echo json_encode(['status' => 'success', 'message' => 'New event created & approved successfully!']);
             break;
@@ -275,7 +297,7 @@ try {
 
             if ($evt) {
                 $notif = $pdo->prepare("INSERT INTO `notifications` (`title`, `text`, `indicator`, `recipient`) VALUES (?, ?, 'green', 'all')");
-                $notif->execute(["Event Approved: {$evt->title}", "HOD has officially approved {$evt->title}.", 'all']);
+                $notif->execute(["Event Approved: {$evt->title}", "HOD has officially approved {$evt->title}."]);
             }
 
             echo json_encode(['status' => 'success', 'message' => 'Event approved successfully!']);
@@ -287,6 +309,43 @@ try {
             $stmt->execute([$id]);
 
             echo json_encode(['status' => 'success', 'message' => 'Event request rejected.']);
+            break;
+
+        case 'delete_event':
+            $id = (int)($_POST['event_id'] ?? $_POST['id'] ?? 0);
+            if (!$id) {
+                echo json_encode(['status' => 'error', 'message' => 'Invalid event ID']);
+                exit;
+            }
+            $stmt = $pdo->prepare("DELETE FROM `events` WHERE `id` = ?");
+            $stmt->execute([$id]);
+
+            $stmt2 = $pdo->prepare("DELETE FROM `meetings` WHERE `id` = ?");
+            $stmt2->execute([$id]);
+
+            echo json_encode(['status' => 'success', 'message' => 'Event deleted successfully!']);
+            break;
+
+        case 'delete_announcement':
+            $id = (int)($_POST['id'] ?? $_POST['announcement_id'] ?? 0);
+            if (!$id) {
+                echo json_encode(['status' => 'error', 'message' => 'Invalid announcement ID']);
+                exit;
+            }
+
+            $titleStmt = $pdo->prepare("SELECT `title` FROM `announcements` WHERE `id` = ?");
+            $titleStmt->execute([$id]);
+            $annTitle = $titleStmt->fetchColumn();
+
+            $stmt = $pdo->prepare("DELETE FROM `announcements` WHERE `id` = ?");
+            $stmt->execute([$id]);
+
+            if ($annTitle) {
+                $notifStmt = $pdo->prepare("DELETE FROM `notifications` WHERE LOWER(`title`) = LOWER(?)");
+                $notifStmt->execute([$annTitle]);
+            }
+
+            echo json_encode(['status' => 'success', 'message' => 'Announcement deleted successfully!']);
             break;
 
         // ── 5. QUICK ACTION: NOTIFY ALL ──
@@ -304,7 +363,14 @@ try {
             $stmt = $pdo->prepare("INSERT INTO `notifications` (`title`, `text`, `indicator`, `recipient`, `email_sent`) VALUES (?, ?, ?, ?, 1)");
             $stmt->execute([$title, $text, $indicator, $recipient]);
 
-            echo json_encode(['status' => 'success', 'message' => 'Announcement sent to all members successfully! Email notifications queued.']);
+            // Persistent dual insertion into announcements table as well
+            $priority = $indicator === 'red' ? 'Urgent' : ($indicator === 'yellow' ? 'Important' : 'Normal');
+            $postedBy = $_SESSION['user']['name'] ?? 'Head of Department (HOD)';
+            $targetAudience = (in_array(strtolower($recipient), ['all', 'all members', 'everyone', 'public'])) ? 'All Members' : $recipient;
+            $annStmt = $pdo->prepare("INSERT INTO `announcements` (`title`, `content`, `priority`, `posted_by`, `target_audience`, `views_count`, `pinned`) VALUES (?, ?, ?, ?, ?, 1, 0)");
+            $annStmt->execute([$title, $text, $priority, $postedBy, $targetAudience]);
+
+            echo json_encode(['status' => 'success', 'message' => 'Announcement sent successfully! Displayed on portal & landing page.']);
             break;
 
         // ── 6. COMMITTEE MANAGEMENT ──

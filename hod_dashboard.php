@@ -538,7 +538,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
     </div>
     <div class="form-group">
       <label>Initial Password</label>
-      <input type="password" id="addMemPassword" value="student123" required>
+      <input type="password" id="addMemPassword" placeholder="Enter initial password" required>
     </div>
     <div class="form-group">
       <label>Role</label>
@@ -1043,14 +1043,17 @@ function renderDashboard(data) {
   if (!data.upcoming_events || data.upcoming_events.length === 0) {
     upcomingList.innerHTML = `<p style="font-size:0.8rem; color:var(--muted-dark); padding:10px;">No upcoming events scheduled.</p>`;
   } else {
-    data.upcoming_events.slice(0, 4).forEach(e => {
+    data.upcoming_events.slice(0, 6).forEach(e => {
       upcomingList.innerHTML += `
-        <div class="list-item">
-          <div class="list-dot"></div>
-          <div class="list-text">
-            <b>${escapeHtml(e.title)}</b>
-            <span>${escapeHtml(e.event_date)} · ${escapeHtml(e.location)}</span>
+        <div class="list-item" style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div class="list-dot"></div>
+            <div class="list-text">
+              <b>${escapeHtml(e.title)}</b>
+              <span>${escapeHtml(e.event_date)} · ${escapeHtml(e.location)}</span>
+            </div>
           </div>
+          <button onclick="deleteEvent(${e.id})" style="border:none; background:none; color:#ef4444; font-size:0.75rem; font-weight:700; cursor:pointer; padding:2px 8px; border-radius:6px;" title="Delete Event">🗑️ Delete</button>
         </div>`;
     });
   }
@@ -1346,11 +1349,50 @@ function renderPendingEvents(pendingEvents) {
         <span style="font-size:0.75rem; color:var(--accent); font-weight:600;">Date: ${escapeHtml(e.event_date)} | Venue: ${escapeHtml(e.location)}</span>
         <div style="margin-top:10px; display:flex; gap:8px;">
           <button class="btn btn-primary" style="padding:4px 12px; font-size:0.75rem;" onclick="approveEvent(${e.id})">Approve Event</button>
-          <button class="btn btn-ghost" style="padding:4px 12px; font-size:0.75rem; color:#ef4444;" onclick="rejectEvent(${e.id})">Reject</button>
+          <button class="btn btn-ghost" style="padding:4px 12px; font-size:0.75rem; color:#ea580c;" onclick="rejectEvent(${e.id})">Reject</button>
+          <button class="btn btn-ghost" style="padding:4px 12px; font-size:0.75rem; color:#ef4444;" onclick="deleteEvent(${e.id})">🗑️ Delete</button>
         </div>
       </div>`;
   });
 }
+
+window.deleteEvent = function(id) {
+  if (confirm('Are you sure you want to delete this event? It will be removed from all calendar lists and portal feeds.')) {
+    const formData = new FormData();
+    formData.append('action', 'delete_event');
+    formData.append('event_id', id);
+
+    fetch('ajax/hod_actions.php', { method: 'POST', body: formData })
+      .then(r => r.json())
+      .then(data => {
+        if (data.status === 'success') {
+          alert('Event deleted successfully!');
+          fetchDashboardData();
+        } else {
+          alert(data.message || 'Failed to delete event');
+        }
+      });
+  }
+};
+
+window.deleteAnnouncement = function(id) {
+  if (confirm('Are you sure you want to delete this announcement?')) {
+    const formData = new FormData();
+    formData.append('action', 'delete_announcement');
+    formData.append('id', id);
+
+    fetch('ajax/hod_actions.php', { method: 'POST', body: formData })
+      .then(r => r.json())
+      .then(data => {
+        if (data.status === 'success') {
+          alert('Announcement deleted successfully!');
+          fetchDashboardData();
+        } else {
+          alert(data.message || 'Failed to delete announcement');
+        }
+      });
+  }
+};
 
 function renderGalleryList(gallery) {
   const container = document.getElementById('galleryItemsContainer');

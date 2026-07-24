@@ -505,19 +505,19 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   </div>
   <div class="form-group" style="margin-top:10px;">
     <label>Full Name</label>
-    <input type="text" id="presNameInput" value="Karan Mehta">
+    <input type="text" id="presNameInput" placeholder="e.g. Karan Mehta">
   </div>
   <div class="form-group">
     <label>College Email ID</label>
-    <input type="email" id="presEmailInput" value="president@zealeducation.com">
+    <input type="email" id="presEmailInput" placeholder="president@zealeducation.com">
   </div>
   <div class="form-group">
     <label>Unique ZPRN</label>
-    <input type="text" id="presZprnInput" value="125UAM1003">
+    <input type="text" id="presZprnInput" placeholder="e.g. 125UAM1003">
   </div>
   <div class="form-group">
     <label>Mobile Number</label>
-    <input type="text" id="presPhoneInput" value="+91 98765 12345">
+    <input type="text" id="presPhoneInput" placeholder="+91 XXXXX XXXXX">
   </div>
   <div class="form-group">
     <label>Leadership Role / Department</label>
@@ -673,7 +673,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   </div>
   <div class="form-group">
     <label>Maximum Participants</label>
-    <input type="number" id="evtMaxParticipants" value="100">
+    <input type="number" id="evtMaxParticipants" placeholder="e.g. 100">
   </div>
   <div class="form-group">
     <label>Registration Deadline</label>
@@ -742,6 +742,17 @@ let currentUser = <?php echo json_encode($sessionUser); ?> || JSON.parse(session
   name: 'Association President',
   role: 'Association President'
 };
+
+function syncProfileFields() {
+  if (currentUser) {
+    if (document.getElementById('presNameInput')) document.getElementById('presNameInput').value = currentUser.name || '';
+    if (document.getElementById('presEmailInput')) document.getElementById('presEmailInput').value = currentUser.email || '';
+    if (document.getElementById('presZprnInput')) document.getElementById('presZprnInput').value = currentUser.zprn || '';
+    if (document.getElementById('presPhoneInput')) document.getElementById('presPhoneInput').value = currentUser.phone || '';
+    if (document.getElementById('presDrawerName')) document.getElementById('presDrawerName').textContent = currentUser.name || 'Association President';
+  }
+}
+syncProfileFields();
 
 document.querySelector('.content-title').innerHTML = `Welcome back, ${currentUser.name.split(' ')[0]}! 👋`;
 
@@ -1357,7 +1368,10 @@ async function loadAnnouncementsFromDB() {
 
         return `
           <div class="ann-card ${priorityClass}">
-            <div class="ann-title">${escapeHtml(a.title)}</div>
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div class="ann-title">${escapeHtml(a.title)}</div>
+              <button onclick="deleteAnnouncement(${a.id})" style="border:none; background:none; color:#ef4444; font-size:0.75rem; font-weight:700; cursor:pointer; padding:2px 6px;" title="Delete Announcement">🗑️ Delete</button>
+            </div>
             <div class="ann-meta">Posted by ${escapeHtml(a.posted_by)} · ${a.target_audience} · ${a.views_count} views</div>
             <p style="font-size:0.78rem; color:var(--navy-900); margin-top:4px;">${escapeHtml(a.content)}</p>
           </div>`;
@@ -1370,6 +1384,23 @@ async function loadAnnouncementsFromDB() {
     console.error('Failed to load announcements:', e);
   }
 }
+
+window.deleteAnnouncement = async function(id) {
+  if (confirm('Are you sure you want to delete this announcement?')) {
+    const formData = new FormData();
+    formData.append('action', 'delete_announcement');
+    formData.append('id', id);
+
+    const res = await fetch('ajax/president_actions.php', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.status === 'success') {
+      alert('Announcement deleted successfully!');
+      loadAnnouncementsFromDB();
+    } else {
+      alert(data.message || 'Failed to delete announcement');
+    }
+  }
+};
 
 document.getElementById('btnPublishAnnouncement')?.addEventListener('click', async () => {
   const title = document.getElementById('annTitleInput').value.trim();

@@ -1103,6 +1103,190 @@ if (document.readyState === 'loading') {
   }
 })();
 
+// ---------- Dynamic Landing Announcements Engine ----------
+async function loadLandingAnnouncements() {
+  const container = document.getElementById('landingAnnouncementsList');
+  if (!container) return;
+
+  try {
+    const res = await fetch('ajax/notificationActions.php?action=get_public_announcements');
+    const data = await res.json();
+
+    if (data.status === 'success' && Array.isArray(data.announcements) && data.announcements.length > 0) {
+      container.innerHTML = data.announcements.map(ann => {
+        const priority = ann.priority || 'Normal';
+        const dotColor = priority === 'Urgent' ? '#ef4444' : (priority === 'Important' ? '#f59e0b' : '#22c55e');
+        const postedBy = ann.posted_by ? ` · Posted by ${ann.posted_by}` : '';
+        const createdDate = ann.created_at ? new Date(ann.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recently';
+        const isPinned = ann.pinned == 1 ? '<span class="ann-pin">Pinned</span>' : '';
+        const contentText = ann.content ? `<p style="font-size:0.88rem; opacity:0.85; margin-top:4px; line-height:1.4;">${escapeLandingHtml(ann.content)}</p>` : '';
+
+        return `
+          <div class="ann-item" style="align-items:flex-start;">
+            <div class="ann-dot" style="background:${dotColor}; margin-top:6px;"></div>
+            <div style="flex:1;">
+              <h4 style="margin:0 0 2px 0;">${escapeLandingHtml(ann.title)}</h4>
+              <span style="font-size:0.8rem; opacity:0.75;">Posted ${createdDate}${escapeLandingHtml(postedBy)}</span>
+              ${contentText}
+            </div>
+            ${isPinned}
+          </div>
+        `;
+      }).join('');
+    }
+  } catch (err) {
+    console.error('Failed to fetch landing announcements:', err);
+  }
+}
+
+function escapeLandingHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loadLandingAnnouncements);
+} else {
+  loadLandingAnnouncements();
+}
+
+// ---------- Event Details Modal & Dynamic Landing Events Engine ----------
+window.openEventModal = function() {
+  const modal = document.getElementById('eventDetailsModal');
+  if (modal) {
+    modal.style.display = 'flex';
+    modal.classList.add('show');
+  }
+};
+
+window.closeEventModal = function() {
+  const modal = document.getElementById('eventDetailsModal');
+  if (modal) {
+    modal.style.display = 'none';
+    modal.classList.remove('show');
+  }
+};
+
+window.showEventDetailsFromElement = function(el) {
+  if (!el) return;
+  const title = el.getAttribute('data-title') || el.querySelector('h4')?.textContent || 'Upcoming Event';
+  const desc = el.getAttribute('data-desc') || 'No detailed description available for this event.';
+  const date = el.getAttribute('data-date') || 'Upcoming';
+  const time = el.getAttribute('data-time') || 'TBD';
+  const venue = el.getAttribute('data-venue') || 'AIML Department';
+  const audience = el.getAttribute('data-audience') || 'All Members';
+  const category = el.getAttribute('data-category') || 'Department Event';
+  const organizer = el.getAttribute('data-organizer') || 'AIMSA Committee';
+
+  const modalTitle = document.getElementById('eventModalTitle');
+  const modalDesc = document.getElementById('eventModalDesc');
+  const modalDate = document.getElementById('eventModalDate');
+  const modalTime = document.getElementById('eventModalTime');
+  const modalVenue = document.getElementById('eventModalVenue');
+  const modalAudience = document.getElementById('eventModalAudience');
+  const modalCategory = document.getElementById('eventModalCategory');
+  const modalOrganizer = document.getElementById('eventModalOrganizer');
+
+  if (modalTitle) modalTitle.textContent = title;
+  if (modalDesc) modalDesc.textContent = desc;
+  if (modalDate) modalDate.textContent = date;
+  if (modalTime) modalTime.textContent = time;
+  if (modalVenue) modalVenue.textContent = venue;
+  if (modalAudience) modalAudience.textContent = audience;
+  if (modalCategory) modalCategory.textContent = category;
+  if (modalOrganizer) modalOrganizer.textContent = organizer;
+
+  openEventModal();
+};
+
+function formatLandingDate(dateStr) {
+  if (!dateStr) return { dayNum: '15', monthShort: 'AUG', dayShort: 'MON', formatted: 'Upcoming' };
+  try {
+    const cleanStr = String(dateStr).trim().split(' ')[0];
+    const parts = cleanStr.split('-');
+    if (parts.length === 3) {
+      const year = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1;
+      const day = parseInt(parts[2], 10);
+      const d = new Date(year, month, day);
+      if (!isNaN(d.getTime())) {
+        const monthNames = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+        const dayNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+        return {
+          dayNum: String(d.getDate()).padStart(2, '0'),
+          monthShort: monthNames[d.getMonth()] || 'AUG',
+          dayShort: dayNames[d.getDay()] || 'MON',
+          formatted: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+        };
+      }
+    }
+  } catch (e) {}
+  return { dayNum: '15', monthShort: 'AUG', dayShort: 'MON', formatted: dateStr };
+}
+
+async function loadLandingEvents() {
+  const container = document.getElementById('landingMeetingsList');
+  if (!container) return;
+
+  try {
+    const res = await fetch('ajax/eventActions.php?action=getLandingEvents');
+    const data = await res.json();
+
+    if (data.status === 'success' && Array.isArray(data.events) && data.events.length > 0) {
+      container.innerHTML = data.events.map(ev => {
+        const dateObj = formatLandingDate(ev.date);
+        const timeStr = ev.time || '10:00 AM';
+        const venueStr = ev.venue || 'Main Auditorium';
+        const categoryStr = ev.category || 'Event';
+        const audienceStr = ev.target_audience || 'All Members';
+        const titleStr = ev.title || 'Departmental Event';
+        const descStr = ev.description || 'Join us for this exciting departmental session organized by AIMSA.';
+        const organizerStr = ev.created_by || 'AIMSA Department';
+
+        return `
+          <div class="meet-row" style="cursor:pointer;" onclick="showEventDetailsFromElement(this)"
+               data-title="${escapeLandingHtml(titleStr)}"
+               data-desc="${escapeLandingHtml(descStr)}"
+               data-date="${escapeLandingHtml(dateObj.formatted)}"
+               data-time="${escapeLandingHtml(timeStr)}"
+               data-venue="${escapeLandingHtml(venueStr)}"
+               data-audience="${escapeLandingHtml(audienceStr)}"
+               data-category="${escapeLandingHtml(categoryStr)}"
+               data-organizer="${escapeLandingHtml(organizerStr)}">
+            <div class="meet-date"><span class="d">${dateObj.dayNum}</span><span class="m">${dateObj.monthShort} · ${dateObj.dayShort}</span></div>
+            <div class="meet-info"><h4>${escapeLandingHtml(titleStr)}</h4><span>${escapeLandingHtml(timeStr)} · ${escapeLandingHtml(venueStr)}</span></div>
+            <span class="meet-badge">${escapeLandingHtml(audienceStr)}</span>
+          </div>
+        `;
+      }).join('');
+    }
+  } catch (err) {
+    console.error('Failed to fetch landing events:', err);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const eventDetailsModalEl = document.getElementById('eventDetailsModal');
+  if (eventDetailsModalEl) {
+    eventDetailsModalEl.addEventListener('click', (e) => {
+      if (e.target === eventDetailsModalEl) closeEventModal();
+    });
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeEventModal();
+});
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loadLandingEvents);
+} else {
+  loadLandingEvents();
+}
+
+
+
+
 
 
 

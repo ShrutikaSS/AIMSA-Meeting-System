@@ -79,10 +79,13 @@ try {
             $achievements = $stmtAch->fetchAll();
 
             // Fetch Notifications
+            $studentZprn = $user->zprn ?? '';
             $stmtNotifs = $pdo->prepare("SELECT * FROM `notifications` 
-                WHERE `recipient` = 'all' OR `recipient` = 'Student Member' OR LOWER(`recipient`) = LOWER(?) 
+                WHERE LOWER(`recipient`) IN ('all', 'all members', 'everyone', 'public', 'student member', 'students', 'student') 
+                OR LOWER(`recipient`) = LOWER(?) 
+                OR ( ? <> '' AND LOWER(`recipient`) = LOWER(?) )
                 ORDER BY `created_at` DESC LIMIT 10");
-            $stmtNotifs->execute([$user->email]);
+            $stmtNotifs->execute([$user->email, $studentZprn, $studentZprn]);
             $notifications = $stmtNotifs->fetchAll();
 
             // Calculate Stats

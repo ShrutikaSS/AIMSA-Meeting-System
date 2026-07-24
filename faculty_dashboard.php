@@ -513,23 +513,23 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   </div>
   <div class="form-group" style="margin-top:10px;">
     <label>Full Name</label>
-    <input type="text" id="profNameInput" value="Prof. Meera Nair">
+    <input type="text" id="profNameInput" placeholder="e.g. Prof. Meera Nair">
   </div>
   <div class="form-group">
     <label>College Email ID</label>
-    <input type="email" id="profEmailInput" value="faculty@zealeducation.com">
+    <input type="email" id="profEmailInput" placeholder="faculty@zealeducation.com">
   </div>
   <div class="form-group">
     <label>Unique ZPRN</label>
-    <input type="text" id="profZprnInput" value="125UAM1002">
+    <input type="text" id="profZprnInput" placeholder="e.g. 125UAM1002">
   </div>
   <div class="form-group">
     <label>Faculty Staff ID</label>
-    <input type="text" id="profStaffIdInput" value="FC-AIML-2024">
+    <input type="text" id="profStaffIdInput" placeholder="e.g. FC-AIML-2024">
   </div>
   <div class="form-group">
     <label>Mobile Number</label>
-    <input type="text" id="profPhoneInput" value="+91 98765 43210">
+    <input type="text" id="profPhoneInput" placeholder="+91 XXXXX XXXXX">
   </div>
   <div class="form-group">
     <label>Department / Designation</label>
@@ -668,7 +668,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   </div>
   <div class="form-group">
     <label>Maximum Participants</label>
-    <input type="number" id="evtMaxParticipants" value="100">
+    <input type="number" id="evtMaxParticipants" placeholder="e.g. 100">
   </div>
   <div class="form-group">
     <label>Registration Deadline</label>

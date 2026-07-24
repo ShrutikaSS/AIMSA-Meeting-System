@@ -119,6 +119,44 @@ try {
             ]);
             break;
 
+        case 'delete_announcement':
+            $id = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
+            if (!$id) {
+                echo json_encode(['status' => 'error', 'message' => 'Invalid announcement ID']);
+                exit;
+            }
+
+            $titleStmt = $pdo->prepare("SELECT `title` FROM `announcements` WHERE `id` = ?");
+            $titleStmt->execute([$id]);
+            $annTitle = $titleStmt->fetchColumn();
+
+            $stmt = $pdo->prepare("DELETE FROM `announcements` WHERE `id` = ?");
+            $stmt->execute([$id]);
+
+            if ($annTitle) {
+                $notifStmt = $pdo->prepare("DELETE FROM `notifications` WHERE LOWER(`title`) = LOWER(?)");
+                $notifStmt->execute([$annTitle]);
+            }
+
+            echo json_encode(['status' => 'success', 'message' => 'Announcement deleted successfully!']);
+            break;
+
+        case 'delete_event':
+            $id = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
+            if (!$id) {
+                echo json_encode(['status' => 'error', 'message' => 'Invalid event ID']);
+                exit;
+            }
+
+            $stmt = $pdo->prepare("DELETE FROM `events` WHERE `id` = ?");
+            $stmt->execute([$id]);
+
+            $stmt2 = $pdo->prepare("DELETE FROM `meetings` WHERE `id` = ?");
+            $stmt2->execute([$id]);
+
+            echo json_encode(['status' => 'success', 'message' => 'Event deleted successfully!']);
+            break;
+
         case 'get_announcements':
             $stmt = $pdo->query("SELECT `id`, `title`, `content`, `priority`, `posted_by`, `target_audience`, `views_count`, `pinned`, `created_at` FROM `announcements` ORDER BY `pinned` DESC, `id` DESC");
             $announcements = $stmt->fetchAll();
