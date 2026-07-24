@@ -472,7 +472,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
       <span>📞 Call: <b>+91 20 6720 6000</b></span>
       <span style="color:var(--line-dark);">|</span>
       <a href="#" onclick="alert('Privacy Policy: All membership data is kept strictly confidential within Zeal Society.')" style="color:inherit; text-decoration:none; font-weight:600;">Privacy Policy</a>
-      <a href="#" onclick="alert('Terms &amp; Conditions: AIMSA portal usage is governed by college guidelines.')" style="color:inherit; text-decoration:none; font-weight:600;">Terms &amp; Conditions</a>
+      <a href="terms.php" target="_blank" style="color:inherit; text-decoration:none; font-weight:600;">Terms &amp; Conditions</a>
       <span style="color:var(--line-dark);">|</span>
       <span>Version: <b>v2.1.0</b></span>
       <span>Last Updated: <b class="liveDateText"><?php echo date('F j, Y'); ?></b></span>

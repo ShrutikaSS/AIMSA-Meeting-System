@@ -1,8 +1,12 @@
+<?php
+$is_subpage = (basename($_SERVER['SCRIPT_NAME']) !== 'index.php');
+$prefix = $is_subpage ? 'index.php' : '';
+?>
 <!-- ============ NAV ============ -->
 <div class="scroll-progress-bar" id="scrollProgressBar"></div>
 <header class="nav">
   <div class="container nav-inner" style="display:flex; align-items:center; justify-content:space-between; gap:16px;">
-    <div class="brand" style="flex-shrink:0;">
+    <a href="<?php echo $is_subpage ? 'index.php' : '#top'; ?>" class="brand" style="flex-shrink:0; text-decoration:none; display:flex; align-items:center; gap:10px;">
       <div class="logos">
         <!-- College Logo -->
         <img src="images/icons/college_logo.png" alt="Zeal Logo" style="height:32px; width:32px; border-radius:50%; object-fit:cover;" title="Zeal Education Society">
@@ -13,15 +17,15 @@
         <b>AIMSA</b>
         <span>AI &amp; ML Student Assoc.</span>
       </div>
-    </div>
+    </a>
     <nav class="links" style="display:flex; align-items:center; gap:16px;">
-      <a href="#about" data-i18n="nav.about">About</a>
-      <a href="#committee" data-i18n="nav.committee">Committee</a>
-      <a href="#meetings" data-i18n="nav.meetings">Meetings</a>
-      <a href="#achievements" data-i18n="nav.achievements">Achievements</a>
-      <a href="#gallery" data-i18n="nav.gallery">Gallery</a>
-      <a href="#announcements" data-i18n="nav.announcements">Announcements</a>
-      <a href="#contact" data-i18n="nav.contact">Contact</a>
+      <a href="<?php echo $prefix; ?>#about" data-i18n="nav.about">About</a>
+      <a href="<?php echo $prefix; ?>#committee" data-i18n="nav.committee">Committee</a>
+      <a href="<?php echo $prefix; ?>#meetings" data-i18n="nav.meetings">Meetings</a>
+      <a href="<?php echo $prefix; ?>#achievements" data-i18n="nav.achievements">Achievements</a>
+      <a href="<?php echo $prefix; ?>#gallery" data-i18n="nav.gallery">Gallery</a>
+      <a href="<?php echo $prefix; ?>#announcements" data-i18n="nav.announcements">Announcements</a>
+      <a href="<?php echo $prefix; ?>#contact" data-i18n="nav.contact">Contact</a>
     </nav>
     <div style="display:flex; align-items:center; gap:12px; flex-shrink:0; white-space:nowrap;">
       <select id="langSelect" style="background:rgba(255,255,255,0.12); color:var(--white); border:1px solid rgba(255,255,255,0.3); border-radius:8px; padding:5px 10px; font-size:0.75rem; font-weight:600; cursor:pointer; outline:none;" onchange="changeLanguage()">

@@ -484,7 +484,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
         <span>📞 Call: <b>+91 20 6720 6000</b></span>
         <span style="color:var(--line-dark);">|</span>
         <a href="#" onclick="alert('Privacy Policy: All student membership data is stored securely in MySQL database and kept confidential.')" style="color:inherit; text-decoration:none; font-weight:600;">Privacy Policy</a>
-        <a href="#" onclick="alert('Terms &amp; Conditions: AIMSA portal usage is governed by institute academic guidelines.')" style="color:inherit; text-decoration:none; font-weight:600;">Terms &amp; Conditions</a>
+        <a href="terms.php" target="_blank" style="color:inherit; text-decoration:none; font-weight:600;">Terms &amp; Conditions</a>
         <span style="color:var(--line-dark);">|</span>
         <span>Version: <b>v2.5.0 (MySQL Powered)</b></span>
       </div>
