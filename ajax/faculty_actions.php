@@ -156,6 +156,65 @@ try {
             ]);
             break;
 
+        case 'schedule_meeting':
+            $title = trim($_POST['title'] ?? '');
+            $meetingDate = trim($_POST['meeting_date'] ?? '');
+            $meetingTime = trim($_POST['meeting_time'] ?? '10:00 AM');
+            $venue = trim($_POST['venue'] ?? 'AIML Seminar Hall');
+            $category = trim($_POST['category'] ?? 'General Body');
+            $targetAudience = trim($_POST['target_audience'] ?? 'All Members');
+            $agenda = trim($_POST['agenda'] ?? '');
+            $createdBy = $_SESSION['user']['name'] ?? 'Prof. Manisha Devgunde (Faculty)';
+
+            if (empty($title) || empty($meetingDate) || empty($venue)) {
+                echo json_encode(['status' => 'error', 'message' => 'Meeting Title, Date, and Venue are required.']);
+                exit;
+            }
+
+            $stmt = $pdo->prepare("INSERT INTO `meetings` (`title`, `meeting_date`, `meeting_time`, `venue`, `category`, `target_audience`, `agenda`, `created_by`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Scheduled')");
+            $stmt->execute([$title, $meetingDate, $meetingTime, $venue, $category, $targetAudience, $agenda, $createdBy]);
+
+            try {
+                $notifText = "Faculty Coordinator scheduled a meeting: {$title} on {$meetingDate} at {$meetingTime} in {$venue}. Target: {$targetAudience}";
+                $notifStmt = $pdo->prepare("INSERT INTO `notifications` (`title`, `text`, `indicator`, `recipient`) VALUES (?, ?, 'blue', ?)");
+                $notifStmt->execute(["Meeting Scheduled: {$title}", $notifText, $targetAudience]);
+            } catch (Exception $ne) {
+                error_log('Faculty Meeting notification error: ' . $ne->getMessage());
+            }
+
+            echo json_encode(['status' => 'success', 'message' => 'Meeting scheduled successfully and notifications broadcasted!']);
+            break;
+
+        case 'cancel_meeting':
+            $meetingId = (int)($_POST['meeting_id'] ?? 0);
+            if ($meetingId <= 0) {
+                echo json_encode(['status' => 'error', 'message' => 'Invalid meeting ID provided.']);
+                exit;
+            }
+
+            $stmtFetch = $pdo->prepare("SELECT * FROM `meetings` WHERE `id` = ?");
+            $stmtFetch->execute([$meetingId]);
+            $meeting = $stmtFetch->fetch();
+
+            if (!$meeting) {
+                echo json_encode(['status' => 'error', 'message' => 'Meeting record not found.']);
+                exit;
+            }
+
+            $stmtUpd = $pdo->prepare("UPDATE `meetings` SET `status` = 'Cancelled' WHERE `id` = ?");
+            $stmtUpd->execute([$meetingId]);
+
+            try {
+                $cancelText = "The meeting '{$meeting->title}' scheduled for {$meeting->meeting_date} at {$meeting->meeting_time} has been cancelled by Faculty Coordinator.";
+                $notifStmt = $pdo->prepare("INSERT INTO `notifications` (`title`, `text`, `indicator`, `recipient`) VALUES (?, ?, 'red', ?)");
+                $notifStmt->execute(["Meeting Cancelled: {$meeting->title}", $cancelText, $meeting->target_audience ?? 'All Members']);
+            } catch (Exception $ne) {
+                error_log('Faculty Cancel notification error: ' . $ne->getMessage());
+            }
+
+            echo json_encode(['status' => 'success', 'message' => "Meeting '{$meeting->title}' was cancelled and participants notified!"]);
+            break;
+
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid faculty action']);
             break;

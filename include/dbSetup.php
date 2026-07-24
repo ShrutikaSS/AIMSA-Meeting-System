@@ -217,12 +217,17 @@ function setupDatabaseTables($pdo) {
             `venue` VARCHAR(255) DEFAULT 'AIML Seminar Hall',
             `category` VARCHAR(100) DEFAULT 'General Body',
             `target_audience` VARCHAR(100) DEFAULT 'All Members',
+            `agenda` TEXT NULL,
+            `created_by` VARCHAR(255) NULL,
             `status` VARCHAR(50) DEFAULT 'Completed',
             `present_count` INT DEFAULT 0,
             `absent_count` INT DEFAULT 0,
             `verified_by` VARCHAR(255) NULL,
             `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+        try { $pdo->exec("ALTER TABLE `meetings` ADD COLUMN `agenda` TEXT NULL AFTER `category`;"); } catch (Exception $e) {}
+        try { $pdo->exec("ALTER TABLE `meetings` ADD COLUMN `created_by` VARCHAR(255) NULL AFTER `target_audience`;"); } catch (Exception $e) {}
 
         $stmt = $pdo->query("SELECT COUNT(*) FROM `meetings`");
         if ($stmt->fetchColumn() == 0) {

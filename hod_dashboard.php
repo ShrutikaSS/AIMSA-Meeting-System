@@ -270,6 +270,11 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
       Upcoming Events
     </a>
 
+    <a class="nav-item" href="#meetings" id="navMeetings" onclick="openDrawer('scheduleMeetingDrawer'); return false;">
+      <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="12" y1="14" x2="12" y2="18"/><line x1="10" y1="16" x2="14" y2="16"/></svg>
+      Schedule Meeting
+    </a>
+
     <div class="nav-section-label">Reports & Analytics</div>
     <a class="nav-item" href="#certificates" id="navCerts">
       <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
@@ -533,6 +538,39 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
       </div>
     </div>
 
+    <!-- SCHEDULED MEETINGS & SYNCS MANAGEMENT -->
+    <div class="card" id="scheduledMeetingsCard" style="margin-top:24px;">
+      <div class="card-head" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <div class="card-title" style="display:flex; align-items:center; gap:8px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="12" y1="14" x2="12" y2="18"/><line x1="10" y1="16" x2="14" y2="16"/></svg>
+            Scheduled Meetings &amp; Member Syncs
+          </div>
+          <p style="font-size:0.75rem; color:var(--muted-dark); margin-top:2px;">Schedule meetings for specific member roles (All Members, Committee, Faculty, Students) and cancel active syncs.</p>
+        </div>
+        <button class="btn btn-primary" onclick="openDrawer('scheduleMeetingDrawer')" style="font-size:0.8rem; padding:8px 16px;">
+          📅 Schedule New Meeting
+        </button>
+      </div>
+      <div style="overflow-x:auto; margin-top:12px;">
+        <table class="data-table" style="width:100%; font-size:0.85rem;">
+          <thead>
+            <tr>
+              <th>Meeting Title</th>
+              <th>Date &amp; Time</th>
+              <th>Venue / Location</th>
+              <th>Target Audience (Member Selection)</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="scheduledMeetingsTableBody">
+            <!-- Dynamically populated from MySQL via AJAX -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- FOOTER -->
     <footer class="portal-footer" style="margin-top:40px; padding:24px 30px; background:var(--white); border-top:1px solid var(--line-dark); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
       <div style="font-size:0.78rem; color:var(--muted-dark);">
@@ -552,6 +590,57 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 
   </div><!-- /content -->
 </div><!-- /main -->
+
+<!-- ── DRAWER: SCHEDULE MEETING ── -->
+<div class="drawer" id="scheduleMeetingDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Schedule New Meeting</div>
+    <button class="drawer-close" onclick="closeDrawer('scheduleMeetingDrawer')">&times;</button>
+  </div>
+  <form id="scheduleMeetingForm" onsubmit="submitScheduleMeeting(event)">
+    <div class="form-group">
+      <label>Meeting Title</label>
+      <input type="text" id="meetTitle" placeholder="e.g. Department Academic Sync" required>
+    </div>
+    <div class="form-group">
+      <label>Meeting Date</label>
+      <input type="date" id="meetDate" required>
+    </div>
+    <div class="form-group">
+      <label>Meeting Time</label>
+      <input type="text" id="meetTime" placeholder="e.g. 11:00 AM" value="11:00 AM" required>
+    </div>
+    <div class="form-group">
+      <label>Venue / Location / Meeting Link</label>
+      <input type="text" id="meetVenue" placeholder="e.g. HOD Conference Room / Google Meet link" required>
+    </div>
+    <div class="form-group">
+      <label>Meeting Category</label>
+      <select id="meetCategory">
+        <option value="Department Sync">Department Academic Sync</option>
+        <option value="Faculty Review">Faculty Coordination Review</option>
+        <option value="Executive Sync">Executive Board Sync</option>
+        <option value="General Body">General Body Meeting</option>
+        <option value="Emergency Meeting">Emergency Sync</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Target Member Selection (Target Audience)</label>
+      <select id="meetTargetAudience" required>
+        <option value="All Members">👥 All Members (Students, Committee &amp; Faculty)</option>
+        <option value="Committee Members Only">⭐ Committee Members Only</option>
+        <option value="Faculty Coordinators Only">👨‍🏫 Faculty Coordinators Only</option>
+        <option value="Student Members Only">🎓 Student Members Only</option>
+        <option value="Executive Board">🏛️ Executive Board (HOD, Faculty, President, VP)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Meeting Agenda &amp; Objective</label>
+      <textarea id="meetAgenda" rows="3" placeholder="Specify key discussion topics and agenda points..."></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary" style="width:100%; margin-top:10px;">📅 Schedule Meeting &amp; Broadcast Notification</button>
+  </form>
+</div>
 
 <!-- ── DRAWER 1: QUICK ACTION - ADD MEMBER ── -->
 <div class="drawer" id="addMemberDrawer">
@@ -1073,6 +1162,7 @@ const navMap = [
   { id: 'navCommittee', target: 'committeeDrawer', section: 'committee', type: 'drawer' },
   { id: 'navEvents', target: 'newEventDrawer', section: 'events', type: 'drawer', tab: 'create' },
   { id: 'navUpcoming', target: 'newEventDrawer', section: 'upcoming', type: 'drawer', tab: 'approve' },
+  { id: 'navMeetings', target: 'scheduleMeetingDrawer', type: 'drawer' },
   { id: 'navCerts', target: 'certGeneratorDrawer', section: 'certificates', type: 'drawer' },
   { id: 'navReports', target: 'reportHubDrawer', section: 'reports', type: 'drawer' },
   { id: 'navNotif', target: 'notifyAllDrawer', section: 'notifications', type: 'drawer' },
@@ -1930,8 +2020,109 @@ function escapeHtml(text) {
     .replace(/'/g, "&#039;");
 }
 
+// ── SCHEDULED MEETINGS & SYNCS ENGINE ──
+async function fetchScheduledMeetings() {
+  const tbody = document.getElementById('scheduledMeetingsTableBody');
+  if (!tbody) return;
+
+  try {
+    const res = await fetch('ajax/hod_actions.php?action=get_meetings');
+    const data = await res.json();
+    if (data.status === 'success' && data.meetings && data.meetings.length > 0) {
+      tbody.innerHTML = data.meetings.map(m => {
+        const isCancelled = (m.status || '').toLowerCase() === 'cancelled';
+        const isCompleted = (m.status || '').toLowerCase() === 'completed';
+        let statusBadge = '<span class="badge badge-green">Scheduled</span>';
+        if (isCancelled) statusBadge = '<span class="badge" style="background:#ef4444; color:#fff;">Cancelled</span>';
+        else if (isCompleted) statusBadge = '<span class="badge badge-blue">Completed</span>';
+
+        return `
+          <tr>
+            <td><b>${escapeHtml(m.title)}</b><div style="font-size:0.75rem; color:var(--muted-dark);">${escapeHtml(m.category || 'General Sync')}</div></td>
+            <td>📅 ${formatDate(m.meeting_date)} · ⏰ ${escapeHtml(m.meeting_time || '10:00 AM')}</td>
+            <td>📍 ${escapeHtml(m.venue || 'Seminar Hall')}</td>
+            <td><span class="badge badge-blue">${escapeHtml(m.target_audience || 'All Members')}</span></td>
+            <td>${statusBadge}</td>
+            <td>
+              ${!isCancelled && !isCompleted ? `
+                <button class="btn" style="background:#fee2e2; color:#dc2626; border:1px solid #fca5a5; padding:4px 10px; font-size:0.75rem;" onclick="cancelMeeting(${m.id}, '${escapeHtml(m.title)}')">
+                  🚫 Cancel Meeting
+                </button>
+              ` : `<span style="font-size:0.75rem; color:var(--muted-dark);">${isCancelled ? 'Cancelled' : 'Closed'}</span>`}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    } else {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--muted-dark); padding:20px;">No scheduled meetings found. Click "Schedule New Meeting" to create one.</td></tr>`;
+    }
+  } catch (e) {
+    console.error('Failed to load meetings:', e);
+  }
+}
+
+async function submitScheduleMeeting(e) {
+  e.preventDefault();
+  const formData = new FormData();
+  formData.append('action', 'schedule_meeting');
+  formData.append('title', document.getElementById('meetTitle').value);
+  formData.append('meeting_date', document.getElementById('meetDate').value);
+  formData.append('meeting_time', document.getElementById('meetTime').value);
+  formData.append('venue', document.getElementById('meetVenue').value);
+  formData.append('category', document.getElementById('meetCategory').value);
+  formData.append('target_audience', document.getElementById('meetTargetAudience').value);
+  formData.append('agenda', document.getElementById('meetAgenda').value);
+
+  try {
+    const res = await fetch('ajax/hod_actions.php', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.status === 'success') {
+      alert(data.message);
+      document.getElementById('scheduleMeetingForm').reset();
+      closeDrawer('scheduleMeetingDrawer');
+      fetchScheduledMeetings();
+    } else {
+      alert(data.message || 'Failed to schedule meeting.');
+    }
+  } catch (err) {
+    alert('Error scheduling meeting: ' + err.message);
+  }
+}
+
+window.cancelMeeting = async function(meetingId, title) {
+  if (!confirm(`Are you sure you want to cancel the meeting "${title}"? An urgent notification will be broadcasted to all participants.`)) {
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('action', 'cancel_meeting');
+  formData.append('meeting_id', meetingId);
+
+  try {
+    const res = await fetch('ajax/hod_actions.php', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.status === 'success') {
+      alert(data.message);
+      fetchScheduledMeetings();
+    } else {
+      alert(data.message || 'Failed to cancel meeting.');
+    }
+  } catch (err) {
+    alert('Error cancelling meeting: ' + err.message);
+  }
+};
+
+function formatDate(dateStr) {
+  if (!dateStr) return 'TBD';
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
 // Initial Data Fetch
-window.addEventListener('DOMContentLoaded', fetchDashboardData);
+window.addEventListener('DOMContentLoaded', () => {
+  fetchDashboardData();
+  fetchScheduledMeetings();
+});
 </script>
 <script src="assets/js/landing.js"></script>
 </body>
