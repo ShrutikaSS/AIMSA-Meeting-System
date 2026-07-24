@@ -9,6 +9,28 @@ if (!$sessionUser || !in_array($sessionUser['role'] ?? '', ['HOD', 'Head of Depa
     header("Location: index.php?auth_error=" . urlencode("Unauthorized access. Please login with HOD credentials."));
     exit;
 }
+
+$hodStats = [
+  'total_members' => 0,
+  'committee_members' => 0,
+  'events_conducted' => 0,
+  'total_registrations' => 0,
+  'certs_issued' => 0,
+  'reports_count' => 0
+];
+
+if ($pdo) {
+  try {
+    $hodStats['total_members'] = (int)$pdo->query("SELECT COUNT(*) FROM `users` WHERE `membershipStatus` = 'Active'")->fetchColumn();
+    $hodStats['committee_members'] = (int)$pdo->query("SELECT COUNT(*) FROM `users` WHERE TRIM(COALESCE(`committeeDesignation`, '')) <> ''")->fetchColumn();
+    $hodStats['events_conducted'] = (int)$pdo->query("SELECT COUNT(*) FROM `events` WHERE `status` IN ('Approved', 'Completed')")->fetchColumn();
+    $hodStats['total_registrations'] = (int)$pdo->query("SELECT COALESCE(SUM(`registrations_count`), 0) FROM `events`")->fetchColumn();
+    $hodStats['certs_issued'] = (int)$pdo->query("SELECT COUNT(*) FROM `certificates`")->fetchColumn();
+    $hodStats['reports_count'] = (int)$pdo->query("SELECT COUNT(*) FROM `reports`")->fetchColumn();
+  } catch (Exception $e) {
+    error_log('HOD dashboard stats bootstrap failed: ' . $e->getMessage());
+  }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -254,7 +276,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
       Certificates Generated
     </a>
 
-    <a class="nav-item" href="#reports" id="navReports">
+    <a class="nav-item" href="#reports" id="navReports" onclick="openDrawer('reportHubDrawer'); return false;">
       <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
       Reports
     </a>
@@ -271,7 +293,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
     </a>
 
     <div class="nav-section-label">Account</div>
-    <a class="nav-item" href="#" id="navSettings">
+    <a class="nav-item" href="#" id="navSettings" onclick="openDrawer('changePasswordDrawer'); return false;">
       <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
       Settings
     </a>
@@ -355,25 +377,25 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
     <div class="stats-grid" id="members">
       <div class="stat-card" onclick="openDrawer('membersDrawer')">
         <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2M10 11a4 4 0 100-8 4 4 0 000 8z"/></svg></div>
-        <span class="stat-val" id="statTotalMembers">0</span>
+        <span class="stat-val" id="statTotalMembers"><?= (int)$hodStats['total_members'] ?></span>
         <div class="stat-label" data-i18n="stat.total_members">Total Members</div>
         <span class="stat-delta up">↑ Live Database</span>
       </div>
       <div class="stat-card" id="committee" onclick="openDrawer('committeeDrawer')">
         <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
-        <span class="stat-val" id="statCommittee">0</span>
+        <span class="stat-val" id="statCommittee"><?= (int)$hodStats['committee_members'] ?></span>
         <div class="stat-label" data-i18n="stat.committee_members">Committee Members</div>
         <span class="stat-delta up">↑ Active Roles</span>
       </div>
       <div class="stat-card" id="events" onclick="openDrawer('newEventDrawer')">
         <div class="stat-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-        <span class="stat-val" id="statEvents">0</span>
+        <span class="stat-val" id="statEvents"><?= (int)$hodStats['events_conducted'] ?></span>
         <div class="stat-label" data-i18n="stat.events_conducted">Events Conducted</div>
         <span class="stat-delta up">↑ Approved &amp; Live</span>
       </div>
       <div class="stat-card" id="registrations">
         <div class="stat-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
-        <span class="stat-val" id="statRegistrations">0</span>
+        <span class="stat-val" id="statRegistrations"><?= (int)$hodStats['total_registrations'] ?></span>
         <div class="stat-label">Event Registrations</div>
         <span class="stat-delta up">↑ Total Participants</span>
       </div>
@@ -481,7 +503,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
         <div class="cert-counter">
           <div class="cert-counter-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
           <div style="position:relative;z-index:1;">
-            <span class="cert-counter-val" id="statCertsIssued">0</span>
+            <span class="cert-counter-val" id="statCertsIssued"><?= (int)$hodStats['certs_issued'] ?></span>
             <div class="cert-counter-label">Total Certificates Issued</div>
           </div>
         </div>
@@ -964,6 +986,22 @@ document.getElementById('navGallery').addEventListener('click', (e) => {
   e.preventDefault();
   openDrawer('galleryDrawer');
 });
+
+const navReports = document.getElementById('navReports');
+if (navReports) {
+  navReports.addEventListener('click', (e) => {
+    e.preventDefault();
+    openDrawer('reportHubDrawer');
+  });
+}
+
+const navSettings = document.getElementById('navSettings');
+if (navSettings) {
+  navSettings.addEventListener('click', (e) => {
+    e.preventDefault();
+    openDrawer('changePasswordDrawer');
+  });
+}
 
 // Profile dropdown
 window.toggleProfileDropdown = function() {
@@ -1693,13 +1731,30 @@ document.getElementById('savePasswordBtn').addEventListener('click', () => {
   const conf = document.getElementById('confirmNewPassword').value;
 
   if (!curr || !newp || !conf) {
-    alert('Please fill out all password fields.'); return;
+    alert('Please fill out all password fields.');
+    return;
   }
   if (newp !== conf) {
-    alert('New passwords do not match.'); return;
+    alert('New passwords do not match.');
+    return;
   }
-  alert('Password updated successfully!');
-  closeDrawer('changePasswordDrawer');
+
+  const formData = new FormData();
+  formData.append('action', 'change_password');
+  formData.append('current_password', curr);
+  formData.append('new_password', newp);
+  formData.append('confirm_password', conf);
+
+  fetch('ajax/hod_actions.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(res => {
+      alert(res.message || 'Password update completed.');
+      if (res.status === 'success') {
+        document.getElementById('changePasswordDrawer').querySelectorAll('input').forEach(input => input.value = '');
+        closeDrawer('changePasswordDrawer');
+      }
+    })
+    .catch(() => alert('Unable to update password right now.'));
 });
 
 // Search input filtering for topbar
@@ -1734,7 +1789,7 @@ function escapeHtml(text) {
 }
 
 // Initial Data Fetch
-fetchDashboardData();
+window.addEventListener('DOMContentLoaded', fetchDashboardData);
 </script>
 <script src="assets/js/landing.js"></script>
 </body>
