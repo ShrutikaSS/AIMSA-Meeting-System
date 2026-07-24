@@ -209,7 +209,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   </div>
   <div class="sidebar-role" style="cursor:pointer;" onclick="openDrawer('viewProfileDrawer')">
     <div class="role-avatar"><div class="in" id="sidebarAvatar">FC</div></div>
-    <div class="role-info"><b id="sidebarUserName">Prof. Meera Nair</b><span>Faculty Coordinator</span></div>
+    <div class="role-info"><b id="sidebarUserName">Prof. Manisha Devgunde</b><span>Faculty Coordinator</span></div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-section-label">Main</div>
@@ -290,7 +290,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
         <div style="display:flex; align-items:center; gap:8px; cursor:pointer;" onclick="toggleProfileDropdown()">
           <div style="width:32px; height:32px; border-radius:50%; background:var(--accent); color:var(--white); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem;" id="headerUserAvatar">FC</div>
           <div style="display:flex; flex-direction:column; text-align:left;">
-            <span style="font-size:0.78rem; font-weight:600; color:var(--navy-950);" id="headerUserName">Prof. Meera Nair</span>
+            <span style="font-size:0.78rem; font-weight:600; color:var(--navy-950);" id="headerUserName">Prof. Manisha Devgunde</span>
             <span style="font-size:0.65rem; color:var(--muted-dark);" id="headerUserRole">Faculty Coordinator</span>
           </div>
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -508,12 +508,12 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
     <div style="width:70px; height:70px; border-radius:50%; background:conic-gradient(from 180deg,var(--accent),var(--navy-700),var(--accent)); padding:3px; margin:0 auto 10px;">
       <div style="width:100%; height:100%; border-radius:50%; background:var(--navy-800); display:flex; align-items:center; justify-content:center; font-family:var(--ff-display); font-weight:700; color:var(--white); font-size:1.4rem;" id="profDrawerAvatar">FC</div>
     </div>
-    <b style="font-size:1.1rem; color:var(--navy-950); display:block;" id="profDrawerName">Prof. Meera Nair</b>
+    <b style="font-size:1.1rem; color:var(--navy-950); display:block;" id="profDrawerName">Prof. Manisha Devgunde</b>
     <span style="font-family:var(--ff-mono); font-size:0.72rem; color:var(--accent); letter-spacing:0.1em; text-transform:uppercase;">Faculty Coordinator — Dept. of AI &amp; ML</span>
   </div>
   <div class="form-group" style="margin-top:10px;">
     <label>Full Name</label>
-    <input type="text" id="profNameInput" placeholder="e.g. Prof. Meera Nair">
+    <input type="text" id="profNameInput" placeholder="e.g. Prof. Manisha Devgunde">
   </div>
   <div class="form-group">
     <label>College Email ID</label>
@@ -676,7 +676,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   </div>
   <div class="form-group">
     <label>Faculty Coordinator</label>
-    <input type="text" id="evtCoordinator" value="Prof. Meera Nair" readonly style="background:var(--paper-dim);">
+    <input type="text" id="evtCoordinator" value="Prof. Manisha Devgunde" readonly style="background:var(--paper-dim);">
   </div>
   <button class="btn btn-primary" style="width:100%; margin-top:10px;" id="saveEventBtn">Publish Event</button>
 </div>
@@ -1302,7 +1302,7 @@ window.renderPendingAchievements = function(filterStatus = 'all', searchQuery = 
       { student: 'Arjun Patil', email: 'student@zealeducation.com', title: '1st Place Hackathon 2026', category: 'Hackathon Winner', description: 'Won 1st prize in AIMSA AI Hackathon 2026.', status: 'Approved', nominated_by: 'Tech Committee', date: '2026-07-20' },
       { student: 'Riya Desai', email: 'committee@zealeducation.com', title: 'Best Organiser Award', category: 'Leadership & Organizing', description: 'Exemplary leadership during Tech Symposium 2026.', status: 'Approved', nominated_by: 'Technical Committee', date: '2026-07-21' },
       { student: 'Sneha Rao', email: 'sneha.rao@zealeducation.com', title: 'IEEE Research Paper Published', category: 'Research Paper', description: 'Published research paper on AI models in healthcare.', status: 'Pending', nominated_by: 'Dr. Dipali Shende', date: '2026-07-22' },
-      { student: 'Aman Kulkarni', email: 'aman.k@zealeducation.com', title: 'Top Performer - 100% Attendance', category: 'Academic Excellence', description: 'Maintained perfect attendance for Semester II.', status: 'Pending', nominated_by: 'Prof. Rahul Patil', date: '2026-07-22' }
+      { student: 'Aman Kulkarni', email: 'aman.k@zealeducation.com', title: 'Top Performer - 100% Attendance', category: 'Academic Excellence', description: 'Maintained perfect attendance for Semester II.', status: 'Pending', nominated_by: 'Prof. Manisha Devgunde', date: '2026-07-22' }
     ];
     localStorage.setItem('aimsa_achievements', JSON.stringify(achievements));
   }

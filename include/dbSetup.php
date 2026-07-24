@@ -29,12 +29,12 @@ function setupDatabaseTables($pdo) {
         // Seed / Update initial HOD, Faculty, President, Committee & Students according to exact role credentials and ZPRNs
         $defaultUsers = [
             ['Dr. Dipali Shende', 'hod@zealeducation.com', 'hod123', 'HOD', 'AI & ML', 'Faculty', 'Active', 'Head of Department', 'Departmental Leadership & Guidance', '125UAM1001'],
-            ['Prof. Meera Nair', 'faculty@zealeducation.com', 'faculty123', 'Faculty Coordinator', 'AI & ML', 'Faculty', 'Active', 'Faculty Coordinator', 'Event Oversight & Advisory', '125UAM1002'],
-            ['Karan Mehta', 'president@zealeducation.com', 'president123', 'Association President', 'AI & ML', '2024', 'Active', 'President', 'Association Roadmap & Execution', '125UAM1003'],
+            ['Prof. Manisha Devgunde', 'faculty@zealeducation.com', 'faculty123', 'Faculty Coordinator', 'AI & ML', 'Faculty', 'Active', 'Faculty Coordinator', 'Event Oversight & Advisory', '125UAM1002'],
+            ['Varad', 'president@zealeducation.com', 'president123', 'Association President', 'AI & ML', '2024', 'Active', 'President', 'Association Roadmap & Execution', '125UAM1003'],
             ['Riya Desai', 'committee@zealeducation.com', 'committee123', 'Committee Member', 'AI & ML', '2025', 'Active', 'Technical Committee', 'Technical Event Organizer', '125UAM1004'],
             ['Piyush Sharma', 'piyush@zealeducation.com', 'student123', 'Student Member', 'AI & ML', '2026', 'Active', NULL, NULL, '125UAM1137'],
             ['Arjun Patil', 'student@zealeducation.com', 'student123', 'Student Member', 'AI & ML', '2026', 'Active', NULL, NULL, '125UAM1005'],
-            ['Aarav Sharma', 'aarav.sharma@zealeducation.com', 'president123', 'Association President', 'AI & ML', '2024', 'Active', 'President', 'Association Roadmap & Execution', '125UAM1006'],
+            ['Varad', 'aarav.sharma@zealeducation.com', 'president123', 'Association President', 'AI & ML', '2024', 'Active', 'President', 'Association Roadmap & Execution', '125UAM1006'],
             ['Neha Verma', 'neha.verma@zealeducation.com', 'password123', 'Association President', 'AI & ML', '2024', 'Active', 'Vice President', 'Cross-committee coordination', '125UAM1007'],
             ['Rohan Kulkarni', 'rohan.k@zealeducation.com', 'committee123', 'Committee Member', 'AI & ML', '2025', 'Active', 'Technical Head', 'Technical Workshops Lead', '125UAM1008'],
             ['Vikram Salunkhe', 'vikram.s@zealeducation.com', 'student123', 'Student Member', 'AI & ML', '2025', 'Active', NULL, NULL, '125UAM1009']
@@ -93,8 +93,8 @@ function setupDatabaseTables($pdo) {
         if ($stmt->fetchColumn() == 0) {
             $defaultEvents = [
                 ['Tech Symposium 2026', 'Annual departmental tech flagship event featuring paper presentations and code hackathons.', '2026-07-28', 'Main Auditorium', 'Approved', 'Dr. Dipali Shende', 148, NULL],
-                ['AI Workshop Series', 'Hands-on Machine Learning & Deep Learning session for 2nd and 3rd year students.', '2026-08-03', 'Lab 402', 'Approved', 'Prof. Rahul Patil', 86, NULL],
-                ['Campus Hackathon 2026', '24-hour innovation sprint on real-world industry AI challenges.', '2026-08-15', 'Online + Campus', 'Pending', 'Aarav Sharma', 62, NULL],
+                ['AI Workshop Series', 'Hands-on Machine Learning & Deep Learning session for 2nd and 3rd year students.', '2026-08-03', 'Lab 402', 'Approved', 'Prof. Manisha Devgunde', 86, NULL],
+                ['Campus Hackathon 2026', '24-hour innovation sprint on real-world industry AI challenges.', '2026-08-15', 'Online + Campus', 'Pending', 'Varad', 62, NULL],
                 ['Guest Lecture: ML in Healthcare', 'Special expert lecture by industry leaders on AI applications in medical diagnosis.', '2026-08-22', 'Seminar Hall', 'Approved', 'Dr. Dipali Shende', 45, NULL],
                 ['Orientation & Induction 2025', 'Welcome event for first year AI & ML students.', '2025-09-10', 'Seminar Hall', 'Completed', 'Dr. Dipali Shende', 190, NULL]
             ];
@@ -227,9 +227,9 @@ function setupDatabaseTables($pdo) {
         $stmt = $pdo->query("SELECT COUNT(*) FROM `meetings`");
         if ($stmt->fetchColumn() == 0) {
             $defaultMeetings = [
-                ['Tech Symposium 2026', '2026-07-28', '09:30 AM', 'Main Auditorium', 'Event', 'All Members', 'Completed', 148, 12, 'Prof. Meera Nair'],
-                ['AI Workshop Series', '2026-08-03', '11:00 AM', 'Lab 402', 'Workshop', 'Technical Team', 'Completed', 86, 8, 'Prof. Meera Nair'],
-                ['Semester Kickoff General Body Sync', '2026-08-10', '03:30 PM', 'Seminar Hall', 'General Body', 'All Members', 'Completed', 210, 22, 'Prof. Meera Nair'],
+                ['Tech Symposium 2026', '2026-07-28', '09:30 AM', 'Main Auditorium', 'Event', 'All Members', 'Completed', 148, 12, 'Prof. Manisha Devgunde'],
+                ['AI Workshop Series', '2026-08-03', '11:00 AM', 'Lab 402', 'Workshop', 'Technical Team', 'Completed', 86, 8, 'Prof. Manisha Devgunde'],
+                ['Semester Kickoff General Body Sync', '2026-08-10', '03:30 PM', 'Seminar Hall', 'General Body', 'All Members', 'Completed', 210, 22, 'Prof. Manisha Devgunde'],
                 ['Executive Committee Planning Sync', '2026-08-18', '02:00 PM', 'Faculty Coordination Room', 'Committee Sync', 'Committee Only', 'Scheduled', 18, 2, NULL]
             ];
 
@@ -257,13 +257,13 @@ function setupDatabaseTables($pdo) {
         $stmt = $pdo->query("SELECT COUNT(*) FROM `attendance`");
         if ($stmt->fetchColumn() == 0) {
             $defaultAtt = [
-                [1, 5, 'Piyush Sharma', 'piyush@zealeducation.com', '125UAM1137', 'AI & ML', '2026', 'Present', 'Prof. Meera Nair'],
-                [1, 6, 'Arjun Patil', 'student@zealeducation.com', '125UAM1005', 'AI & ML', '2026', 'Present', 'Prof. Meera Nair'],
-                [1, 9, 'Vikram Salunkhe', 'vikram.s@zealeducation.com', '125UAM1009', 'AI & ML', '2025', 'Present', 'Prof. Meera Nair'],
-                [1, 8, 'Siddharth Pawar', 'siddharth.p@zealeducation.com', '125UAM1008', 'AI & ML', '2025', 'Absent', 'Prof. Meera Nair'],
-                [2, 5, 'Piyush Sharma', 'piyush@zealeducation.com', '125UAM1137', 'AI & ML', '2026', 'Present', 'Prof. Meera Nair'],
-                [2, 6, 'Arjun Patil', 'student@zealeducation.com', '125UAM1005', 'AI & ML', '2026', 'Present', 'Prof. Meera Nair'],
-                [2, 9, 'Vikram Salunkhe', 'vikram.s@zealeducation.com', '125UAM1009', 'AI & ML', '2025', 'Absent', 'Prof. Meera Nair']
+                [1, 5, 'Piyush Sharma', 'piyush@zealeducation.com', '125UAM1137', 'AI & ML', '2026', 'Present', 'Prof. Manisha Devgunde'],
+                [1, 6, 'Arjun Patil', 'student@zealeducation.com', '125UAM1005', 'AI & ML', '2026', 'Present', 'Prof. Manisha Devgunde'],
+                [1, 9, 'Vikram Salunkhe', 'vikram.s@zealeducation.com', '125UAM1009', 'AI & ML', '2025', 'Present', 'Prof. Manisha Devgunde'],
+                [1, 8, 'Siddharth Pawar', 'siddharth.p@zealeducation.com', '125UAM1008', 'AI & ML', '2025', 'Absent', 'Prof. Manisha Devgunde'],
+                [2, 5, 'Piyush Sharma', 'piyush@zealeducation.com', '125UAM1137', 'AI & ML', '2026', 'Present', 'Prof. Manisha Devgunde'],
+                [2, 6, 'Arjun Patil', 'student@zealeducation.com', '125UAM1005', 'AI & ML', '2026', 'Present', 'Prof. Manisha Devgunde'],
+                [2, 9, 'Vikram Salunkhe', 'vikram.s@zealeducation.com', '125UAM1009', 'AI & ML', '2025', 'Absent', 'Prof. Manisha Devgunde']
             ];
 
             $insertAtt = $pdo->prepare("INSERT INTO `attendance` (`meeting_id`, `user_id`, `student_name`, `student_email`, `zprn`, `branch`, `batch`, `status`, `marked_by`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -288,9 +288,9 @@ function setupDatabaseTables($pdo) {
         $stmt = $pdo->query("SELECT COUNT(*) FROM `announcements`");
         if ($stmt->fetchColumn() == 0) {
             $defaultAnn = [
-                ['🏆 Hackathon 2026 registrations open!', 'Official registration portal is now live for all AI & ML department students.', 'Normal', 'Karan Mehta (President)', 'All Members', 203, 0],
+                ['🏆 Hackathon 2026 registrations open!', 'Official registration portal is now live for all AI & ML department students.', 'Normal', 'Varad (President)', 'All Members', 203, 0],
                 ['⚡ Deadline: Club fee payment — Jul 31', 'All committee members and active members are requested to complete dues.', 'Urgent', 'Finance Committee', 'All Members', 312, 1],
-                ['✅ Tech Symposium venue confirmed', 'Main Auditorium and Lab 402 reserved for July 28 event.', 'Important', 'Karan Mehta (President)', 'All Members', 187, 0],
+                ['✅ Tech Symposium venue confirmed', 'Main Auditorium and Lab 402 reserved for July 28 event.', 'Important', 'Varad (President)', 'All Members', 187, 0],
                 ['📢 New committee vacancies — Apply now', 'Applications open for Finance & Outreach committee positions.', 'Normal', 'Outreach Committee', 'Students', 92, 0]
             ];
 
@@ -378,7 +378,7 @@ function setupDatabaseTables($pdo) {
             `status` VARCHAR(50) DEFAULT 'Pending',
             `assigned_to_email` VARCHAR(255) DEFAULT 'committee@zealeducation.com',
             `assigned_to_name` VARCHAR(255) DEFAULT 'Riya Desai',
-            `created_by` VARCHAR(255) DEFAULT 'Karan Mehta (President)',
+            `created_by` VARCHAR(255) DEFAULT 'Varad (President)',
             `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
@@ -386,15 +386,15 @@ function setupDatabaseTables($pdo) {
         try { $pdo->exec("ALTER TABLE `committee_tasks` ADD COLUMN `description` TEXT NULL AFTER `task_title`;"); } catch (Exception $e) {}
         try { $pdo->exec("ALTER TABLE `committee_tasks` ADD COLUMN `assigned_to_email` VARCHAR(255) DEFAULT 'committee@zealeducation.com' AFTER `status`;"); } catch (Exception $e) {}
         try { $pdo->exec("ALTER TABLE `committee_tasks` ADD COLUMN `assigned_to_name` VARCHAR(255) DEFAULT 'Riya Desai' AFTER `assigned_to_email`;"); } catch (Exception $e) {}
-        try { $pdo->exec("ALTER TABLE `committee_tasks` ADD COLUMN `created_by` VARCHAR(255) DEFAULT 'Karan Mehta (President)' AFTER `assigned_to_name`;"); } catch (Exception $e) {}
+        try { $pdo->exec("ALTER TABLE `committee_tasks` ADD COLUMN `created_by` VARCHAR(255) DEFAULT 'Varad (President)' AFTER `assigned_to_name`;"); } catch (Exception $e) {}
 
         $stmt = $pdo->query("SELECT COUNT(*) FROM `committee_tasks`");
         if ($stmt->fetchColumn() == 0) {
             $defaultTasks = [
-                [13, 'Finalize Tech Symposium stage setup plan', 'Coordinate stage lighting, sound system and banner setup.', '2026-07-25', 'High Priority', 'Pending', 'committee@zealeducation.com', 'Riya Desai', 'Karan Mehta (President)'],
-                [13, 'Collect registration forms — AI Workshop', 'Verify Google form entries and compile list of participants.', '2026-07-20', 'Medium Priority', 'Completed', 'committee@zealeducation.com', 'Riya Desai', 'Prof. Meera Nair'],
-                [13, 'Submit Hackathon team details', 'Gather hackathon team lists and submit to core committee.', '2026-08-10', 'Medium Priority', 'Pending', 'committee@zealeducation.com', 'Riya Desai', 'Karan Mehta (President)'],
-                [13, 'Prepare attendance sheets for ML Guest Lecture', 'Print attendance rosters for Seminar Hall 2 entrance.', '2026-08-20', 'Normal Priority', 'Pending', 'committee@zealeducation.com', 'Riya Desai', 'Prof. Meera Nair']
+                [13, 'Finalize Tech Symposium stage setup plan', 'Coordinate stage lighting, sound system and banner setup.', '2026-07-25', 'High Priority', 'Pending', 'committee@zealeducation.com', 'Riya Desai', 'Varad (President)'],
+                [13, 'Collect registration forms — AI Workshop', 'Verify Google form entries and compile list of participants.', '2026-07-20', 'Medium Priority', 'Completed', 'committee@zealeducation.com', 'Riya Desai', 'Prof. Manisha Devgunde'],
+                [13, 'Submit Hackathon team details', 'Gather hackathon team lists and submit to core committee.', '2026-08-10', 'Medium Priority', 'Pending', 'committee@zealeducation.com', 'Riya Desai', 'Varad (President)'],
+                [13, 'Prepare attendance sheets for ML Guest Lecture', 'Print attendance rosters for Seminar Hall 2 entrance.', '2026-08-20', 'Normal Priority', 'Pending', 'committee@zealeducation.com', 'Riya Desai', 'Prof. Manisha Devgunde']
             ];
 
             $insertTask = $pdo->prepare("INSERT INTO `committee_tasks` (`user_id`, `task_title`, `description`, `due_date`, `priority`, `status`, `assigned_to_email`, `assigned_to_name`, `created_by`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -402,6 +402,19 @@ function setupDatabaseTables($pdo) {
                 $insertTask->execute($t);
             }
         }
+
+        // Migrate any pre-existing database records to updated names
+        try {
+            $pdo->exec("UPDATE `users` SET `name` = 'Varad' WHERE `role` = 'Association President' OR `email` IN ('president@zealeducation.com', 'aarav.sharma@zealeducation.com');");
+            $pdo->exec("UPDATE `users` SET `name` = 'Prof. Manisha Devgunde' WHERE `role` = 'Faculty Coordinator' OR `email` = 'faculty@zealeducation.com';");
+            $pdo->exec("UPDATE `events` SET `created_by` = 'Prof. Manisha Devgunde' WHERE `created_by` IN ('Prof. Meera Nair', 'Prof. Rahul Patil');");
+            $pdo->exec("UPDATE `events` SET `created_by` = 'Varad' WHERE `created_by` IN ('Karan Mehta', 'Aarav Sharma');");
+            $pdo->exec("UPDATE `meetings` SET `verified_by` = 'Prof. Manisha Devgunde' WHERE `verified_by` IN ('Prof. Meera Nair', 'Prof. Rahul Patil');");
+            $pdo->exec("UPDATE `attendance` SET `marked_by` = 'Prof. Manisha Devgunde' WHERE `marked_by` IN ('Prof. Meera Nair', 'Prof. Rahul Patil');");
+            $pdo->exec("UPDATE `announcements` SET `posted_by` = 'Varad (President)' WHERE `posted_by` LIKE '%Karan Mehta%' OR `posted_by` LIKE '%Aarav Sharma%';");
+            $pdo->exec("UPDATE `committee_tasks` SET `created_by` = 'Varad (President)' WHERE `created_by` LIKE '%Karan Mehta%';");
+            $pdo->exec("UPDATE `committee_tasks` SET `created_by` = 'Prof. Manisha Devgunde' WHERE `created_by` LIKE '%Meera Nair%' OR `created_by` LIKE '%Rahul Patil%';");
+        } catch (Exception $e) {}
 
         return true;
     } catch (PDOException $e) {

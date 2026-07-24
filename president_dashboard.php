@@ -210,7 +210,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   </div>
   <div class="sidebar-role" style="cursor:pointer;" onclick="openDrawer('viewProfileDrawer')">
     <div class="role-avatar"><div class="in" id="sidebarAvatar">AP</div></div>
-    <div class="role-info"><b id="sidebarUserName">Karan Mehta</b><span>Association President</span></div>
+    <div class="role-info"><b id="sidebarUserName">Varad</b><span>Association President</span></div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-section-label">Main</div>
@@ -293,7 +293,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
         <div style="display:flex; align-items:center; gap:8px; cursor:pointer;" onclick="toggleProfileDropdown()">
           <div style="width:32px; height:32px; border-radius:50%; background:var(--accent); color:var(--white); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem;" id="headerUserAvatar">AP</div>
           <div style="display:flex; flex-direction:column; text-align:left;">
-            <span style="font-size:0.78rem; font-weight:600; color:var(--navy-950);" id="headerUserName">Karan Mehta</span>
+            <span style="font-size:0.78rem; font-weight:600; color:var(--navy-950);" id="headerUserName">Varad</span>
             <span style="font-size:0.65rem; color:var(--muted-dark);" id="headerUserRole">Association President</span>
           </div>
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -319,7 +319,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 
   <div class="content">
     <div class="section-eyebrow" data-i18n="dash.president_eyebrow">Association President</div>
-    <div class="content-title">Hey, Karan! ⭐</div>
+    <div class="content-title">Hey, Varad! ⭐</div>
     <div class="content-sub">AIMSA leadership dashboard — <span class="liveDateText"><?php echo date('F j, Y'); ?></span></div>
 
     <!-- STATS -->
@@ -500,12 +500,12 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
     <div style="width:70px; height:70px; border-radius:50%; background:conic-gradient(from 180deg,var(--accent),var(--navy-700),var(--accent)); padding:3px; margin:0 auto 10px;">
       <div style="width:100%; height:100%; border-radius:50%; background:var(--navy-800); display:flex; align-items:center; justify-content:center; font-family:var(--ff-display); font-weight:700; color:var(--white); font-size:1.4rem;" id="presDrawerAvatar">AP</div>
     </div>
-    <b style="font-size:1.1rem; color:var(--navy-950); display:block;" id="presDrawerName">Karan Mehta</b>
+    <b style="font-size:1.1rem; color:var(--navy-950); display:block;" id="presDrawerName">Varad</b>
     <span style="font-family:var(--ff-mono); font-size:0.72rem; color:var(--accent); letter-spacing:0.1em; text-transform:uppercase;">Association President — AIMSA</span>
   </div>
   <div class="form-group" style="margin-top:10px;">
     <label>Full Name</label>
-    <input type="text" id="presNameInput" placeholder="e.g. Karan Mehta">
+    <input type="text" id="presNameInput" placeholder="e.g. Varad">
   </div>
   <div class="form-group">
     <label>College Email ID</label>
@@ -682,7 +682,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   <div class="form-group">
     <label>Faculty Coordinator</label>
     <select id="evtCoordinator">
-      <option value="Prof. Meera Nair">Prof. Meera Nair</option>
+      <option value="Prof. Manisha Devgunde">Prof. Manisha Devgunde</option>
       <option value="Dipali Shende">Dipali Shende</option>
     </select>
   </div>
@@ -837,9 +837,9 @@ async function loadUpcomingEventsFromDB() {
     } else {
       events = [
         { name: 'AIMSA AI Hackathon 2026', date: '2026-07-28', venue: 'Main Auditorium', max_participants: 240, coordinator: 'Dr. Dipali Shende', description: '24-hour departmental hackathon on Generative AI models.' },
-        { name: 'ML Bootcamp 2026', date: '2026-08-05', venue: 'Lab 402', max_participants: 180, coordinator: 'Prof. Meera Nair', description: 'Hands-on Machine Learning bootcamp covering PyTorch and TensorFlow.' },
+        { name: 'ML Bootcamp 2026', date: '2026-08-05', venue: 'Lab 402', max_participants: 180, coordinator: 'Prof. Manisha Devgunde', description: 'Hands-on Machine Learning bootcamp covering PyTorch and TensorFlow.' },
         { name: 'Robotics & Vision Workshop', date: '2026-08-10', venue: 'Seminar Hall 2', max_participants: 150, coordinator: 'Dr. Dipali Shende', description: 'Interactive workshop on Computer Vision and Edge Robotics.' },
-        { name: 'Guest Lecture: ML in Healthcare', date: '2026-08-22', venue: 'Seminar Hall 1', max_participants: 120, coordinator: 'Prof. Rahul Patil', description: 'Expert talk on AI application in medical imaging.' }
+        { name: 'Guest Lecture: ML in Healthcare', date: '2026-08-22', venue: 'Seminar Hall 1', max_participants: 120, coordinator: 'Prof. Manisha Devgunde', description: 'Expert talk on AI application in medical imaging.' }
       ];
     }
 

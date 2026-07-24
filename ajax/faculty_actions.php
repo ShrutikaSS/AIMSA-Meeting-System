@@ -143,7 +143,7 @@ try {
 
         case 'verify_meeting_attendance':
             $meetingId = (int)($_POST['meeting_id'] ?? 0);
-            $verifiedBy = trim($_POST['verified_by'] ?? 'Prof. Meera Nair');
+            $verifiedBy = trim($_POST['verified_by'] ?? 'Prof. Manisha Devgunde');
 
             if ($meetingId > 0) {
                 $stmt = $pdo->prepare("UPDATE `meetings` SET `verified_by` = :v WHERE `id` = :id");

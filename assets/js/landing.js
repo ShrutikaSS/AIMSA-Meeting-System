@@ -757,11 +757,11 @@ const i18nDictionary = {
     "dash.hod_sub": "Here's what's happening in AIMSA today — ",
     
     "dash.faculty_eyebrow": "Faculty Coordinator",
-    "dash.faculty_title": "Welcome, Prof. Nair 👋",
+    "dash.faculty_title": "Welcome, Prof. Devgunde 👋",
     "dash.faculty_sub": "Your faculty oversight portal — ",
 
     "dash.president_eyebrow": "Association President",
-    "dash.president_title": "Hey, Karan! ⭐",
+    "dash.president_title": "Hey, Varad! ⭐",
     "dash.president_sub": "AIMSA leadership dashboard — ",
 
     "dash.committee_eyebrow": "Committee Member",
