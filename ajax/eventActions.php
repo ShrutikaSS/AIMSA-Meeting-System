@@ -62,6 +62,24 @@ try {
             $id = $_POST['id'] ?? 0;
             $stmt = $pdo->prepare("UPDATE events SET status = 'Approved' WHERE id = ?");
             $stmt->execute([$id]);
+
+            $creator = $pdo->prepare("SELECT created_by FROM events WHERE id = ?");
+            $creator->execute([$id]);
+            $created_by = $creator->fetchColumn();
+
+            $notif = $pdo->prepare("INSERT INTO `notifications` (`title`, `text`, `indicator`, `recipient`) VALUES (?, ?, 'green', 'all')");
+            $notif->execute(["Event Approved", "Event has been approved by faculty."]);
+
+            if ($created_by) {
+                $userStmt = $pdo->prepare("SELECT email FROM users WHERE LOWER(name) = LOWER(?) LIMIT 1");
+                $userStmt->execute([$created_by]);
+                $creatorEmail = $userStmt->fetchColumn();
+                if ($creatorEmail) {
+                    $notif2 = $pdo->prepare("INSERT INTO `notifications` (`title`, `text`, `indicator`, `recipient`) VALUES (?, ?, 'green', ?)");
+                    $notif2->execute(["Your Event Approved", "Your event proposal has been approved and is now live.", $creatorEmail]);
+                }
+            }
+
             echo json_encode(['status' => 'success', 'message' => 'Event approved']);
             break;
 
@@ -113,6 +131,24 @@ try {
             $id = $_POST['id'] ?? 0;
             $stmt = $pdo->prepare("UPDATE events SET status = 'Rejected' WHERE id = ?");
             $stmt->execute([$id]);
+
+            $creator = $pdo->prepare("SELECT created_by FROM events WHERE id = ?");
+            $creator->execute([$id]);
+            $created_by = $creator->fetchColumn();
+
+            $notif = $pdo->prepare("INSERT INTO `notifications` (`title`, `text`, `indicator`, `recipient`) VALUES (?, ?, 'red', 'all')");
+            $notif->execute(["Event Rejected", "An event proposal has been rejected."]);
+
+            if ($created_by) {
+                $userStmt = $pdo->prepare("SELECT email FROM users WHERE LOWER(name) = LOWER(?) LIMIT 1");
+                $userStmt->execute([$created_by]);
+                $creatorEmail = $userStmt->fetchColumn();
+                if ($creatorEmail) {
+                    $notif2 = $pdo->prepare("INSERT INTO `notifications` (`title`, `text`, `indicator`, `recipient`) VALUES (?, ?, 'red', ?)");
+                    $notif2->execute(["Your Event Rejected", "Your event proposal has been rejected. Please contact faculty for details.", $creatorEmail]);
+                }
+            }
+
             echo json_encode(['status' => 'success', 'message' => 'Event rejected']);
             break;
 

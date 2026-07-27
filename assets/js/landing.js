@@ -152,12 +152,14 @@ function openModal(){
     roleStep.style.display='block'; 
     formStep.classList.remove('show'); 
     forgotStep.style.display='none';
+    history.replaceState({modal:'open'}, '', window.location.pathname);
   }
 }
 function closeModal(){ 
   if (overlay) {
     clearAuthInputs();
     overlay.classList.remove('show'); 
+    history.replaceState({modal:'closed'}, '', window.location.pathname);
   }
 }
 
@@ -370,6 +372,7 @@ if (verifyZprnBtn) {
       verifyZprnBtn.textContent = 'Verify Security Answer →';
 
       if(data.status === 'success') {
+        history.replaceState({step:'reset_password'}, '', window.location.pathname);
         if (data.email) {
           document.getElementById('forgotEmail').value = data.email;
         }
@@ -434,10 +437,7 @@ if (forgotSubmitBtn) {
       forgotSubmitBtn.textContent = 'Save & Update Password →';
 
       if(data.status === 'success') {
-        alert(data.message);
-        clearAuthInputs();
-        forgotStep.style.display = 'none';
-        formStep.classList.add('show');
+        window.location.href = 'index.php?password_reset=1';
       } else {
         alert(data.message || 'Password update failed.');
       }

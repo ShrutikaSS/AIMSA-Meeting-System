@@ -199,6 +199,38 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 @media(max-width:1100px){.stats-grid{grid-template-columns:repeat(2,1fr);}.dash-grid{grid-template-columns:1fr;}.dash-grid-3{grid-template-columns:1fr 1fr;}.dash-grid-2{grid-template-columns:1fr;}}
 @media(max-width:768px){.sidebar{transform:translateX(-100%);}.sidebar.open{transform:translateX(0);}.sidebar-overlay.open{display:block;}.main{margin-left:0;}.hamburger-btn{display:flex;}.content{padding:20px;}.stats-grid{grid-template-columns:1fr 1fr;}.dash-grid-3{grid-template-columns:1fr;}.attend-summary{grid-template-columns:1fr;}}
 @media(max-width:480px){.stats-grid{grid-template-columns:1fr;}}
+@media(max-width:375px){
+  .topbar{padding:12px 14px !important; flex-wrap:wrap; gap:8px;}
+  .topbar-left{gap:8px; width:100%;}
+  .topbar-right{gap:8px; flex-wrap:wrap;}
+  .page-title{font-size:.9rem;}
+  .breadcrumb{font-size:.6rem;}
+  .header-search-bar{width:100%; order:10; margin-top:4px;}
+  .content{padding:14px !important;}
+  .content-title{font-size:1.2rem;}
+  .content-sub{font-size:.82rem; margin-bottom:20px;}
+  .stats-grid{gap:10px;}
+  .stat-card{padding:16px;}
+  .stat-icon{width:36px; height:36px; margin-bottom:12px;}
+  .stat-val{font-size:1.4rem;}
+  .card{padding:16px;}
+  .card-head{flex-wrap:wrap; gap:8px;}
+  .card-title{font-size:.88rem;}
+  .dash-grid{gap:16px;}
+  .dash-grid-3{gap:16px;}
+  .drawer{padding:20px 14px; width:min(100vw, 100%); right:-100%;}
+  .drawer.open{right:0;}
+  .drawer-title{font-size:1rem;}
+  .form-group input,.form-group select,.form-group textarea{padding:8px 10px; font-size:.82rem;}
+  .btn{padding:8px 16px; font-size:.8rem;}
+  .data-table{font-size:.72rem;}
+  .data-table th,.data-table td{padding:6px 8px;}
+  .list-item{padding:10px 0; gap:10px;}
+  .list-text b{font-size:.82rem;}
+  .list-text span{font-size:.7rem;}
+  .portal-footer{flex-direction:column; text-align:center; padding:16px 14px !important; gap:12px;}
+  .portal-footer > div{gap:8px; flex-direction:column; align-items:center;}
+}
 </style>
 </head>
 <body>
@@ -527,6 +559,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
     <button class="drawer-close" onclick="closeDrawer('scheduleMeetingDrawer')">&times;</button>
   </div>
   <form id="scheduleMeetingForm" onsubmit="submitScheduleMeeting(event)">
+    <input type="hidden" id="meetId" value="0">
     <div class="form-group">
       <label>Meeting Title</label>
       <input type="text" id="meetTitle" placeholder="e.g. Faculty Oversight &amp; Event Planning Sync" required>
@@ -1894,10 +1927,13 @@ async function fetchScheduledMeetings() {
             <td>📍 ${escapeHtml(m.venue || 'Seminar Hall')}</td>
             <td><span class="badge badge-blue">${escapeHtml(m.target_audience || 'All Members')}</span></td>
             <td>${statusBadge}</td>
-            <td>
+            <td style="white-space:nowrap;">
               ${!isCancelled && !isCompleted ? `
+                <button class="btn" style="background:#dbeafe; color:#1d4ed8; border:1px solid #93c5fd; padding:4px 10px; font-size:0.75rem; margin-right:4px;" onclick="editMeeting(${m.id},'${escapeHtml(m.title)}','${m.meeting_date}','${escapeHtml(m.meeting_time)}','${escapeHtml(m.venue)}','${escapeHtml(m.category || 'General Body')}','${escapeHtml(m.target_audience || 'All Members')}','${escapeHtml(m.agenda || '')}')">
+                  ✏️ Reschedule
+                </button>
                 <button class="btn" style="background:#fee2e2; color:#dc2626; border:1px solid #fca5a5; padding:4px 10px; font-size:0.75rem;" onclick="cancelMeeting(${m.id}, '${escapeHtml(m.title)}')">
-                  🚫 Cancel Meeting
+                  🚫 Cancel
                 </button>
               ` : `<span style="font-size:0.75rem; color:var(--muted-dark);">${isCancelled ? 'Cancelled' : 'Closed'}</span>`}
             </td>
@@ -1912,10 +1948,27 @@ async function fetchScheduledMeetings() {
   }
 }
 
+window.editMeeting = function(meetingId, title, date, time, venue, category, audience, agenda) {
+  document.getElementById('meetId').value = meetingId;
+  document.getElementById('meetTitle').value = title;
+  document.getElementById('meetDate').value = date;
+  document.getElementById('meetTime').value = time;
+  document.getElementById('meetVenue').value = venue;
+  if (document.getElementById('meetCategory')) document.getElementById('meetCategory').value = category;
+  if (document.getElementById('meetTargetAudience')) document.getElementById('meetTargetAudience').value = audience;
+  if (document.getElementById('meetAgenda')) document.getElementById('meetAgenda').value = agenda;
+  document.querySelector('#scheduleMeetingDrawer .drawer-title').textContent = 'Reschedule Meeting';
+  document.querySelector('#scheduleMeetingDrawer button[type="submit"]').textContent = 'Update Meeting & Broadcast Notification';
+  openDrawer('scheduleMeetingDrawer');
+};
+
 async function submitScheduleMeeting(e) {
   e.preventDefault();
+  const meetingId = parseInt(document.getElementById('meetId').value, 10);
+  const isUpdate = meetingId > 0;
   const formData = new FormData();
-  formData.append('action', 'schedule_meeting');
+  formData.append('action', isUpdate ? 'update_meeting' : 'schedule_meeting');
+  if (isUpdate) formData.append('meeting_id', meetingId);
   formData.append('title', document.getElementById('meetTitle').value);
   formData.append('meeting_date', document.getElementById('meetDate').value);
   formData.append('meeting_time', document.getElementById('meetTime').value);
@@ -1930,6 +1983,9 @@ async function submitScheduleMeeting(e) {
     if (data.status === 'success') {
       alert(data.message);
       document.getElementById('scheduleMeetingForm').reset();
+      document.getElementById('meetId').value = '0';
+      document.querySelector('#scheduleMeetingDrawer .drawer-title').textContent = 'Schedule New Meeting';
+      document.querySelector('#scheduleMeetingDrawer button[type="submit"]').textContent = 'Schedule Meeting & Broadcast Notification';
       closeDrawer('scheduleMeetingDrawer');
       fetchScheduledMeetings();
     } else {
@@ -1975,6 +2031,13 @@ loadNotificationsFromDB().then(() => {
 });
 loadEventsFromDB();
 fetchScheduledMeetings();
+
+// Real-time notification polling every 30s
+setInterval(() => {
+  loadNotificationsFromDB().then(() => {
+    renderNotifications('notifications', currentUser.email);
+  });
+}, 30000);
 
 document.querySelectorAll('.stat-val').forEach(el=>{
   const raw=el.textContent.replace(/,/g,'');

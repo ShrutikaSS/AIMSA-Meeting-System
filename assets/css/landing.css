@@ -519,3 +519,47 @@ footer{ background:var(--ink); color:var(--muted); padding:56px 0 26px;}
   .hero-stats{gap:26px;}
   .footer-cols{gap:30px;}
 }
+@media(max-width:375px){
+  .container{width:94%;}
+  .hero{padding:56px 0 60px;}
+  .hero-inner{gap:18px;}
+  .hero h1{font-size:clamp(1.6rem, 7vw, 2rem);}
+  .hero p.lead{font-size:.92rem;}
+  .hero-ctas{flex-direction:column; align-items:stretch;}
+  .hero-ctas .btn{width:100%; justify-content:center;}
+  .hero-stats{gap:14px; margin-top:30px;}
+  .stat b{font-size:1.4rem;}
+  .hero-logos .logo-badge{width:56px; height:56px;}
+  .about,.meetings,.gallery,.contact,.achievements,.announce{padding:48px 0;}
+  .section-head{margin-bottom:24px;}
+  .section-head h2{font-size:clamp(1.3rem,5vw,1.7rem);}
+  .about-grid{gap:32px;}
+  .vm-card{padding:20px 22px;}
+  .pop-card{padding:20px 16px;}
+  .ach-card{padding:22px 20px;}
+  .gal-grid{grid-template-columns:1fr 1fr; grid-auto-rows:110px; gap:8px;}
+  .meet-row{padding:18px 12px; gap:16px;}
+  .meet-info h4{font-size:.92rem;}
+  .modal{padding:24px 18px;}
+  .modal h3{font-size:1.2rem;}
+  .role-grid{gap:8px;}
+  .role-card{padding:14px; gap:8px;}
+  .role-card b{font-size:.82rem;}
+  .contact-card{padding:22px 18px; flex-direction:column;}
+  .contact-card h4{font-size:.95rem;}
+  .help-banner{padding:22px 20px; flex-direction:column; text-align:center;}
+  .help-banner .btn{width:100%;}
+  .footer-top{flex-direction:column; gap:24px;}
+  .footer-cols{flex-direction:column; gap:16px;}
+  .footer-brand{max-width:100%;}
+  .brand-text b{font-size:.9rem;}
+  .brand-text span{font-size:.58rem;}
+  nav.links a{font-size:.82rem;}
+  .section-head p{font-size:.9rem;}
+  .about-text p{font-size:.92rem;}
+  .ann-item{padding:16px 14px; gap:14px;}
+  .ann-item h4{font-size:.88rem;}
+  .login-form input{padding:10px 12px; font-size:.85rem;}
+  .secure-note{font-size:.7rem;}
+  .glow-sphere-1,.glow-sphere-2,.glow-sphere-3,.glow-sphere-4{width:260px; height:260px;}
+}

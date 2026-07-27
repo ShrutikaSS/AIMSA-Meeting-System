@@ -1,6 +1,8 @@
 <?php
 include_once __DIR__ . '/include/header.php';
 include_once __DIR__ . '/navbar.php';
+$passwordReset = isset($_GET['password_reset']);
+$authError = isset($_GET['auth_error']) ? trim($_GET['auth_error']) : '';
 ?>
 
 <!-- ============ HERO ============ -->
@@ -312,3 +314,20 @@ include_once __DIR__ . '/navbar.php';
 include_once __DIR__ . '/include/footer.php';
 include_once __DIR__ . '/include/script.php';
 ?>
+<script>
+<?php if ($passwordReset): ?>
+Swal.fire({ icon: 'success', title: 'Password Reset Successful', text: 'Your password has been updated. You can now log in with your new password.', confirmButtonColor: '#3E8BFF' });
+history.replaceState(null, '', window.location.pathname);
+<?php elseif ($authError): ?>
+window.addEventListener('DOMContentLoaded', function() {
+  setTimeout(function() {
+    var modalOverlay = document.getElementById('modalOverlay');
+    if (modalOverlay) modalOverlay.classList.add('show');
+  }, 300);
+  setTimeout(function() {
+    Swal.fire({ icon: 'error', title: 'Access Denied', text: <?= json_encode(html_entity_decode($authError)) ?>, confirmButtonColor: '#3E8BFF' });
+  }, 500);
+});
+history.replaceState(null, '', window.location.pathname);
+<?php endif; ?>
+</script>
