@@ -753,7 +753,7 @@ const i18nDictionary = {
 
     // Dashboard Titles & Eyebrows
     "dash.hod_eyebrow": "HOD Overview",
-    "dash.hod_title": "Good Morning, Dr. Shende 👋",
+    "dash.hod_title": "Welcome Back, Dr. Shende 👋",
     "dash.hod_sub": "Here's what's happening in AIMSA today — ",
     
     "dash.faculty_eyebrow": "Faculty Coordinator",

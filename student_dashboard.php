@@ -352,7 +352,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 
   <div class="content">
     <div class="section-eyebrow">Student Member</div>
-    <div class="content-title" id="greetingTitle">Good Morning, <?= htmlspecialchars($sessionUser['name'] ?? 'Student') ?>! 👋</div>
+    <div class="content-title" id="greetingTitle">Welcome Back, <?= htmlspecialchars($sessionUser['name'] ?? 'Student') ?>! 👋</div>
     <div class="content-sub">Your AIMSA journey at a glance — <span class="liveDateText"><?php echo $sqlCurrentDateFormatted; ?></span></div>
 
     <!-- Membership Card -->

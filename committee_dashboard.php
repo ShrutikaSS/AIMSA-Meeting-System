@@ -307,7 +307,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
 
   <div class="content">
     <div class="section-eyebrow" data-i18n="dash.committee_eyebrow">Committee Member</div>
-    <div class="content-title">Good Morning, <?= htmlspecialchars($sessionUser['name'] ?? 'Committee Member') ?> 👋</div>
+    <div class="content-title">Welcome Back, <?= htmlspecialchars($sessionUser['name'] ?? 'Committee Member') ?> 👋</div>
     <div class="content-sub">Technical Committee · Your activity overview — <span class="liveDateText"><?php echo $sqlCurrentDateFormatted; ?></span></div>
 
     <!-- STATS — Assigned Events, Attendance Records, Event Reports, Notifications -->

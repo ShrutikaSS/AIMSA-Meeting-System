@@ -379,7 +379,7 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
   <!-- CONTENT -->
   <div class="content">
     <div class="section-eyebrow" data-i18n="dash.hod_eyebrow">HOD Overview</div>
-    <div class="content-title">Good Morning, <?= htmlspecialchars($sessionUser['name'] ?? 'Dr. Dipali Shende') ?> 👋</div>
+    <div class="content-title">Welcome Back, <?= htmlspecialchars($sessionUser['name'] ?? 'Dr. Dipali Shende') ?> 👋</div>
     <div class="content-sub">Here's what's happening in AIMSA today — <span class="liveDateText"><?php echo $sqlCurrentDateFormatted; ?></span></div>
 
     <!-- STAT CARDS -->
