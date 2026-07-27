@@ -231,6 +231,9 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
     <a class="nav-item" id="navScheduleMeeting" href="#" onclick="openDrawer('scheduleMeetingDrawer'); return false;">
       <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="12" y1="14" x2="12" y2="18"/><line x1="10" y1="16" x2="14" y2="16"/></svg>Schedule Meeting
     </a>
+    <a class="nav-item" id="navCreateEvent" href="#" onclick="openDrawer('createEventDrawer'); return false;">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Create Event
+    </a>
     <div class="nav-section-label">Statistics</div>
     <a class="nav-item" id="navMemberStats" href="#memberstats">
       <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2M10 11a4 4 0 100-8 4 4 0 000 8z"/></svg>Member Statistics

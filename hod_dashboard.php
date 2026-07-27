@@ -275,6 +275,11 @@ a{color:inherit;text-decoration:none;}ul{list-style:none;}button{font-family:inh
       Schedule Meeting
     </a>
 
+    <a class="nav-item" id="navCreateEvent" href="#" onclick="openDrawer('newEventDrawer'); return false;">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      Create Event
+    </a>
+
     <div class="nav-section-label">Reports & Analytics</div>
     <a class="nav-item" href="#certificates" id="navCerts">
       <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
