@@ -381,6 +381,9 @@ let sessionUser = <?php echo json_encode($sessionUser); ?> || JSON.parse(session
   zprn: '125UAM1005'
 };
 
+// Role guard: only Student Members may register for events
+const isStudentMember = (sessionUser.role || '').toLowerCase() === 'student member';
+
 let currentDate = new Date();
 let eventsData = [];
 let registeredEvents = [];
@@ -593,9 +596,13 @@ function renderList(events) {
           <p class="event-desc-text">${escapeHtml(e.description || 'Departmental AIMSA activity.')}</p>
         </div>
         <div class="event-action-col">
-          ${isReg ? `<span class="event-pill-reg" style="font-size:0.75rem; padding:4px 10px;">✓ Registered</span>
-                     <button class="btn-danger" onclick="cancelRegistration(${e.id}, '${escapeJs(evtTitle)}')">Cancel</button>`
-                  : `<button class="btn-primary" onclick="registerEvent(${e.id}, '${escapeJs(evtTitle)}')">Register Now</button>`}
+          ${isStudentMember
+            ? (isReg
+                ? `<span class="event-pill-reg" style="font-size:0.75rem; padding:4px 10px;">✓ Registered</span>
+                   <button class="btn-danger" onclick="cancelRegistration(${e.id}, '${escapeJs(evtTitle)}')">Cancel</button>`
+                : `<button class="btn-primary" onclick="registerEvent(${e.id}, '${escapeJs(evtTitle)}')">Register Now</button>`)
+            : `<span style="font-size:0.75rem; padding:4px 12px; background:rgba(255,255,255,.1); border-radius:8px; color:var(--muted-dark); border:1px solid var(--line-dark); white-space:nowrap;">👁 View Only</span>`
+          }
           <button class="btn-ghost" style="padding:4px 10px; font-size:0.75rem;" onclick="openEventModal(${e.id})">Details →</button>
         </div>
       </div>
@@ -631,8 +638,12 @@ function renderSidebar() {
         📅 ${featured.event_date || featured.date} | 📍 ${escapeHtml(featured.location || featured.venue || 'Campus')}
       </div>
       <p style="font-size:0.78rem; color:var(--muted); margin-bottom:14px; line-height:1.4;">${escapeHtml(featured.description || 'Departmental event.')}</p>
-      ${isReg ? `<button class="btn-ghost" style="width:100%; color:var(--white); border-color:rgba(255,255,255,.2);" onclick="cancelRegistration(${featured.id}, '${escapeJs(fTitle)}')">Cancel Registration</button>`
-              : `<button class="btn-primary" style="width:100%; justify-content:center;" onclick="registerEvent(${featured.id}, '${escapeJs(fTitle)}')">Register Now →</button>`}
+      ${isStudentMember
+        ? (isReg
+            ? `<button class="btn-ghost" style="width:100%; color:var(--white); border-color:rgba(255,255,255,.2);" onclick="cancelRegistration(${featured.id}, '${escapeJs(fTitle)}')" >Cancel Registration</button>`
+            : `<button class="btn-primary" style="width:100%; justify-content:center;" onclick="registerEvent(${featured.id}, '${escapeJs(fTitle)}')">Register Now →</button>`)
+        : `<span style="display:block; text-align:center; font-size:0.75rem; padding:6px 12px; background:rgba(255,255,255,.08); border-radius:8px; color:var(--muted); border:1px solid rgba(255,255,255,.1);">👁 View Only — Registration is for students</span>`
+      }
     `;
   } else {
     featContainer.innerHTML = `<p style="font-size:0.8rem; color:var(--muted);">No upcoming events.</p>`;
@@ -656,7 +667,9 @@ function openEventModal(eventId) {
   document.getElementById('modalRegCount').textContent = event.registrations_count || 0;
 
   const btnContainer = document.getElementById('modalActionBtn');
-  if (isReg) {
+  if (!isStudentMember) {
+    btnContainer.innerHTML = `<span style="font-size:0.8rem; color:var(--muted-dark); padding:6px 12px; background:rgba(0,0,0,.05); border-radius:8px; border:1px solid var(--line-dark); display:inline-block;">👁 View Only — Only students can register</span>`;
+  } else if (isReg) {
     btnContainer.innerHTML = `<button class="btn-danger" onclick="cancelRegistration(${event.id}, '${escapeJs(evtTitle)}'); closeModal();">Cancel Registration</button>`;
   } else {
     btnContainer.innerHTML = `<button class="btn-primary" onclick="registerEvent(${event.id}, '${escapeJs(evtTitle)}'); closeModal();">Register for Event</button>`;
@@ -671,6 +684,10 @@ function closeModal() {
 
 // AJAX Actions
 async function registerEvent(eventId, eventName) {
+  if (!isStudentMember) {
+    alert('Only Student Members can register for events. Authorities may view, create, or assign events.');
+    return;
+  }
   const formData = new FormData();
   formData.append('action', 'registerEvent');
   formData.append('email', sessionUser.email);

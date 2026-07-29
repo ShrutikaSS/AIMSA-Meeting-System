@@ -192,6 +192,12 @@ try {
 
         // 4. Register for an Event
         case 'registerEvent':
+            // Only Student Members are allowed to register for events
+            if (!isset($_SESSION['user']) || strtolower($_SESSION['user']['role'] ?? '') !== 'student member') {
+                echo json_encode(['status' => 'error', 'message' => 'Only students can register for events. Authorities may view, create, or assign events.']);
+                exit;
+            }
+
             $eventId = (int)($_POST['event_id'] ?? 0);
             $eventName = trim($_POST['event_name'] ?? '');
 
@@ -243,6 +249,12 @@ try {
 
         // 5. Cancel Registration
         case 'cancelRegistration':
+            // Only Student Members are allowed to cancel their event registrations
+            if (!isset($_SESSION['user']) || strtolower($_SESSION['user']['role'] ?? '') !== 'student member') {
+                echo json_encode(['status' => 'error', 'message' => 'Only students can manage event registrations.']);
+                exit;
+            }
+
             $eventId = (int)($_POST['event_id'] ?? 0);
             $eventName = trim($_POST['event_name'] ?? '');
 
